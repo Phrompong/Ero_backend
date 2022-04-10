@@ -14,6 +14,7 @@ import routers from "./routes";
 import healthCheckRouter from "./routes/healthCheck.route";
 import { serverStoppingHelper, stoppingFunction } from "./gracefulShutdown";
 import { Server } from "http";
+import bodyParser from "body-parser";
 
 const appEnv = process.env.NODE_ENV || /* istanbul ignore next */ "development";
 
@@ -110,8 +111,9 @@ async function init() {
     .then(() => {
       app.use(helmet());
       app.use(cors());
-      // app.use(expressMiddleware());
-      // app.use(express.urlencoded({ extended: true }));
+      app.use(expressMiddleware());
+      app.use(express.urlencoded({ extended: true }));
+      app.use(bodyParser.json());
       //app.use(multer());
 
       app.use(express.text({ type: "text/plain" }));
