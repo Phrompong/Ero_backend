@@ -26,7 +26,9 @@ router.post("/signIn", async (req, res) => {
     });
 
     if (user.length === 0) {
-      return res.status(400).send({ code: "ERO-0001", message: "Not pass" });
+      return res
+        .status(401)
+        .send({ code: "ERO-0001", message: "Unauthorized" });
     }
 
     const key = `${userAgent}${platform}`;
