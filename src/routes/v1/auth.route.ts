@@ -4,7 +4,7 @@ import { AuthModel } from "../../models/auth.model";
 
 var router = express.Router();
 
-router.post("/", async (req, res) => {
+router.post("/signIn", async (req, res) => {
   try {
     const username = "";
     const password = "";
