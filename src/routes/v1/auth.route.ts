@@ -1,6 +1,6 @@
 import express from "express";
 import * as jwt from "jsonwebtoken";
-import { UserModel } from "models/users.model";
+import { UserModel } from "../../models/users.model";
 import { AuthModel } from "../../models/auth.model";
 import md5 from "md5";
 
