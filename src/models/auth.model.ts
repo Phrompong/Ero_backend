@@ -1,6 +1,6 @@
 import { prop, getModelForClass, Ref } from "@typegoose/typegoose";
 
-export class auth {
+export class Auth {
   @prop({ type: String })
   public key!: string;
 
@@ -8,6 +8,6 @@ export class auth {
   public jwt!: string;
 }
 
-export const AuthModel = getModelForClass(auth, {
+export const AuthModel = getModelForClass(Auth, {
   schemaOptions: { collection: "cltAuth" },
 });

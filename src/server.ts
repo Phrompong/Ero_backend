@@ -112,7 +112,7 @@ async function init() {
       app.use(helmet());
       app.use(cors());
       app.use(expressMiddleware());
-      app.use(express.urlencoded({ extended: true }));
+      app.use(express.text({ type: "text/plain" }));
       app.use(bodyParser.json());
       //app.use(multer());
 
