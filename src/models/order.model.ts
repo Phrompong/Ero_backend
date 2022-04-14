@@ -1,46 +1,41 @@
 import { prop, getModelForClass, Ref } from "@typegoose/typegoose";
 import { BaseModel } from "./base.model";
-
-enum Status {
-  confirmPayment,
-  confirmOverPayment,
-  waitProofTransfer,
-  pendingTransfer,
-}
+import { MasterCustomer } from "./customer.model";
+import { Status } from "./status.model";
 
 export class Order extends BaseModel {
-  @prop({ type: String })
-  public firstname!: string;
+  @prop({ ref: () => MasterCustomer })
+  public customerId!: Ref<MasterCustomer>;
 
   @prop({ type: String })
-  public lastname!: string;
-
-  @prop({ type: String })
-  public detail!: string;
+  public rightStockName!: string;
 
   @prop({ type: Number })
-  public volume!: number;
+  public stockVolume!: number;
 
   @prop({ type: String })
-  public additional!: string;
+  public rightSpacialName!: string;
 
   @prop({ type: Number })
-  public value!: number;
+  public paidRightVolume!: number;
+
+  @prop({ type: Number })
+  public paidSpacialVolume!: number;
+
+  @prop({ type: Number })
+  public paymentAmount!: number;
+
+  @prop({ type: Number })
+  public returnAmount!: number;
+
+  @prop({ type: Date })
+  public attachedOn?: Date;
 
   @prop({ type: String })
-  public telephone!: string;
+  public attachedFile?: String;
 
-  @prop({ type: String })
-  public email!: string;
-
-  @prop({ type: String })
-  public atsNumber!: string;
-
-  @prop({ type: String })
-  public bankAts!: string;
-
-  @prop({ enum: Status, type: String })
-  public status!: Status;
+  @prop({ ref: () => Status })
+  public status!: Ref<Status>;
 }
 
 export const OrderModel = getModelForClass(Order, {

@@ -1,8 +1,6 @@
 import express from "express";
-import * as jwt from "jsonwebtoken";
-import { UserModel } from "../../models/users.model";
 import { AuthModel } from "../../models/auth.model";
-import md5 from "md5";
+import { customerSignIn } from "../../controllers/auth.controller";
 
 var router = express.Router();
 
@@ -11,6 +9,7 @@ router.post("/signIn", async (req, res) => {
     const body = req.body;
     const userAgent = req.headers["user-agent"];
     const platform = req.headers["sec-ch-ua-platform"];
+    const { type } = req.query;
 
     if (Object.keys(body).length === 0) {
       return res
@@ -18,25 +17,29 @@ router.post("/signIn", async (req, res) => {
         .send({ code: "ERO-0011", message: "Body is missing" });
     }
 
-    const { username, password } = body;
+    const key = `${userAgent}${platform}`;
+    let token = "";
 
-    const user = await UserModel.find({
-      username: username.trim(),
-      password: md5(password.trim()),
-    });
+    // * Customer
+    if (type === "customer") {
+      const { nationalId } = req.body;
 
-    if (user.length === 0) {
-      return res
-        .status(401)
-        .send({ code: "ERO-0001", message: "Unauthorized" });
+      if (!nationalId) {
+        return res
+          .status(400)
+          .send({ code: "ERO-0012", message: "nationalId is missing" });
+      }
+
+      token = await customerSignIn(nationalId);
     }
 
-    const key = `${userAgent}${platform}`;
+    ///TODO Admin
 
-    // * Create jwt token
-    const token = jwt.sign({ username }, "test", {
-      expiresIn: "1800s",
-    });
+    if (!token) {
+      return res
+        .status(401)
+        .send({ code: "ERO-0013", message: "Unauthorized" });
+    }
 
     await AuthModel.create({
       key,
