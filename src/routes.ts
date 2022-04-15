@@ -1,4 +1,6 @@
 import express from "express";
+import statusRouterV1 from "./routes/v1/status.route"
+import newsRouterV1 from "./routes/v1/news.route"
 import masterBanksRouterV1 from "./routes/v1/master.bank.route"
 import customerStocksRouterV1 from "./routes/v1/customerStocks.route"
 import rendersRouterV1 from "./routes/v1/renders.route"
@@ -26,4 +28,6 @@ router.use("/v1/masterBrokers", masterBrokersRouterV1);
 router.use("/v1/renders", rendersRouterV1);
 router.use("/v1/customerStocks", customerStocksRouterV1);
 router.use("/v1/masterBanks", masterBanksRouterV1);
+router.use("/v1/news", newsRouterV1);
+router.use("/v1/status", statusRouterV1);
 export default router;

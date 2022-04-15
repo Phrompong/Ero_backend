@@ -20,6 +20,9 @@ export class MasterBank extends BaseModel {
   @prop({ type: String })
   public qrCode!: string;
 
+  @prop({ type: String })
+  public shortName!: string;
+
   @prop({ type: Boolean })
   public isActive!: boolean;
 }

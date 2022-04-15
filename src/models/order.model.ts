@@ -17,6 +17,9 @@ export class Order extends BaseModel {
   public rightSpacialName!: string;
 
   @prop({ type: Number })
+  public rightSpacialVolume!: number;
+
+  @prop({ type: Number })
   public paidRightVolume!: number;
 
   @prop({ type: Number })

@@ -15,6 +15,7 @@ import healthCheckRouter from "./routes/healthCheck.route";
 import { serverStoppingHelper, stoppingFunction } from "./gracefulShutdown";
 import { Server } from "http";
 import bodyParser from "body-parser";
+import { insertStatus } from "./controllers/status.controller";
 
 const appEnv = process.env.NODE_ENV || /* istanbul ignore next */ "development";
 
@@ -120,9 +121,12 @@ async function init() {
       app.use("/healthCheck", healthCheckRouter);
       app.use("/api", routers);
 
-      server = app.listen(process.env.PORT, () => {
+      server = app.listen(process.env.PORT, async () => {
         serverStoppingHelper(server);
         state.logger.info(`Server running on ${process.env.PORT}`);
+
+        // * Initial status value
+        await insertStatus();
         app.emit("appStarted", app);
       });
 

@@ -1,15 +1,15 @@
 import express from "express";
-import { MasterBankModel } from "../../models/master.bank.model";
+import { NewsModel } from "../../models/news.model";
 
 var router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
-    const result = await MasterBankModel.find({ isActive: true }).lean();
+    const results = await NewsModel.find().lean();
 
     return res
       .status(200)
-      .send({ code: "ERO-0001", message: "ok", data: result });
+      .send({ code: "ERO-0001", message: "ok", data: results });
   } catch (error) {
     const err = error as Error;
 
@@ -27,16 +27,10 @@ router.post("/", async (req, res) => {
         .send({ code: "ERO-0011", message: "Body is missing" });
     }
 
-    const { nameTH, nameEN, ref1, ref2, logo, qrCode, shortName } = body;
+    const { newsUrl } = body;
 
-    const result = await MasterBankModel.create({
-      shortName,
-      nameTH,
-      nameEN,
-      ref1,
-      ref2,
-      logo,
-      qrCode,
+    const result = await NewsModel.create({
+      newsUrl,
       isActive: true,
     });
 

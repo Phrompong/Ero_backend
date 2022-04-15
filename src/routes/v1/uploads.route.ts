@@ -141,6 +141,8 @@ router.post("/image", uploadImage.any(), async (req: any, res: any) => {
 
     const paylaod = await decodeJwtToken(token);
 
+    const attachedFile = `${process.env.IPADDRESS_URI}:${process.env.PORT}/api/v1/renders?filename=${files[0].filename}`;
+
     // * Upsert to orders
     await OrderModel.updateOne(
       {
@@ -148,14 +150,17 @@ router.post("/image", uploadImage.any(), async (req: any, res: any) => {
         rightStockName,
       },
       {
-        attachedFile: `http://${process.env.IPADDRESS_URI}:${process.env.PORT}/api/v1/renders?filename=${files[0].filename}`,
+        attachedFile,
+        attachedOn: new Date(),
       },
       {
         upsert: true,
       }
     );
 
-    return res.status(200).send({ code: "ERO-0001", message: "ok" });
+    return res
+      .status(200)
+      .send({ code: "ERO-0001", message: "ok", data: attachedFile });
   } catch (error) {
     const err = error as Error;
 
