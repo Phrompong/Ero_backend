@@ -11,8 +11,8 @@ router.get("/", (_req, res) => {
 
 router.get("/test", (req, res) => {
   // res.sendFile("../../images/buyPage1.jpeg");
-  let a = path.join(__dirname + "../../../images/buyPage1.jpeg");
-  res.sendFile(path.join(__dirname + "../../../images/buyPage1.jpeg"));
+  //let a = path.join(__dirname + "../../../images/buyPage1.jpeg");
+  res.sendFile(path.join(__dirname + "../../../images/1649988783107.jpg"));
 });
 
 export default router;

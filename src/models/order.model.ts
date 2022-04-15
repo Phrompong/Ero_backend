@@ -1,6 +1,6 @@
 import { prop, getModelForClass, Ref } from "@typegoose/typegoose";
 import { BaseModel } from "./base.model";
-import { MasterCustomer } from "./customer.model";
+import { MasterCustomer } from "./master.customer.model";
 import { Status } from "./status.model";
 
 export class Order extends BaseModel {

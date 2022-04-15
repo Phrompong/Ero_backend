@@ -1,18 +1,19 @@
 import { mongoose } from "@typegoose/typegoose";
 import express from "express";
-import {
-  MasterCustomer,
-  MasterCustomerModel,
-} from "../../models/customer.model";
+import { MasterCustomerModel } from "../../models/master.customer.model";
 import { CustomerStockModel } from "../../models/customer.stock.model";
 import { TestModel } from "../../models/test.model";
+import { v4 as uuidv4 } from "uuid";
+import { decodeJwtToken, getToken } from "../../controllers/auth.controller";
+import { OrderModel } from "../../models/order.model";
+
 const multer = require("multer");
 const reader = require("xlsx");
 const path = require("path");
 
 var router = express.Router();
-
-const storage = multer.diskStorage({
+// * Excel
+const storageExcel = multer.diskStorage({
   destination: function (req: any, file: any, cb: any) {
     cb(null, "excels/");
   },
@@ -25,9 +26,25 @@ const storage = multer.diskStorage({
   },
 });
 
-var upload = multer({ storage: storage });
+// * Image
+const storageImage = multer.diskStorage({
+  destination: function (req: any, file: any, cb: any) {
+    cb(null, "images/");
+  },
 
-router.post("/", upload.any(), async (req: any, res: any) => {
+  filename: function (req: any, file: any, cb: any) {
+    cb(
+      null,
+      file.fieldname + "" + Date.now() + path.extname(file.originalname)
+    );
+  },
+});
+
+const uploadExcel = multer({ storage: storageExcel });
+const uploadImage = multer({ storage: storageImage });
+
+// * Uplaod for excel
+router.post("/", uploadExcel.any(), async (req: any, res: any) => {
   try {
     const files = req.files;
 
@@ -81,6 +98,62 @@ router.post("/", upload.any(), async (req: any, res: any) => {
       createdOn: new Date(),
       createdBy: "Import from excel",
     });
+
+    return res.status(200).send({ code: "ERO-0001", message: "ok" });
+  } catch (error) {
+    const err = error as Error;
+
+    return res.status(400).send({ code: "ERO-0010", message: err.message });
+  }
+});
+
+// * Upload for images
+router.post("/image", uploadImage.any(), async (req: any, res: any) => {
+  try {
+    const files = req.files;
+    const mimeType = files[0].mimetype.split("/");
+    const userAgent = req.headers["user-agent"];
+    const platform = req.headers["sec-ch-ua-platform"];
+    const { rightStockName } = req.query;
+
+    if (files.length === 0) {
+      return res
+        .status(400)
+        .send({ code: "ERO-0011", message: "Request file not found" });
+    }
+
+    if (!rightStockName) {
+      return res
+        .status(400)
+        .send({ code: "ERO-0011", message: "rightStockName is missing" });
+    }
+
+    const key = `${userAgent}${platform}`;
+
+    const token = await getToken(key);
+
+    if (!token) {
+      return res.status(400).send({
+        code: "ERO-0011",
+        message: "Unable to get payload from token",
+      });
+    }
+
+    const paylaod = await decodeJwtToken(token);
+
+    // * Upsert to orders
+    await OrderModel.updateOne(
+      {
+        customerId: mongoose.Types.ObjectId(paylaod.customerId),
+        rightStockName,
+      },
+      {
+        attachedFile: `http://${process.env.IPADDRESS_URI}:${process.env.PORT}/api/v1/renders?filename=${files[0].filename}`,
+      },
+      {
+        upsert: true,
+      }
+    );
 
     return res.status(200).send({ code: "ERO-0001", message: "ok" });
   } catch (error) {
