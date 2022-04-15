@@ -52,9 +52,40 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.put("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const body = req.body;
+
+    if (Object.keys(body).length === 0) {
+      return res
+        .status(400)
+        .send({ code: "ERO-0011", message: "Body is missing" });
+    }
+
+    if (!id) {
+      return res
+        .status(400)
+        .send({ code: "ERO-0012", message: "id is missing" });
+    }
+
+    const { status } = req.body;
+
+    const result = await OrderModel.findByIdAndUpdate(id, {
+      status: mongoose.Types.ObjectId(status.toString()),
+    });
+
+    return res.status(200).send({ code: "ERO-0001", message: "ok" });
+  } catch (error) {
+    const err = error as Error;
+
+    return res.status(400).send({ code: "ERO-0010", message: err.message });
+  }
+});
+
 router.get("/", async (req, res) => {
   try {
-    const { customerId } = req.query;
+    const { customerId, rightStockName } = req.query;
 
     let obj: any = {};
     const limitInput = req.query.limit?.toString() || "10";
@@ -62,6 +93,12 @@ router.get("/", async (req, res) => {
 
     if (customerId) {
       obj.customerId = { $eq: mongoose.Types.ObjectId(customerId.toString()) };
+    }
+
+    if (rightStockName) {
+      obj.rightStockName = {
+        $eq: rightStockName,
+      };
     }
 
     const sort = {
@@ -113,7 +150,10 @@ router.get("/:id", async (req, res) => {
         .send({ code: "ERO-0011", message: "id is missing" });
     }
 
-    const result = await OrderModel.findById(id).lean();
+    const result = await OrderModel.findById(id)
+      .populate("customerId")
+      .populate("status")
+      .lean();
 
     return res
       .status(200)

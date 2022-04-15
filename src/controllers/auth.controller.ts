@@ -5,14 +5,17 @@ import jwt_decode from "jwt-decode";
 
 export async function admin(username: string, password: string) {}
 
-export async function customerSignIn(nationalId: string): Promise<string> {
+export async function customerSignIn(nationalId: string): Promise<any> {
   const masterCustomer = await MasterCustomerModel.find({ nationalId }).lean();
 
   if (masterCustomer.length === 0) {
     return "";
   }
 
-  return createJwtToken(nationalId, masterCustomer[0]._id);
+  return {
+    token: createJwtToken(nationalId, masterCustomer[0]._id),
+    customerId: masterCustomer[0]._id,
+  };
 }
 
 export async function getToken(key: string): Promise<string> {

@@ -30,7 +30,13 @@ router.post("/signIn", async (req, res) => {
           .send({ code: "ERO-0012", message: "nationalId is missing" });
       }
 
-      token = await customerSignIn(nationalId);
+      const { token, customerId } = await customerSignIn(nationalId);
+
+      return res.status(200).send({
+        code: "ERO-0001",
+        message: "Sigin success",
+        data: { customerId },
+      });
     }
 
     ///TODO Admin
@@ -41,12 +47,14 @@ router.post("/signIn", async (req, res) => {
         .send({ code: "ERO-0013", message: "Unauthorized" });
     }
 
-    await AuthModel.create({
+    const auth = await AuthModel.create({
       key,
       jwt: token,
     });
 
-    return res.status(200).send({ code: "ERO-0001", message: "Sigin success" });
+    return res
+      .status(200)
+      .send({ code: "ERO-0001", message: "Sigin success", data: auth._id });
   } catch (error) {
     const err = error as Error;
 
