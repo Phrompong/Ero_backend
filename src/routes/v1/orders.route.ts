@@ -165,4 +165,60 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+// * For search name-surname , rightStockName
+router.get("/search/value", async (req, res) => {
+  try {
+    const { key, startDate, endDate } = req.query;
+
+    if (!startDate || !endDate) {
+      return res
+        .status(400)
+        .send({ code: "ERO-0011", message: "startDate or endDate is missing" });
+    }
+
+    const limitInput = req.query.limit?.toString() || "10";
+    const pageInput = req.query.page?.toString() || "1";
+    const sort = {
+      $sort: {
+        createdOn: -1,
+      },
+    };
+
+    const find = await getDataWithPaging(
+      null,
+      +pageInput,
+      +limitInput,
+      sort,
+      OrderModel,
+      "search",
+      key ? key.toString().toLowerCase() : "",
+      new Date(startDate.toString()),
+      new Date(endDate.toString())
+    );
+
+    if (!find) {
+      return res.status(200).send({
+        _metadata: {
+          pageSize: 10,
+          currentPage: +pageInput,
+          totalPages: 1,
+        },
+        code: "ERO-0001",
+        message: "Data not found",
+        data: [],
+      });
+    }
+
+    const { _metadata, data } = find;
+
+    return res
+      .status(200)
+      .send({ _metadata, code: "ERO-0001", message: "ok", data });
+  } catch (error) {
+    const err = error as Error;
+
+    return res.status(400).send({ code: "ERO-0010", message: err.message });
+  }
+});
+
 export default router;
