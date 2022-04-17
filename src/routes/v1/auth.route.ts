@@ -37,6 +37,10 @@ router.post("/signIn", async (req, res) => {
         message: "Sigin success",
         data: { customerId },
       });
+    } else {
+      return res
+        .status(200)
+        .send({ code: "ERO-0001", message: "Sigin success" });
     }
 
     ///TODO Admin
