@@ -1,6 +1,8 @@
 import { mongoose } from "@typegoose/typegoose";
 import ld, { filter, isEmpty as _isEmpty } from "lodash";
+import { OrderModel } from "../models/order.model";
 import { SchemaType } from "mongoose";
+import { CustomerStockModel } from "../models/customer.stock.model";
 
 function getDatabaseModelFields(schemaModel: unknown): Record<string, string> {
   if (!(typeof schemaModel === "function" && schemaModel.name === "model")) {
@@ -220,6 +222,7 @@ export function mutateQueryFilters(
 
   return _filters;
 }
+
 export async function getDataWithPaging(
   filter: unknown,
   pageInput: number,
@@ -318,16 +321,18 @@ export async function getDataWithPaging(
         {
           $match: {
             $and: [
-              {
-                $or: [
-                  {
-                    name: new RegExp(key || ""),
-                  },
-                  {
-                    tempRightStockName: new RegExp(key || ""),
-                  },
-                ],
-              },
+              key
+                ? {
+                    $or: [
+                      {
+                        name: new RegExp(key || ""),
+                      },
+                      {
+                        tempRightStockName: new RegExp(key || ""),
+                      },
+                    ],
+                  }
+                : {},
               {
                 createdOn: {
                   $gte: startDate,
@@ -429,16 +434,18 @@ export async function getDataWithPaging(
         {
           $match: {
             $and: [
-              {
-                $or: [
-                  {
-                    name: new RegExp(key || ""),
-                  },
-                  {
-                    tempRightStockName: new RegExp(key || ""),
-                  },
-                ],
-              },
+              key
+                ? {
+                    $or: [
+                      {
+                        name: new RegExp(key || ""),
+                      },
+                      {
+                        tempRightStockName: new RegExp(key || ""),
+                      },
+                    ],
+                  }
+                : {},
               {
                 createdOn: {
                   $gte: startDate,
@@ -538,6 +545,356 @@ export async function getDataWithPaging(
     },
     data: find[0].data,
   };
+}
+
+export async function getCurrentOrderAmount(
+  key: string,
+  startDate: Date,
+  endDate: Date
+) {
+  const results = await OrderModel.aggregate([
+    {
+      $lookup: {
+        from: "cltMasterCustomer",
+        localField: "customerId",
+        foreignField: "_id",
+        as: "customerId",
+      },
+    },
+    {
+      $lookup: {
+        from: "cltStatus",
+        localField: "status",
+        foreignField: "_id",
+        as: "status",
+      },
+    },
+    {
+      $unwind: {
+        path: "$customerId",
+      },
+    },
+    {
+      $unwind: {
+        path: "$status",
+      },
+    },
+    {
+      $project: {
+        name: {
+          $concat: ["$customerId.name", " ", "$customerId.lastname"],
+        },
+        customerId: 1,
+        rightStockName: 1,
+        stockVolume: 1,
+        rightSpacialName: 1,
+        rightSpacialVolume: 1,
+        paidRightVolume: 1,
+        paymentAmount: 1,
+        returnAmount: 1,
+        status: 1,
+        createdOn: 1,
+        createdBy: 1,
+        updatedOn: 1,
+        updatedBy: 1,
+      },
+    },
+    {
+      $project: {
+        name: {
+          $toLower: "$name",
+        },
+        tempRightStockName: {
+          $toLower: "$rightStockName",
+        },
+        customerId: 1,
+        rightStockName: 1,
+        stockVolume: 1,
+        rightSpacialName: 1,
+        rightSpacialVolume: 1,
+        paidRightVolume: 1,
+        paymentAmount: 1,
+        returnAmount: 1,
+        status: 1,
+        createdOn: 1,
+        createdBy: 1,
+        updatedOn: 1,
+        updatedBy: 1,
+      },
+    },
+    {
+      $match: {
+        $and: [
+          key
+            ? {
+                $or: [
+                  {
+                    name: new RegExp(key || ""),
+                  },
+                  {
+                    tempRightStockName: new RegExp(key || ""),
+                  },
+                ],
+              }
+            : {},
+          {
+            createdOn: {
+              $gte: startDate,
+              $lt: endDate,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $project: {
+        customerId: 1,
+        rightStockName: 1,
+        stockVolume: 1,
+        rightSpacialName: 1,
+        rightSpacialVolume: 1,
+        paidRightVolume: 1,
+        paymentAmount: 1,
+        returnAmount: 1,
+        status: 1,
+        createdOn: 1,
+        createdBy: 1,
+        updatedOn: 1,
+        updatedBy: 1,
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        paidAmount: {
+          $sum: {
+            $cond: [
+              {
+                $or: [
+                  {
+                    $eq: [
+                      "$status._id",
+                      mongoose.Types.ObjectId("62592501d017af7548e56f31"),
+                    ],
+                  },
+                  {
+                    $eq: [
+                      "$status._id",
+                      mongoose.Types.ObjectId("62592501d017af7548e56f33"),
+                    ],
+                  },
+                  {
+                    $eq: [
+                      "$status._id",
+                      mongoose.Types.ObjectId("62592501d017af7548e56f34"),
+                    ],
+                  },
+                ],
+              },
+              "$paymentAmount",
+              0,
+            ],
+          },
+        },
+        paymentAmount: {
+          $sum: "$paymentAmount",
+        },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        paidAmount: 1,
+        paymentAmount: 1,
+        percent: {
+          $multiply: [
+            {
+              $divide: ["$paidAmount", "$paymentAmount"],
+            },
+            100,
+          ],
+        },
+      },
+    },
+  ]);
+
+  if (results.length === 0) {
+    return;
+  }
+
+  return results[0];
+}
+
+export async function getOrderCompareSales(
+  key: string,
+  startDate: Date,
+  endDate: Date
+) {
+  const results = await OrderModel.aggregate([
+    {
+      $lookup: {
+        from: "cltMasterCustomer",
+        localField: "customerId",
+        foreignField: "_id",
+        as: "customerId",
+      },
+    },
+    {
+      $lookup: {
+        from: "cltStatus",
+        localField: "status",
+        foreignField: "_id",
+        as: "status",
+      },
+    },
+    {
+      $unwind: {
+        path: "$customerId",
+      },
+    },
+    {
+      $unwind: {
+        path: "$status",
+      },
+    },
+    {
+      $project: {
+        name: {
+          $concat: ["$customerId.name", " ", "$customerId.lastname"],
+        },
+        customerId: 1,
+        rightStockName: 1,
+        stockVolume: 1,
+        rightSpacialName: 1,
+        rightSpacialVolume: 1,
+        paidRightVolume: 1,
+        paymentAmount: 1,
+        returnAmount: 1,
+        status: 1,
+        createdOn: 1,
+        createdBy: 1,
+        updatedOn: 1,
+        updatedBy: 1,
+      },
+    },
+    {
+      $project: {
+        name: {
+          $toLower: "$name",
+        },
+        tempRightStockName: {
+          $toLower: "$rightStockName",
+        },
+        customerId: 1,
+        rightStockName: 1,
+        stockVolume: 1,
+        rightSpacialName: 1,
+        rightSpacialVolume: 1,
+        paidRightVolume: 1,
+        paymentAmount: 1,
+        returnAmount: 1,
+        status: 1,
+        createdOn: 1,
+        createdBy: 1,
+        updatedOn: 1,
+        updatedBy: 1,
+      },
+    },
+    {
+      $match: {
+        $and: [
+          key
+            ? {
+                $or: [
+                  {
+                    name: new RegExp(key || ""),
+                  },
+                  {
+                    tempRightStockName: new RegExp(key || ""),
+                  },
+                ],
+              }
+            : {},
+          {
+            createdOn: {
+              $gte: startDate,
+              $lt: endDate,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $project: {
+        customerId: 1,
+        rightStockName: 1,
+        stockVolume: 1,
+        rightSpacialName: 1,
+        rightSpacialVolume: 1,
+        paidRightVolume: 1,
+        paymentAmount: 1,
+        returnAmount: 1,
+        status: 1,
+        createdOn: 1,
+        createdBy: 1,
+        updatedOn: 1,
+        updatedBy: 1,
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        order: {
+          $sum: {
+            $cond: [
+              {
+                $or: [
+                  {
+                    $eq: [
+                      "$status._id",
+                      mongoose.Types.ObjectId("62592501d017af7548e56f32"),
+                    ],
+                  },
+                  {
+                    $eq: [
+                      "$status._id",
+                      mongoose.Types.ObjectId("62592501d017af7548e56f35"),
+                    ],
+                  },
+                ],
+              },
+              "$paymentAmount",
+              0,
+            ],
+          },
+        },
+        paymentAmount: {
+          $sum: "$paymentAmount",
+        },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        order: 1,
+        paymentAmount: 1,
+        percent: {
+          $multiply: [
+            {
+              $divide: ["$order", "$paymentAmount"],
+            },
+            100,
+          ],
+        },
+      },
+    },
+  ]);
+
+  if (results.length === 0) {
+    return;
+  }
+
+  return results[0];
 }
 
 interface RemoveEmptyOptions {

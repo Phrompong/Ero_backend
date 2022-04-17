@@ -1,8 +1,13 @@
 import { mongoose } from "@typegoose/typegoose";
-import { getDataWithPaging } from "../../controllers/common.controller";
+import {
+  getCurrentOrderAmount,
+  getDataWithPaging,
+  getOrderCompareSales,
+} from "../../controllers/common.controller";
 import express from "express";
 import { OrderModel } from "../../models/order.model";
 import { statusData } from "../../controllers/status.controller";
+import { startOfToday, endOfToday, startOfYear, endOfYear } from "date-fns";
 
 var router = express.Router();
 
@@ -168,13 +173,7 @@ router.get("/:id", async (req, res) => {
 // * For search name-surname , rightStockName
 router.get("/search/value", async (req, res) => {
   try {
-    const { key, startDate, endDate } = req.query;
-
-    if (!startDate || !endDate) {
-      return res
-        .status(400)
-        .send({ code: "ERO-0011", message: "startDate or endDate is missing" });
-    }
+    const { key, type } = req.query;
 
     const limitInput = req.query.limit?.toString() || "10";
     const pageInput = req.query.page?.toString() || "1";
@@ -184,6 +183,21 @@ router.get("/search/value", async (req, res) => {
       },
     };
 
+    let startDate: Date;
+    let endDate: Date;
+
+    if (type === "day") {
+      startDate = startOfToday();
+      endDate = endOfToday();
+    } else if (type === "year") {
+      startDate = startOfYear(new Date());
+      endDate = endOfYear(new Date());
+    } else {
+      return res
+        .status(400)
+        .send({ code: "ERO-0011", message: "Please select type day and year" });
+    }
+
     const find = await getDataWithPaging(
       null,
       +pageInput,
@@ -192,8 +206,8 @@ router.get("/search/value", async (req, res) => {
       OrderModel,
       "search",
       key ? key.toString().toLowerCase() : "",
-      new Date(startDate.toString()),
-      new Date(endDate.toString())
+      startDate,
+      endDate
     );
 
     if (!find) {
@@ -224,52 +238,32 @@ router.get("/search/value", async (req, res) => {
 // * For get order using progress bar
 router.get("/progressPie/currentOrderAmount", async (req, res) => {
   try {
-    const { key, startDate, endDate } = req.query;
+    const { key, type } = req.query;
 
-    if (!startDate || !endDate) {
+    let startDate: Date;
+    let endDate: Date;
+
+    if (type === "day") {
+      startDate = startOfToday();
+      endDate = endOfToday();
+    } else if (type === "year") {
+      startDate = startOfYear(new Date());
+      endDate = endOfYear(new Date());
+    } else {
       return res
         .status(400)
-        .send({ code: "ERO-0011", message: "startDate or endDate is missing" });
+        .send({ code: "ERO-0011", message: "Please select type day and year" });
     }
 
-    const limitInput = req.query.limit?.toString() || "10";
-    const pageInput = req.query.page?.toString() || "1";
-    const sort = {
-      $sort: {
-        createdOn: -1,
-      },
-    };
-
-    const find = await getDataWithPaging(
-      null,
-      +pageInput,
-      +limitInput,
-      sort,
-      OrderModel,
-      "search",
-      key ? key.toString().toLowerCase() : "",
-      new Date(startDate.toString()),
-      new Date(endDate.toString())
+    const result = await getCurrentOrderAmount(
+      key?.toString() || "",
+      startDate,
+      endDate
     );
-
-    if (!find) {
-      return res.status(200).send({
-        _metadata: {
-          pageSize: 10,
-          currentPage: +pageInput,
-          totalPages: 1,
-        },
-        code: "ERO-0001",
-        message: "Data not found",
-        data: [],
-      });
-    }
-
-    const { _metadata, data } = find;
 
     return res
       .status(200)
-      .send({ _metadata, code: "ERO-0001", message: "ok", data });
+      .send({ code: "ERO-0001", message: "ok", data: result });
   } catch (error) {
     const err = error as Error;
 
@@ -277,6 +271,39 @@ router.get("/progressPie/currentOrderAmount", async (req, res) => {
   }
 });
 
-router.get("/progressPie/orderCompareSales", async (req, res) => {});
+router.get("/progressPie/orderCompareSales", async (req, res) => {
+  try {
+    const { key, type } = req.query;
+
+    let startDate: Date;
+    let endDate: Date;
+
+    if (type === "day") {
+      startDate = startOfToday();
+      endDate = endOfToday();
+    } else if (type === "year") {
+      startDate = startOfYear(new Date());
+      endDate = endOfYear(new Date());
+    } else {
+      return res
+        .status(400)
+        .send({ code: "ERO-0011", message: "Please select type day and year" });
+    }
+
+    const result = await getOrderCompareSales(
+      key?.toString() || "",
+      startDate,
+      endDate
+    );
+
+    return res
+      .status(200)
+      .send({ code: "ERO-0001", message: "ok", data: result });
+  } catch (error) {
+    const err = error as Error;
+
+    return res.status(400).send({ code: "ERO-0010", message: err.message });
+  }
+});
 
 export default router;
