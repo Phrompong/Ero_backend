@@ -36,7 +36,9 @@ router.post("/", async (req, res) => {
 
     // * Process excess amount
     let excessAmount = 0;
-    const customer = await CustomerStockModel.findById(body.customerId);
+    const customer = await CustomerStockModel.findOne({
+      customerId: body.customerId,
+    });
 
     if (!customer) {
       return res.status(400).send({
