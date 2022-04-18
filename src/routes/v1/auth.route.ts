@@ -1,6 +1,6 @@
 import express from "express";
 import { AuthModel } from "../../models/auth.model";
-import { customerSignIn } from "../../controllers/auth.controller";
+import { adminSignIn, customerSignIn } from "../../controllers/auth.controller";
 
 var router = express.Router();
 
@@ -45,6 +45,17 @@ router.post("/signIn", async (req, res) => {
         data: { customerId: signIn.customerId },
       });
     } else {
+      const { username, password } = body;
+
+      const signIn = await adminSignIn(username, password);
+
+      if (!signIn) {
+        return res.status(401).send({
+          code: "ERO-0013",
+          message: "Unauthorized",
+        });
+      }
+
       return res
         .status(200)
         .send({ code: "ERO-0001", message: "Sigin success" });

@@ -2,8 +2,20 @@ import * as jwt from "jsonwebtoken";
 import { Auth, AuthModel } from "../models/auth.model";
 import { MasterCustomerModel } from "../models/master.customer.model";
 import jwt_decode from "jwt-decode";
+import md5 from "md5";
 
-export async function admin(username: string, password: string) {}
+export async function adminSignIn(username: string, password: string) {
+  const users = await MasterCustomerModel.find({
+    username,
+    password: md5(password.trim()),
+  }).lean();
+
+  if (users.length === 0) return "";
+
+  return {
+    userId: users[0]._id,
+  };
+}
 
 export async function customerSignIn(nationalId: string): Promise<any> {
   const masterCustomer = await MasterCustomerModel.find({ nationalId }).lean();

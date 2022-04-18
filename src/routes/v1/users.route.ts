@@ -24,11 +24,9 @@ router.post("/", async (req, res) => {
         .send({ code: "ERO-0012", message: "Username is duplicate" });
     }
 
-    const encryptPassword = md5(password.trim());
-
     await UserModel.create({
       username: username.trim(),
-      password: encryptPassword,
+      password: md5(password.trim()),
       createdOn: new Date(),
     });
 
