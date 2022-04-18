@@ -30,12 +30,19 @@ router.post("/signIn", async (req, res) => {
           .send({ code: "ERO-0012", message: "nationalId is missing" });
       }
 
-      const { token, customerId } = await customerSignIn(nationalId);
+      const signIn = await customerSignIn(nationalId);
+
+      if (!signIn) {
+        return res.status(401).send({
+          code: "ERO-0012",
+          message: "Unauthorized",
+        });
+      }
 
       return res.status(200).send({
         code: "ERO-0001",
         message: "Sigin success",
-        data: { customerId },
+        data: { customerId: signIn.customerId },
       });
     } else {
       return res
