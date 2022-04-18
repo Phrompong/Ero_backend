@@ -8,7 +8,7 @@ import express from "express";
 import { OrderModel } from "../../models/order.model";
 import { statusData } from "../../controllers/status.controller";
 import { startOfToday, endOfToday, startOfYear, endOfYear } from "date-fns";
-import { CustomerStockModel } from "models/customer.stock.model";
+import { CustomerStockModel } from "../../models/customer.stock.model";
 
 var router = express.Router();
 
