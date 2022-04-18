@@ -408,6 +408,7 @@ export async function getDataWithPaging(
             updatedBy: 1,
             attachedFile: 1,
             attachedOn: 1,
+            excessAmount: 1,
           },
         },
         {
@@ -433,6 +434,7 @@ export async function getDataWithPaging(
             updatedBy: 1,
             attachedFile: 1,
             attachedOn: 1,
+            excessAmount: 1,
           },
         },
         {
@@ -476,6 +478,7 @@ export async function getDataWithPaging(
             updatedBy: 1,
             attachedFile: 1,
             attachedOn: 1,
+            excessAmount: 1,
           },
         },
         skip,
