@@ -406,6 +406,8 @@ export async function getDataWithPaging(
             createdBy: 1,
             updatedOn: 1,
             updatedBy: 1,
+            attachedFile: 1,
+            attachedOn: 1,
           },
         },
         {
@@ -429,6 +431,8 @@ export async function getDataWithPaging(
             createdBy: 1,
             updatedOn: 1,
             updatedBy: 1,
+            attachedFile: 1,
+            attachedOn: 1,
           },
         },
         {
@@ -470,6 +474,8 @@ export async function getDataWithPaging(
             createdBy: 1,
             updatedOn: 1,
             updatedBy: 1,
+            attachedFile: 1,
+            attachedOn: 1,
           },
         },
         skip,
