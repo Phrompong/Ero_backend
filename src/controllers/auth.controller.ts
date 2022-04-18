@@ -3,9 +3,10 @@ import { Auth, AuthModel } from "../models/auth.model";
 import { MasterCustomerModel } from "../models/master.customer.model";
 import jwt_decode from "jwt-decode";
 import md5 from "md5";
+import { UserModel } from "../models/users.model";
 
 export async function adminSignIn(username: string, password: string) {
-  const users = await MasterCustomerModel.find({
+  const users = await UserModel.find({
     username,
     password: md5(password.trim()),
   }).lean();
