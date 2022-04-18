@@ -39,6 +39,9 @@ export class Order extends BaseModel {
 
   @prop({ ref: () => Status })
   public status!: Ref<Status>;
+
+  @prop({ type: Number })
+  public excessAmount!: Number;
 }
 
 export const OrderModel = getModelForClass(Order, {

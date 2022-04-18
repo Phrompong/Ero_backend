@@ -8,6 +8,7 @@ import express from "express";
 import { OrderModel } from "../../models/order.model";
 import { statusData } from "../../controllers/status.controller";
 import { startOfToday, endOfToday, startOfYear, endOfYear } from "date-fns";
+import { CustomerStockModel } from "models/customer.stock.model";
 
 var router = express.Router();
 
@@ -30,7 +31,21 @@ router.post("/", async (req, res) => {
       paidSpecialVolume,
       paymentAmount,
       returnAmount,
+      excessVolume,
     } = req.body;
+
+    // * Process excess amount
+    let excessAmount = 0;
+    const customer = await CustomerStockModel.findById(body.customerId);
+
+    if (!customer) {
+      return res.status(400).send({
+        code: "ERO-0012",
+        message: `customerId ${body.customerId} is not found`,
+      });
+    }
+
+    excessAmount = customer.offerPrice * excessVolume;
 
     const result = await OrderModel.create({
       customerId: mongoose.Types.ObjectId(body.customerId),
@@ -42,6 +57,7 @@ router.post("/", async (req, res) => {
       paidSpecialVolume,
       paymentAmount,
       returnAmount,
+      excessAmount,
       status: statusData.filter((o) => o.status === "รอยืนยันการชำระเงิน")[0]
         ._id,
       createdOn: new Date(),
