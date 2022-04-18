@@ -111,7 +111,6 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
 router.post("/image", uploadImage.any(), async (req: any, res: any) => {
   try {
     const files = req.files;
-    const mimeType = files[0].mimetype.split("/");
     const userAgent = req.headers["user-agent"];
     const platform = req.headers["sec-ch-ua-platform"];
     const { orderId } = req.query;
@@ -128,18 +127,18 @@ router.post("/image", uploadImage.any(), async (req: any, res: any) => {
         .send({ code: "ERO-0011", message: "orderId is missing" });
     }
 
-    const key = `${userAgent}${platform}`;
+    // const key = `${userAgent}${platform}`;
 
-    const token = await getToken(key);
+    // const token = await getToken(key);
 
-    if (!token) {
-      return res.status(400).send({
-        code: "ERO-0011",
-        message: "Unable to get payload from token",
-      });
-    }
+    // if (!token) {
+    //   return res.status(400).send({
+    //     code: "ERO-0011",
+    //     message: "Unable to get payload from token",
+    //   });
+    // }
 
-    const paylaod = await decodeJwtToken(token);
+    // /const paylaod = await decodeJwtToken(token);
 
     const attachedFile = `${process.env.IPADDRESS_URI}:${process.env.PORT}/api/v1/renders?filename=${files[0].filename}`;
 
