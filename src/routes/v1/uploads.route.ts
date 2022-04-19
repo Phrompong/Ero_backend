@@ -64,7 +64,6 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
     // * Insert value to mongo
 
     for (const temp of temps) {
-      const temp = temps[0];
       const customerId = temp["Customer ID"];
       const customerName = temp["Customer Name"];
       const customerLastname = temp["Customer Lastname"];
