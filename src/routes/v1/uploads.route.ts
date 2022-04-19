@@ -75,6 +75,11 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
       const stockVolume = temp["Stock Volume"];
       const email = temp["e-Mail"];
 
+      const offerPrice = temp["OfferPrice"];
+      const rightStockVolume = temp["RightStockVolume"];
+      const rightSpecialName = temp["RightSpecialName"];
+      const rightSpecialVolume = temp["RightSpecialVolume"];
+
       // * Insert master customer
       const insertMasterCustomer = await MasterCustomerModel.create({
         id: customerId,
@@ -87,6 +92,7 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
         email,
         createdOn: new Date(),
         createdBy: "Import from excel",
+        isActive: true,
       });
 
       // * Insert customer stock
@@ -94,9 +100,10 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
         customerId: mongoose.Types.ObjectId(insertMasterCustomer._id),
         rightStockName,
         stockVolume,
-        rightStockVolume: 0,
-        rightSpecialName: "",
-        rightSpecialVolume: 0,
+        rightStockVolume,
+        rightSpecialName,
+        offerPrice,
+        rightSpecialVolume,
         createdOn: new Date(),
         createdBy: "Import from excel",
       });
