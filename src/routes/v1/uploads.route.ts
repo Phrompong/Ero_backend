@@ -92,7 +92,6 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
         email,
         createdOn: new Date(),
         createdBy: "Import from excel",
-        isActive: true,
       });
 
       // * Insert customer stock
@@ -106,6 +105,7 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
         rightSpecialVolume,
         createdOn: new Date(),
         createdBy: "Import from excel",
+        isActive: true,
       });
     }
 
