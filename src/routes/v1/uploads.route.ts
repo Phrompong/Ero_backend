@@ -62,43 +62,46 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
     const temps = reader.utils.sheet_to_json(file.Sheets[file.SheetNames[0]]);
 
     // * Insert value to mongo
-    const temp = temps[0];
-    const customerId = temp["Customer ID"];
-    const customerName = temp["Customer Name"];
-    const customerLastname = temp["Customer Lastname"];
-    const customerNationalId = temp["Customer National ID"];
-    const telephone = temp["Telephone"];
-    const atsBank = temp["ATS Bank"];
-    const atsBankNo = temp["ATS Bank No"];
-    const rightStockName = temp["Right Stock Name"];
-    const stockVolume = temp["Stock Volume"];
-    const email = temp["e-Mail"];
 
-    // * Insert master customer
-    const insertMasterCustomer = await MasterCustomerModel.create({
-      id: customerId,
-      name: customerName,
-      lastname: customerLastname,
-      nationalId: customerNationalId,
-      telephone,
-      atsBank,
-      atsBankNo,
-      email,
-      createdOn: new Date(),
-      createdBy: "Import from excel",
-    });
+    for (const temp of temps) {
+      const temp = temps[0];
+      const customerId = temp["Customer ID"];
+      const customerName = temp["Customer Name"];
+      const customerLastname = temp["Customer Lastname"];
+      const customerNationalId = temp["Customer National ID"];
+      const telephone = temp["Telephone"];
+      const atsBank = temp["ATS Bank"];
+      const atsBankNo = temp["ATS Bank No"];
+      const rightStockName = temp["Right Stock Name"];
+      const stockVolume = temp["Stock Volume"];
+      const email = temp["e-Mail"];
 
-    // * Insert customer stock
-    const insertCustomerStock = await CustomerStockModel.create({
-      customerId: mongoose.Types.ObjectId(insertMasterCustomer._id),
-      rightStockName,
-      stockVolume,
-      rightStockVolume: 0,
-      rightSpecialName: "",
-      rightSpecialVolume: 0,
-      createdOn: new Date(),
-      createdBy: "Import from excel",
-    });
+      // * Insert master customer
+      const insertMasterCustomer = await MasterCustomerModel.create({
+        id: customerId,
+        name: customerName,
+        lastname: customerLastname,
+        nationalId: customerNationalId,
+        telephone,
+        atsBank,
+        atsBankNo,
+        email,
+        createdOn: new Date(),
+        createdBy: "Import from excel",
+      });
+
+      // * Insert customer stock
+      const insertCustomerStock = await CustomerStockModel.create({
+        customerId: mongoose.Types.ObjectId(insertMasterCustomer._id),
+        rightStockName,
+        stockVolume,
+        rightStockVolume: 0,
+        rightSpecialName: "",
+        rightSpecialVolume: 0,
+        createdOn: new Date(),
+        createdBy: "Import from excel",
+      });
+    }
 
     return res.status(200).send({ code: "ERO-0001", message: "ok" });
   } catch (error) {
