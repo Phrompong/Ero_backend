@@ -362,6 +362,7 @@ export async function getDataWithPaging(
         count,
       ],
       data: [
+        sort,
         {
           $lookup: {
             from: "cltMasterCustomer",
