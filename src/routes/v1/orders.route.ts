@@ -60,7 +60,7 @@ router.post("/", async (req, res) => {
       paymentAmount,
       returnAmount,
       excessAmount,
-      status: statusData.filter((o) => o.status === "รอยืนยันการชำระเงิน")[0]
+      status: statusData.filter((o) => o.status === "รอหลักฐานการโอนเงิน")[0]
         ._id,
       createdOn: new Date(),
     });

@@ -6,6 +6,7 @@ import { TestModel } from "../../models/test.model";
 import { v4 as uuidv4 } from "uuid";
 import { decodeJwtToken, getToken } from "../../controllers/auth.controller";
 import { OrderModel } from "../../models/order.model";
+import { statusData } from "../../controllers/status.controller";
 
 const multer = require("multer");
 const reader = require("xlsx");
@@ -148,6 +149,8 @@ router.post("/image", uploadImage.any(), async (req: any, res: any) => {
       {
         attachedFile,
         attachedOn: new Date(),
+        status: statusData.filter((o) => o.status === "รอยืนยันการชำระเงิน")[0]
+          ._id,
       },
       {
         upsert: true,
