@@ -33,7 +33,22 @@ router.post("/", async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    const results = await MasterBrokerModel.find().lean();
+    const results = await MasterBrokerModel.aggregate([
+      {
+        $match: {
+          status: true,
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          code: 1,
+          name: 1,
+          status: 1,
+          searchValue: { $concat: ["$code", " ", "$name"] },
+        },
+      },
+    ]);
 
     return res
       .status(200)
