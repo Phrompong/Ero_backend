@@ -29,6 +29,9 @@ export class CustomerStock extends BaseModel {
 
   @prop({ type: Boolean })
   public isActive!: boolean;
+
+  @prop({ type: String })
+  public registrationNo!: string;
 }
 
 export const CustomerStockModel = getModelForClass(CustomerStock, {

@@ -1,5 +1,6 @@
-import { getModelForClass, prop } from "@typegoose/typegoose";
+import { getModelForClass, prop, Ref } from "@typegoose/typegoose";
 import { BaseModel } from "./base.model";
+import { CustomerStock } from "./customer.stock.model";
 
 export class MasterCustomer extends BaseModel {
   @prop({ type: String })
@@ -25,6 +26,9 @@ export class MasterCustomer extends BaseModel {
 
   @prop({ type: String })
   public email!: string;
+
+  @prop({ ref: () => CustomerStock })
+  public customerStock!: Ref<CustomerStock>;
 }
 
 export const MasterCustomerModel = getModelForClass(MasterCustomer, {

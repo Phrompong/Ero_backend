@@ -79,6 +79,7 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
       const rightStockVolume = temp["RightStockVolume"];
       const rightSpecialName = temp["RightSpecialName"];
       const rightSpecialVolume = temp["RightSpecialVolume"];
+      const registrationNo = temp["RegistrationNo"];
 
       // * Insert master customer
       const insertMasterCustomer = await MasterCustomerModel.create({
@@ -106,6 +107,7 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
         createdOn: new Date(),
         createdBy: "Import from excel",
         isActive: true,
+        registrationNo,
       });
     }
 

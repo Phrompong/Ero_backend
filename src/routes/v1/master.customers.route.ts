@@ -17,7 +17,9 @@ router.get("/:id", async (req, res) => {
         .send({ code: "ERO-0011", message: "id is missing" });
     }
 
-    const customer = await MasterCustomerModel.findById(id);
+    const customer = await MasterCustomerModel.findById(id)
+      .populate("customerStock")
+      .lean();
 
     return res
       .status(200)

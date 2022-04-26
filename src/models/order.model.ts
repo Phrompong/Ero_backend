@@ -42,6 +42,39 @@ export class Order extends BaseModel {
 
   @prop({ type: Number })
   public excessAmount!: Number;
+
+  @prop({ type: String })
+  public customerName!: string;
+
+  @prop({ type: String })
+  public customerTel!: string;
+
+  @prop({ type: String })
+  public brokerId!: string;
+
+  @prop({ type: String })
+  public accountNo!: string;
+
+  @prop({ type: String })
+  public customerStockId!: string;
+
+  @prop({ type: String })
+  public name!: string;
+
+  @prop({ type: String })
+  public houseNo!: string;
+
+  @prop({ type: String })
+  public district!: string;
+
+  @prop({ type: String })
+  public province!: string;
+
+  @prop({ type: String })
+  public zipcode!: string;
+
+  @prop({ type: String })
+  public tel!: string;
 }
 
 export const OrderModel = getModelForClass(Order, {
