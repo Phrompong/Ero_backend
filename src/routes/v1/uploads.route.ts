@@ -82,22 +82,36 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
       const registrationNo = temp["RegistrationNo"];
 
       // * Insert master customer
-      const insertMasterCustomer = await MasterCustomerModel.create({
-        id: customerId,
-        name: customerName,
-        lastname: customerLastname,
+      const insertMasterCustomer = await MasterCustomerModel.updateOne(
+        { nationalId: customerNationalId },
+        {
+          $set: {
+            id: customerId,
+            name: customerName,
+            lastname: customerLastname,
+            nationalId: customerNationalId,
+            telephone,
+            atsBank,
+            atsBankNo,
+            email,
+            createdOn: new Date(),
+            createdBy: "Import from excel",
+          },
+        },
+        { upsert: true, new: true }
+      );
+
+      const masterCustomer = await MasterCustomerModel.findOne({
         nationalId: customerNationalId,
-        telephone,
-        atsBank,
-        atsBankNo,
-        email,
-        createdOn: new Date(),
-        createdBy: "Import from excel",
-      });
+      }).lean();
+
+      if (!masterCustomer) {
+        return;
+      }
 
       // * Insert customer stock
       const insertCustomerStock = await CustomerStockModel.create({
-        customerId: mongoose.Types.ObjectId(insertMasterCustomer._id),
+        customerId: mongoose.Types.ObjectId(masterCustomer._id),
         rightStockName,
         stockVolume,
         rightStockVolume,

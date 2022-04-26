@@ -12,7 +12,7 @@ export class MasterCustomer extends BaseModel {
   @prop({ type: String })
   public lastname!: string;
 
-  @prop({ type: String })
+  @prop({ type: String, index: true })
   public nationalId!: string;
 
   @prop({ type: String })

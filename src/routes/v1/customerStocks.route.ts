@@ -17,7 +17,9 @@ router.get("/", async (req, res) => {
       result = await CustomerStockModel.findOne({
         customerId: mongoose.Types.ObjectId(customerId.toString()),
         isActive: true,
-      }).lean();
+      })
+        .populate("customerId")
+        .lean();
     }
 
     return res
