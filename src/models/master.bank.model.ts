@@ -8,6 +8,15 @@ export class MasterBank extends BaseModel {
   @prop({ type: String })
   public nameEN!: string;
 
+  @prop({ type: String })
+  public accountName!: string;
+
+  @prop({ type: String })
+  public accountNumber!: string;
+
+  @prop({ type: String })
+  public branch!: string;
+
   @prop({ type: Number })
   public ref1!: number;
 

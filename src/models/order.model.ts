@@ -3,6 +3,26 @@ import { BaseModel } from "./base.model";
 import { MasterCustomer } from "./master.customer.model";
 import { Status } from "./status.model";
 
+export class Address {
+  @prop({ type: String })
+  public name!: string;
+
+  @prop({ type: String })
+  public houseNo!: string;
+
+  @prop({ type: String })
+  public district!: string;
+
+  @prop({ type: String })
+  public province!: string;
+
+  @prop({ type: String })
+  public zipcode!: string;
+
+  @prop({ type: String })
+  public tel!: string;
+}
+
 export class Order extends BaseModel {
   @prop({ ref: () => MasterCustomer })
   public customerId!: Ref<MasterCustomer>;
@@ -58,23 +78,11 @@ export class Order extends BaseModel {
   @prop({ type: String })
   public customerStockId!: string;
 
-  @prop({ type: String })
-  public name!: string;
+  @prop({ _id: false, type: Address })
+  public address!: Address;
 
   @prop({ type: String })
-  public houseNo!: string;
-
-  @prop({ type: String })
-  public district!: string;
-
-  @prop({ type: String })
-  public province!: string;
-
-  @prop({ type: String })
-  public zipcode!: string;
-
-  @prop({ type: String })
-  public tel!: string;
+  public registrationNo!: string;
 }
 
 export const OrderModel = getModelForClass(Order, {

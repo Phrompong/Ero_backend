@@ -32,6 +32,14 @@ router.post("/", async (req, res) => {
       paymentAmount,
       returnAmount,
       excessVolume,
+      customerName,
+      customerTel,
+      brokerId,
+      accountNo,
+      customerStockId,
+      address,
+
+      registrationNo,
     } = req.body;
 
     // * Process excess amount
@@ -49,6 +57,8 @@ router.post("/", async (req, res) => {
 
     excessAmount = customer.offerPrice * excessVolume;
 
+    const { name, houseNo, district, province, zipcode, tel } = address;
+
     const result = await OrderModel.create({
       customerId: mongoose.Types.ObjectId(body.customerId),
       rightStockName,
@@ -63,6 +73,13 @@ router.post("/", async (req, res) => {
       status: statusData.filter((o) => o.status === "รอหลักฐานการโอนเงิน")[0]
         ._id,
       createdOn: new Date(),
+      customerName,
+      customerTel,
+      brokerId,
+      accountNo,
+      customerStockId,
+      address: { name, houseNo, district, province, zipcode, tel },
+      registrationNo,
     });
 
     return res

@@ -27,7 +27,18 @@ router.post("/", async (req, res) => {
         .send({ code: "ERO-0011", message: "Body is missing" });
     }
 
-    const { nameTH, nameEN, ref1, ref2, logo, qrCode, shortName } = body;
+    const {
+      nameTH,
+      nameEN,
+      ref1,
+      ref2,
+      logo,
+      qrCode,
+      shortName,
+      accountName,
+      accountNumber,
+      branch,
+    } = body;
 
     const result = await MasterBankModel.create({
       shortName,
@@ -37,6 +48,9 @@ router.post("/", async (req, res) => {
       ref2,
       logo,
       qrCode,
+      accountName,
+      accountNumber,
+      branch,
       isActive: true,
     });
 

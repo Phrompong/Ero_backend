@@ -6,7 +6,7 @@ var router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
-    const { customerId } = req.query;
+    const { customerId, registrationNo } = req.query;
 
     let obj: any = {};
 
@@ -14,8 +14,21 @@ router.get("/", async (req, res) => {
     if (customerId) {
       obj.customerId = mongoose.Types.ObjectId(customerId.toString());
 
+      result = await CustomerStockModel.find({
+        customerId: mongoose.Types.ObjectId(customerId.toString()),
+        isActive: true,
+      })
+        .populate("customerId")
+        .sort({ createdOn: -1 })
+        .lean();
+    }
+
+    if (customerId && registrationNo) {
+      obj.customerId = mongoose.Types.ObjectId(customerId.toString());
+
       result = await CustomerStockModel.findOne({
         customerId: mongoose.Types.ObjectId(customerId.toString()),
+        registrationNo: registrationNo.toString(),
         isActive: true,
       })
         .populate("customerId")
