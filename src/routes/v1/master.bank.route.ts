@@ -7,7 +7,15 @@ router.get("/", async (req, res) => {
   try {
     const { type } = req.query;
 
-    const result = await MasterBankModel.find({ isActive: true }).lean();
+    let obj: any = {};
+    if (type) {
+      obj.type = type.toString();
+    }
+
+    const result = await MasterBankModel.find({
+      isActive: true,
+      ...obj,
+    }).lean();
 
     return res
       .status(200)
@@ -40,6 +48,7 @@ router.post("/", async (req, res) => {
       accountName,
       accountNumber,
       branch,
+      type,
     } = body;
 
     const result = await MasterBankModel.create({
@@ -53,6 +62,7 @@ router.post("/", async (req, res) => {
       accountName,
       accountNumber,
       branch,
+      type,
       isActive: true,
     });
 
