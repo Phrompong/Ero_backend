@@ -1,6 +1,11 @@
 import { getModelForClass, prop } from "@typegoose/typegoose";
 import { BaseModel } from "./base.model";
 
+enum BankType {
+  payment,
+  refund,
+}
+
 export class MasterBank extends BaseModel {
   @prop({ type: String })
   public nameTH!: string;
@@ -34,6 +39,9 @@ export class MasterBank extends BaseModel {
 
   @prop({ type: Boolean })
   public isActive!: boolean;
+
+  @prop({ type: String })
+  public type!: string;
 }
 
 export const MasterBankModel = getModelForClass(MasterBank, {

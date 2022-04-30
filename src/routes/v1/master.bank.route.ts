@@ -5,6 +5,8 @@ var router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
+    const { type } = req.query;
+
     const result = await MasterBankModel.find({ isActive: true }).lean();
 
     return res

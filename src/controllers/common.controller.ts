@@ -380,6 +380,12 @@ export async function getDataWithPaging(
           },
         },
         {
+          from: "cltCustomerStock",
+          localField: "customerStockId",
+          foreignField: "_id",
+          as: "customerStock",
+        },
+        {
           $unwind: {
             path: "$customerId",
           },
@@ -387,6 +393,11 @@ export async function getDataWithPaging(
         {
           $unwind: {
             path: "$status",
+          },
+        },
+        {
+          $unwind: {
+            path: "$customerStock",
           },
         },
         {
@@ -410,6 +421,7 @@ export async function getDataWithPaging(
             attachedFile: 1,
             attachedOn: 1,
             excessAmount: 1,
+            customerStock: 1,
           },
         },
         {
@@ -436,6 +448,7 @@ export async function getDataWithPaging(
             attachedFile: 1,
             attachedOn: 1,
             excessAmount: 1,
+            customerStock: 1,
           },
         },
         {
@@ -480,8 +493,10 @@ export async function getDataWithPaging(
             attachedFile: 1,
             attachedOn: 1,
             excessAmount: 1,
+            customerStock: 1,
           },
         },
+
         skip,
         pageSize,
       ],
@@ -509,6 +524,14 @@ export async function getDataWithPaging(
           },
         },
         {
+          $lookup: {
+            from: "cltCustomerStock",
+            localField: "customerStockId",
+            foreignField: "_id",
+            as: "customerStock",
+          },
+        },
+        {
           $unwind: {
             path: "$customerId",
           },
@@ -516,6 +539,11 @@ export async function getDataWithPaging(
         {
           $unwind: {
             path: "$status",
+          },
+        },
+        {
+          $unwind: {
+            path: "$customerStock",
           },
         },
         skip,
