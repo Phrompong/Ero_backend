@@ -231,8 +231,8 @@ export async function getDataWithPaging(
   Model: any,
   mode?: string,
   key?: string,
-  startDate?: Date,
-  endDate?: Date
+  startDate?: Date | undefined,
+  endDate?: Date | undefined
 ): Promise<any> {
   let match = { $match: {} };
 
@@ -317,14 +317,6 @@ export async function getDataWithPaging(
             },
           },
           {
-            $lookup: {
-              from: "cltCustomerStock",
-              localField: "customerStockId",
-              foreignField: "_id",
-              as: "customerStock",
-            },
-          },
-          {
             $unwind: {
               path: "$customerId",
             },
@@ -332,11 +324,6 @@ export async function getDataWithPaging(
           {
             $unwind: {
               path: "$status",
-            },
-          },
-          {
-            $unwind: {
-              path: "$customerStock",
             },
           },
           {
@@ -444,14 +431,6 @@ export async function getDataWithPaging(
             },
           },
           {
-            $lookup: {
-              from: "cltCustomerStock",
-              localField: "customerStockId",
-              foreignField: "_id",
-              as: "customerStock",
-            },
-          },
-          {
             $unwind: {
               path: "$customerId",
             },
@@ -459,11 +438,6 @@ export async function getDataWithPaging(
           {
             $unwind: {
               path: "$status",
-            },
-          },
-          {
-            $unwind: {
-              path: "$customerStock",
             },
           },
           {
@@ -618,6 +592,126 @@ export async function getDataWithPaging(
               ],
             },
           },
+        ],
+      };
+      break;
+    case "customerStockSearch":
+      toFacet = {
+        _metadata: [
+          match,
+          {
+            $lookup: {
+              from: "cltMasterCustomer",
+              localField: "customerId",
+              foreignField: "_id",
+              as: "customers",
+            },
+          },
+          {
+            $lookup: {
+              from: "cltOrders",
+              localField: "_id",
+              foreignField: "customerStockId",
+              as: "orders",
+            },
+          },
+          {
+            $lookup: {
+              from: "cltStatus",
+              localField: "orders.status",
+              foreignField: "_id",
+              as: "status",
+            },
+          },
+          {
+            $unwind: {
+              path: "$customers",
+            },
+          },
+          {
+            $addFields: {
+              keyNationalId: "$customers.nationalId",
+              keyTaxId: "$customers.taxId",
+            },
+          },
+          {
+            $match: {
+              $and: [
+                key
+                  ? {
+                      $or: [
+                        {
+                          keyNationalId: new RegExp(key || ""),
+                        },
+                        {
+                          keyTaxId: new RegExp(key || ""),
+                        },
+                      ],
+                    }
+                  : {},
+              ],
+            },
+          },
+          count,
+        ],
+        data: [
+          match,
+          sort,
+          {
+            $lookup: {
+              from: "cltMasterCustomer",
+              localField: "customerId",
+              foreignField: "_id",
+              as: "customers",
+            },
+          },
+          {
+            $lookup: {
+              from: "cltOrders",
+              localField: "_id",
+              foreignField: "customerStockId",
+              as: "orders",
+            },
+          },
+          {
+            $lookup: {
+              from: "cltStatus",
+              localField: "orders.status",
+              foreignField: "_id",
+              as: "status",
+            },
+          },
+          {
+            $unwind: {
+              path: "$customers",
+            },
+          },
+          {
+            $addFields: {
+              keyNationalId: "$customers.nationalId",
+              keyTaxId: "$customers.taxId",
+            },
+          },
+          {
+            $match: {
+              $and: [
+                key
+                  ? {
+                      $or: [
+                        {
+                          keyNationalId: new RegExp(key || ""),
+                        },
+                        {
+                          keyTaxId: new RegExp(key || ""),
+                        },
+                      ],
+                    }
+                  : {},
+              ],
+            },
+          },
+          skip,
+          pageSize,
         ],
       };
       break;

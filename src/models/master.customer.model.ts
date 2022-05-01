@@ -26,6 +26,15 @@ export class MasterCustomer extends BaseModel {
 
   @prop({ type: String })
   public email!: string;
+
+  @prop({ type: String })
+  public address!: string;
+
+  @prop({ type: String })
+  public zipcode!: string;
+
+  @prop({ type: String })
+  public taxId!: string;
 }
 
 export const MasterCustomerModel = getModelForClass(MasterCustomer, {

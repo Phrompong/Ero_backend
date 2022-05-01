@@ -219,8 +219,8 @@ router.get("/search/value", async (req, res) => {
       },
     };
 
-    let startDate: Date;
-    let endDate: Date;
+    let startDate: Date | undefined = undefined;
+    let endDate: Date | undefined = undefined;
 
     if (type === "day") {
       startDate = startOfToday();
@@ -228,10 +228,6 @@ router.get("/search/value", async (req, res) => {
     } else if (type === "year") {
       startDate = startOfYear(new Date());
       endDate = endOfYear(new Date());
-    } else {
-      return res
-        .status(400)
-        .send({ code: "ERO-0011", message: "Please select type day and year" });
     }
 
     const find = await getDataWithPaging(

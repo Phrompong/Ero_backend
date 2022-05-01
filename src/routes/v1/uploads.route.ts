@@ -74,6 +74,9 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
       const rightStockName = temp["Right Stock Name"];
       const stockVolume = temp["Stock Volume"];
       const email = temp["e-Mail"];
+      const address = temp["Address"];
+      const zipcode = temp["Zipcode"];
+      const taxId = temp["TaxID"];
 
       const offerPrice = temp["OfferPrice"];
       const rightStockVolume = temp["RightStockVolume"];
@@ -94,6 +97,9 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
             atsBank,
             atsBankNo,
             email,
+            address,
+            zipcode,
+            taxId,
             createdOn: new Date(),
             createdBy: "Import from excel",
           },
