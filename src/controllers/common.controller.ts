@@ -246,311 +246,688 @@ export async function getDataWithPaging(
 
   let toFacet;
 
-  if (mode === "search") {
-    toFacet = {
-      _metadata: [
-        {
-          $lookup: {
-            from: "cltMasterCustomer",
-            localField: "customerId",
-            foreignField: "_id",
-            as: "customerId",
-          },
-        },
-        {
-          $lookup: {
-            from: "cltStatus",
-            localField: "status",
-            foreignField: "_id",
-            as: "status",
-          },
-        },
-        {
-          $unwind: {
-            path: "$customerId",
-          },
-        },
-        {
-          $unwind: {
-            path: "$status",
-          },
-        },
-        {
-          $project: {
-            name: {
-              $concat: ["$customerId.name", " ", "$customerId.lastname"],
+  switch (mode) {
+    case "order":
+      toFacet = {
+        _metadata: [match, count],
+        data: [
+          sort,
+          match,
+          {
+            $lookup: {
+              from: "cltMasterCustomer",
+              localField: "customerId",
+              foreignField: "_id",
+              as: "customerId",
             },
-            customerId: 1,
-            rightStockName: 1,
-            stockVolume: 1,
-            rightSpacialName: 1,
-            rightSpacialVolume: 1,
-            paidRightVolume: 1,
-            paymentAmount: 1,
-            returnAmount: 1,
-            status: 1,
-            createdOn: 1,
-            createdBy: 1,
-            updatedOn: 1,
-            updatedBy: 1,
           },
-        },
-        {
-          $project: {
-            name: {
-              $toLower: "$name",
+          {
+            $lookup: {
+              from: "cltStatus",
+              localField: "status",
+              foreignField: "_id",
+              as: "status",
             },
-            tempRightStockName: {
-              $toLower: "$rightStockName",
-            },
-            customerId: 1,
-            rightStockName: 1,
-            stockVolume: 1,
-            rightSpacialName: 1,
-            rightSpacialVolume: 1,
-            paidRightVolume: 1,
-            paymentAmount: 1,
-            returnAmount: 1,
-            status: 1,
-            createdOn: 1,
-            createdBy: 1,
-            updatedOn: 1,
-            updatedBy: 1,
           },
-        },
-        {
-          $match: {
-            $and: [
-              key
-                ? {
-                    $or: [
-                      {
-                        name: new RegExp(key || ""),
-                      },
-                      {
-                        tempRightStockName: new RegExp(key || ""),
-                      },
-                    ],
-                  }
-                : {},
-              {
-                createdOn: {
-                  $gte: startDate,
-                  $lt: endDate,
-                },
+          {
+            $lookup: {
+              from: "cltCustomerStock",
+              localField: "customerStockId",
+              foreignField: "_id",
+              as: "customerStock",
+            },
+          },
+          {
+            $unwind: {
+              path: "$customerId",
+            },
+          },
+          {
+            $unwind: {
+              path: "$status",
+            },
+          },
+          {
+            $unwind: {
+              path: "$customerStock",
+            },
+          },
+          skip,
+          pageSize,
+        ],
+      };
+      break;
+    case "orderSearch":
+      toFacet = {
+        _metadata: [
+          {
+            $lookup: {
+              from: "cltMasterCustomer",
+              localField: "customerId",
+              foreignField: "_id",
+              as: "customerId",
+            },
+          },
+          {
+            $lookup: {
+              from: "cltStatus",
+              localField: "status",
+              foreignField: "_id",
+              as: "status",
+            },
+          },
+          {
+            $lookup: {
+              from: "cltCustomerStock",
+              localField: "customerStockId",
+              foreignField: "_id",
+              as: "customerStock",
+            },
+          },
+          {
+            $unwind: {
+              path: "$customerId",
+            },
+          },
+          {
+            $unwind: {
+              path: "$status",
+            },
+          },
+          {
+            $unwind: {
+              path: "$customerStock",
+            },
+          },
+          {
+            $project: {
+              name: {
+                $concat: ["$customerId.name", " ", "$customerId.lastname"],
               },
-            ],
-          },
-        },
-        {
-          $project: {
-            customerId: 1,
-            rightStockName: 1,
-            stockVolume: 1,
-            rightSpacialName: 1,
-            rightSpacialVolume: 1,
-            paidRightVolume: 1,
-            paymentAmount: 1,
-            returnAmount: 1,
-            status: 1,
-            createdOn: 1,
-            createdBy: 1,
-            updatedOn: 1,
-            updatedBy: 1,
-          },
-        },
-        count,
-      ],
-      data: [
-        sort,
-        {
-          $lookup: {
-            from: "cltMasterCustomer",
-            localField: "customerId",
-            foreignField: "_id",
-            as: "customerId",
-          },
-        },
-        {
-          $lookup: {
-            from: "cltStatus",
-            localField: "status",
-            foreignField: "_id",
-            as: "status",
-          },
-        },
-        {
-          from: "cltCustomerStock",
-          localField: "customerStockId",
-          foreignField: "_id",
-          as: "customerStock",
-        },
-        {
-          $unwind: {
-            path: "$customerId",
-          },
-        },
-        {
-          $unwind: {
-            path: "$status",
-          },
-        },
-        {
-          $unwind: {
-            path: "$customerStock",
-          },
-        },
-        {
-          $project: {
-            name: {
-              $concat: ["$customerId.name", " ", "$customerId.lastname"],
+              customerId: 1,
+              rightStockName: 1,
+              stockVolume: 1,
+              rightSpacialName: 1,
+              rightSpacialVolume: 1,
+              paidRightVolume: 1,
+              paymentAmount: 1,
+              returnAmount: 1,
+              status: 1,
+              createdOn: 1,
+              createdBy: 1,
+              updatedOn: 1,
+              updatedBy: 1,
             },
-            customerId: 1,
-            rightStockName: 1,
-            stockVolume: 1,
-            rightSpacialName: 1,
-            rightSpacialVolume: 1,
-            paidRightVolume: 1,
-            paymentAmount: 1,
-            returnAmount: 1,
-            status: 1,
-            createdOn: 1,
-            createdBy: 1,
-            updatedOn: 1,
-            updatedBy: 1,
-            attachedFile: 1,
-            attachedOn: 1,
-            excessAmount: 1,
-            customerStock: 1,
           },
-        },
-        {
-          $project: {
-            name: {
-              $toLower: "$name",
-            },
-            tempRightStockName: {
-              $toLower: "$rightStockName",
-            },
-            customerId: 1,
-            rightStockName: 1,
-            stockVolume: 1,
-            rightSpacialName: 1,
-            rightSpacialVolume: 1,
-            paidRightVolume: 1,
-            paymentAmount: 1,
-            returnAmount: 1,
-            status: 1,
-            createdOn: 1,
-            createdBy: 1,
-            updatedOn: 1,
-            updatedBy: 1,
-            attachedFile: 1,
-            attachedOn: 1,
-            excessAmount: 1,
-            customerStock: 1,
-          },
-        },
-        {
-          $match: {
-            $and: [
-              key
-                ? {
-                    $or: [
-                      {
-                        name: new RegExp(key || ""),
-                      },
-                      {
-                        tempRightStockName: new RegExp(key || ""),
-                      },
-                    ],
-                  }
-                : {},
-              {
-                createdOn: {
-                  $gte: startDate,
-                  $lt: endDate,
-                },
+          {
+            $project: {
+              name: {
+                $toLower: "$name",
               },
-            ],
+              tempRightStockName: {
+                $toLower: "$rightStockName",
+              },
+              customerId: 1,
+              rightStockName: 1,
+              stockVolume: 1,
+              rightSpacialName: 1,
+              rightSpacialVolume: 1,
+              paidRightVolume: 1,
+              paymentAmount: 1,
+              returnAmount: 1,
+              status: 1,
+              createdOn: 1,
+              createdBy: 1,
+              updatedOn: 1,
+              updatedBy: 1,
+            },
           },
-        },
-        {
-          $project: {
-            customerId: 1,
-            rightStockName: 1,
-            stockVolume: 1,
-            rightSpacialName: 1,
-            rightSpacialVolume: 1,
-            paidRightVolume: 1,
-            paymentAmount: 1,
-            returnAmount: 1,
-            status: 1,
-            createdOn: 1,
-            createdBy: 1,
-            updatedOn: 1,
-            updatedBy: 1,
-            attachedFile: 1,
-            attachedOn: 1,
-            excessAmount: 1,
-            customerStock: 1,
+          {
+            $match: {
+              $and: [
+                key
+                  ? {
+                      $or: [
+                        {
+                          name: new RegExp(key || ""),
+                        },
+                        {
+                          tempRightStockName: new RegExp(key || ""),
+                        },
+                      ],
+                    }
+                  : {},
+                {
+                  createdOn: {
+                    $gte: startDate,
+                    $lt: endDate,
+                  },
+                },
+              ],
+            },
           },
-        },
+          {
+            $project: {
+              customerId: 1,
+              rightStockName: 1,
+              stockVolume: 1,
+              rightSpacialName: 1,
+              rightSpacialVolume: 1,
+              paidRightVolume: 1,
+              paymentAmount: 1,
+              returnAmount: 1,
+              status: 1,
+              createdOn: 1,
+              createdBy: 1,
+              updatedOn: 1,
+              updatedBy: 1,
+            },
+          },
+          count,
+        ],
+        data: [
+          sort,
+          {
+            $lookup: {
+              from: "cltMasterCustomer",
+              localField: "customerId",
+              foreignField: "_id",
+              as: "customerId",
+            },
+          },
+          {
+            $lookup: {
+              from: "cltStatus",
+              localField: "status",
+              foreignField: "_id",
+              as: "status",
+            },
+          },
+          {
+            $lookup: {
+              from: "cltCustomerStock",
+              localField: "customerStockId",
+              foreignField: "_id",
+              as: "customerStock",
+            },
+          },
+          {
+            $unwind: {
+              path: "$customerId",
+            },
+          },
+          {
+            $unwind: {
+              path: "$status",
+            },
+          },
+          {
+            $unwind: {
+              path: "$customerStock",
+            },
+          },
+          {
+            $project: {
+              name: {
+                $concat: ["$customerId.name", " ", "$customerId.lastname"],
+              },
+              customerId: 1,
+              rightStockName: 1,
+              stockVolume: 1,
+              rightSpacialName: 1,
+              rightSpacialVolume: 1,
+              paidRightVolume: 1,
+              paymentAmount: 1,
+              returnAmount: 1,
+              status: 1,
+              createdOn: 1,
+              createdBy: 1,
+              updatedOn: 1,
+              updatedBy: 1,
+              attachedFile: 1,
+              attachedOn: 1,
+              excessAmount: 1,
+              customerStock: 1,
+            },
+          },
+          {
+            $project: {
+              name: {
+                $toLower: "$name",
+              },
+              tempRightStockName: {
+                $toLower: "$rightStockName",
+              },
+              customerId: 1,
+              rightStockName: 1,
+              stockVolume: 1,
+              rightSpacialName: 1,
+              rightSpacialVolume: 1,
+              paidRightVolume: 1,
+              paymentAmount: 1,
+              returnAmount: 1,
+              status: 1,
+              createdOn: 1,
+              createdBy: 1,
+              updatedOn: 1,
+              updatedBy: 1,
+              attachedFile: 1,
+              attachedOn: 1,
+              excessAmount: 1,
+              customerStock: 1,
+            },
+          },
+          {
+            $match: {
+              $and: [
+                key
+                  ? {
+                      $or: [
+                        {
+                          name: new RegExp(key || ""),
+                        },
+                        {
+                          tempRightStockName: new RegExp(key || ""),
+                        },
+                      ],
+                    }
+                  : {},
+                {
+                  createdOn: {
+                    $gte: startDate,
+                    $lt: endDate,
+                  },
+                },
+              ],
+            },
+          },
+          {
+            $project: {
+              customerId: 1,
+              rightStockName: 1,
+              stockVolume: 1,
+              rightSpacialName: 1,
+              rightSpacialVolume: 1,
+              paidRightVolume: 1,
+              paymentAmount: 1,
+              returnAmount: 1,
+              status: 1,
+              createdOn: 1,
+              createdBy: 1,
+              updatedOn: 1,
+              updatedBy: 1,
+              attachedFile: 1,
+              attachedOn: 1,
+              excessAmount: 1,
+              customerStock: 1,
+            },
+          },
 
-        skip,
-        pageSize,
-      ],
-    };
-  } else {
-    toFacet = {
-      _metadata: [match, count],
-      data: [
-        sort,
-        match,
-        {
-          $lookup: {
-            from: "cltMasterCustomer",
-            localField: "customerId",
-            foreignField: "_id",
-            as: "customerId",
+          skip,
+          pageSize,
+        ],
+      };
+      break;
+    case "customer":
+      toFacet = {
+        _metadata: [
+          {
+            $match: {
+              $and: [
+                key
+                  ? {
+                      $or: [
+                        {
+                          nationalId: new RegExp(key || ""),
+                        },
+                        {
+                          passportNo: new RegExp(key || ""),
+                        },
+                        {
+                          passportNo: new RegExp(key || ""),
+                        },
+                      ],
+                    }
+                  : {},
+              ],
+            },
           },
-        },
-        {
-          $lookup: {
-            from: "cltStatus",
-            localField: "status",
-            foreignField: "_id",
-            as: "status",
+          ,
+          count,
+        ],
+        data: [
+          sort,
+          {
+            $match: {
+              $and: [
+                key
+                  ? {
+                      $or: [
+                        {
+                          nationalId: new RegExp(key || ""),
+                        },
+                        {
+                          passportNo: new RegExp(key || ""),
+                        },
+                        {
+                          taxId: new RegExp(key || ""),
+                        },
+                      ],
+                    }
+                  : {},
+              ],
+            },
           },
-        },
-        {
-          $lookup: {
-            from: "cltCustomerStock",
-            localField: "customerStockId",
-            foreignField: "_id",
-            as: "customerStock",
-          },
-        },
-        {
-          $unwind: {
-            path: "$customerId",
-          },
-        },
-        {
-          $unwind: {
-            path: "$status",
-          },
-        },
-        {
-          $unwind: {
-            path: "$customerStock",
-          },
-        },
-        skip,
-        pageSize,
-      ],
-    };
+        ],
+      };
+      break;
   }
+
+  // if (mode === "search") {
+  //   toFacet = {
+  //     _metadata: [
+  //       {
+  //         $lookup: {
+  //           from: "cltMasterCustomer",
+  //           localField: "customerId",
+  //           foreignField: "_id",
+  //           as: "customerId",
+  //         },
+  //       },
+  //       {
+  //         $lookup: {
+  //           from: "cltStatus",
+  //           localField: "status",
+  //           foreignField: "_id",
+  //           as: "status",
+  //         },
+  //       },
+  //       {
+  //         $unwind: {
+  //           path: "$customerId",
+  //         },
+  //       },
+  //       {
+  //         $unwind: {
+  //           path: "$status",
+  //         },
+  //       },
+  //       {
+  //         $project: {
+  //           name: {
+  //             $concat: ["$customerId.name", " ", "$customerId.lastname"],
+  //           },
+  //           customerId: 1,
+  //           rightStockName: 1,
+  //           stockVolume: 1,
+  //           rightSpacialName: 1,
+  //           rightSpacialVolume: 1,
+  //           paidRightVolume: 1,
+  //           paymentAmount: 1,
+  //           returnAmount: 1,
+  //           status: 1,
+  //           createdOn: 1,
+  //           createdBy: 1,
+  //           updatedOn: 1,
+  //           updatedBy: 1,
+  //         },
+  //       },
+  //       {
+  //         $project: {
+  //           name: {
+  //             $toLower: "$name",
+  //           },
+  //           tempRightStockName: {
+  //             $toLower: "$rightStockName",
+  //           },
+  //           customerId: 1,
+  //           rightStockName: 1,
+  //           stockVolume: 1,
+  //           rightSpacialName: 1,
+  //           rightSpacialVolume: 1,
+  //           paidRightVolume: 1,
+  //           paymentAmount: 1,
+  //           returnAmount: 1,
+  //           status: 1,
+  //           createdOn: 1,
+  //           createdBy: 1,
+  //           updatedOn: 1,
+  //           updatedBy: 1,
+  //         },
+  //       },
+  //       {
+  //         $match: {
+  //           $and: [
+  //             key
+  //               ? {
+  //                   $or: [
+  //                     {
+  //                       name: new RegExp(key || ""),
+  //                     },
+  //                     {
+  //                       tempRightStockName: new RegExp(key || ""),
+  //                     },
+  //                   ],
+  //                 }
+  //               : {},
+  //             {
+  //               createdOn: {
+  //                 $gte: startDate,
+  //                 $lt: endDate,
+  //               },
+  //             },
+  //           ],
+  //         },
+  //       },
+  //       {
+  //         $project: {
+  //           customerId: 1,
+  //           rightStockName: 1,
+  //           stockVolume: 1,
+  //           rightSpacialName: 1,
+  //           rightSpacialVolume: 1,
+  //           paidRightVolume: 1,
+  //           paymentAmount: 1,
+  //           returnAmount: 1,
+  //           status: 1,
+  //           createdOn: 1,
+  //           createdBy: 1,
+  //           updatedOn: 1,
+  //           updatedBy: 1,
+  //         },
+  //       },
+  //       count,
+  //     ],
+  //     data: [
+  //       sort,
+  //       {
+  //         $lookup: {
+  //           from: "cltMasterCustomer",
+  //           localField: "customerId",
+  //           foreignField: "_id",
+  //           as: "customerId",
+  //         },
+  //       },
+  //       {
+  //         $lookup: {
+  //           from: "cltStatus",
+  //           localField: "status",
+  //           foreignField: "_id",
+  //           as: "status",
+  //         },
+  //       },
+  //       {
+  //         from: "cltCustomerStock",
+  //         localField: "customerStockId",
+  //         foreignField: "_id",
+  //         as: "customerStock",
+  //       },
+  //       {
+  //         $unwind: {
+  //           path: "$customerId",
+  //         },
+  //       },
+  //       {
+  //         $unwind: {
+  //           path: "$status",
+  //         },
+  //       },
+  //       {
+  //         $unwind: {
+  //           path: "$customerStock",
+  //         },
+  //       },
+  //       {
+  //         $project: {
+  //           name: {
+  //             $concat: ["$customerId.name", " ", "$customerId.lastname"],
+  //           },
+  //           customerId: 1,
+  //           rightStockName: 1,
+  //           stockVolume: 1,
+  //           rightSpacialName: 1,
+  //           rightSpacialVolume: 1,
+  //           paidRightVolume: 1,
+  //           paymentAmount: 1,
+  //           returnAmount: 1,
+  //           status: 1,
+  //           createdOn: 1,
+  //           createdBy: 1,
+  //           updatedOn: 1,
+  //           updatedBy: 1,
+  //           attachedFile: 1,
+  //           attachedOn: 1,
+  //           excessAmount: 1,
+  //           customerStock: 1,
+  //         },
+  //       },
+  //       {
+  //         $project: {
+  //           name: {
+  //             $toLower: "$name",
+  //           },
+  //           tempRightStockName: {
+  //             $toLower: "$rightStockName",
+  //           },
+  //           customerId: 1,
+  //           rightStockName: 1,
+  //           stockVolume: 1,
+  //           rightSpacialName: 1,
+  //           rightSpacialVolume: 1,
+  //           paidRightVolume: 1,
+  //           paymentAmount: 1,
+  //           returnAmount: 1,
+  //           status: 1,
+  //           createdOn: 1,
+  //           createdBy: 1,
+  //           updatedOn: 1,
+  //           updatedBy: 1,
+  //           attachedFile: 1,
+  //           attachedOn: 1,
+  //           excessAmount: 1,
+  //           customerStock: 1,
+  //         },
+  //       },
+  //       {
+  //         $match: {
+  //           $and: [
+  //             key
+  //               ? {
+  //                   $or: [
+  //                     {
+  //                       name: new RegExp(key || ""),
+  //                     },
+  //                     {
+  //                       tempRightStockName: new RegExp(key || ""),
+  //                     },
+  //                   ],
+  //                 }
+  //               : {},
+  //             {
+  //               createdOn: {
+  //                 $gte: startDate,
+  //                 $lt: endDate,
+  //               },
+  //             },
+  //           ],
+  //         },
+  //       },
+  //       {
+  //         $project: {
+  //           customerId: 1,
+  //           rightStockName: 1,
+  //           stockVolume: 1,
+  //           rightSpacialName: 1,
+  //           rightSpacialVolume: 1,
+  //           paidRightVolume: 1,
+  //           paymentAmount: 1,
+  //           returnAmount: 1,
+  //           status: 1,
+  //           createdOn: 1,
+  //           createdBy: 1,
+  //           updatedOn: 1,
+  //           updatedBy: 1,
+  //           attachedFile: 1,
+  //           attachedOn: 1,
+  //           excessAmount: 1,
+  //           customerStock: 1,
+  //         },
+  //       },
+
+  //       skip,
+  //       pageSize,
+  //     ],
+  //   };
+  // } else {
+  //   toFacet = {
+  //     _metadata: [match, count],
+  //     data: [
+  //       sort,
+  //       match,
+  //       {
+  //         $lookup: {
+  //           from: "cltMasterCustomer",
+  //           localField: "customerId",
+  //           foreignField: "_id",
+  //           as: "customerId",
+  //         },
+  //       },
+  //       {
+  //         $lookup: {
+  //           from: "cltStatus",
+  //           localField: "status",
+  //           foreignField: "_id",
+  //           as: "status",
+  //         },
+  //       },
+  //       {
+  //         $lookup: {
+  //           from: "cltCustomerStock",
+  //           localField: "customerStockId",
+  //           foreignField: "_id",
+  //           as: "customerStock",
+  //         },
+  //       },
+  //       {
+  //         $unwind: {
+  //           path: "$customerId",
+  //         },
+  //       },
+  //       {
+  //         $unwind: {
+  //           path: "$status",
+  //         },
+  //       },
+  //       {
+  //         $unwind: {
+  //           path: "$customerStock",
+  //         },
+  //       },
+  //       skip,
+  //       pageSize,
+  //     ],
+  //   };
+  // }
 
   const toSearchBody = { $facet: toFacet };
 

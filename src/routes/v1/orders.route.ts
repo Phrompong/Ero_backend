@@ -152,7 +152,8 @@ router.get("/", async (req, res) => {
       +pageInput,
       +limitInput,
       sort,
-      OrderModel
+      OrderModel,
+      "order"
     );
 
     if (!find) {
@@ -239,7 +240,7 @@ router.get("/search/value", async (req, res) => {
       +limitInput,
       sort,
       OrderModel,
-      "search",
+      "orderSearch",
       key ? key.toString().toLowerCase() : "",
       startDate,
       endDate
