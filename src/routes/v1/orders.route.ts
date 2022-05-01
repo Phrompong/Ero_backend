@@ -5,7 +5,7 @@ import {
   getOrderCompareSales,
 } from "../../controllers/common.controller";
 import express from "express";
-import { OrderModel } from "../../models/order.model";
+import { Order, OrderModel } from "../../models/order.model";
 import { statusData } from "../../controllers/status.controller";
 import { startOfToday, endOfToday, startOfYear, endOfYear } from "date-fns";
 import { CustomerStockModel } from "../../models/customer.stock.model";
@@ -40,7 +40,7 @@ router.post("/", async (req, res) => {
       address,
 
       registrationNo,
-    } = req.body;
+    } = body as any;
 
     // * Process excess amount
     let excessAmount = 0;

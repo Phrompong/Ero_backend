@@ -1,4 +1,5 @@
 import express from "express";
+import customerServiceRouterV1 from "./routes/v1/customerService.route"
 import statusRouterV1 from "./routes/v1/status.route"
 import newsRouterV1 from "./routes/v1/news.route"
 import masterBanksRouterV1 from "./routes/v1/master.bank.route"
@@ -30,4 +31,5 @@ router.use("/v1/customerStocks", customerStocksRouterV1);
 router.use("/v1/masterBanks", masterBanksRouterV1);
 router.use("/v1/news", newsRouterV1);
 router.use("/v1/status", statusRouterV1);
+router.use("/v1/customerService", customerServiceRouterV1);
 export default router;
