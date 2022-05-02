@@ -475,6 +475,7 @@ export async function getDataWithPaging(
               attachedOn: 1,
               excessAmount: 1,
               customerStock: 1,
+              customerTel: 1,
             },
           },
           {
@@ -502,6 +503,7 @@ export async function getDataWithPaging(
               attachedOn: 1,
               excessAmount: 1,
               customerStock: 1,
+              customerTel: 1,
             },
           },
           {
@@ -547,6 +549,7 @@ export async function getDataWithPaging(
               attachedOn: 1,
               excessAmount: 1,
               customerStock: 1,
+              customerTel: 1,
             },
           },
 
