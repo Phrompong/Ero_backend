@@ -1,5 +1,6 @@
 import { prop, getModelForClass, Ref } from "@typegoose/typegoose";
 import { BaseModel } from "./base.model";
+import { CustomerStock } from "./customer.stock.model";
 import { MasterCustomer } from "./master.customer.model";
 import { Status } from "./status.model";
 
@@ -75,8 +76,8 @@ export class Order extends BaseModel {
   @prop({ type: String })
   public accountNo!: string;
 
-  @prop({ type: String })
-  public customerStockId!: string;
+  @prop({ ref: () => CustomerStock })
+  public customerStockId!: Ref<CustomerStock>;
 
   @prop({ _id: false, type: Address })
   public address!: Address;

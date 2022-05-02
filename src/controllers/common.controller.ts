@@ -431,6 +431,19 @@ export async function getDataWithPaging(
             },
           },
           {
+            $lookup: {
+              from: "cltCustomerStock",
+              localField: "customerStockId",
+              foreignField: "_id",
+              as: "customerStock",
+            },
+          },
+          {
+            $unwind: {
+              path: "$customerStock",
+            },
+          },
+          {
             $unwind: {
               path: "$customerId",
             },
