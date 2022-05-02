@@ -1,6 +1,7 @@
 import { prop, getModelForClass, Ref } from "@typegoose/typegoose";
 import { BaseModel } from "./base.model";
 import { CustomerStock } from "./customer.stock.model";
+import { MasterBank } from "./master.bank.model";
 import { MasterCustomer } from "./master.customer.model";
 import { Status } from "./status.model";
 
@@ -84,6 +85,9 @@ export class Order extends BaseModel {
 
   @prop({ type: String })
   public registrationNo!: string;
+
+  @prop({ ref: () => MasterBank })
+  public bankRefund!: Ref<MasterBank>;
 }
 
 export const OrderModel = getModelForClass(Order, {

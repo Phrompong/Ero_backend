@@ -38,7 +38,7 @@ router.post("/", async (req, res) => {
       accountNo,
       customerStockId,
       address,
-
+      bankRefund,
       registrationNo,
     } = body as any;
 
@@ -80,6 +80,7 @@ router.post("/", async (req, res) => {
       customerStockId: mongoose.Types.ObjectId(customerStockId),
       address: { name, houseNo, district, province, zipcode, tel },
       registrationNo,
+      bankRefund: mongoose.Types.ObjectId(bankRefund),
     });
 
     return res
