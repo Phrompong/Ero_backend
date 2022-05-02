@@ -42,7 +42,7 @@ router.post("/signIn", async (req, res) => {
       return res.status(200).send({
         code: "ERO-0001",
         message: "Sigin success",
-        data: { customerId: signIn.customerId },
+        data: { customerId: signIn.customerId, isAccept: signIn.isAccept },
       });
     } else {
       const { username, password } = body;
@@ -60,23 +60,6 @@ router.post("/signIn", async (req, res) => {
         .status(200)
         .send({ code: "ERO-0001", message: "Sigin success" });
     }
-
-    ///TODO Admin
-
-    if (!token) {
-      return res
-        .status(401)
-        .send({ code: "ERO-0013", message: "Unauthorized" });
-    }
-
-    const auth = await AuthModel.create({
-      key,
-      jwt: token,
-    });
-
-    return res
-      .status(200)
-      .send({ code: "ERO-0001", message: "Sigin success", data: auth._id });
   } catch (error) {
     const err = error as Error;
 
