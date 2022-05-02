@@ -288,7 +288,7 @@ router.get("/progressPie/currentOrderAmount", async (req, res) => {
     }
 
     const result = await getCurrentOrderAmount(
-      key?.toString() || "",
+      key?.toString().toLocaleLowerCase() || "",
       startDate,
       endDate
     );
@@ -323,7 +323,7 @@ router.get("/progressPie/orderCompareSales", async (req, res) => {
     }
 
     const result = await getOrderCompareSales(
-      key?.toString() || "",
+      key?.toString().toLocaleLowerCase() || "",
       startDate,
       endDate
     );
