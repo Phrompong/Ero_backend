@@ -1,5 +1,6 @@
-import { getModelForClass, prop } from "@typegoose/typegoose";
+import { getModelForClass, prop, Ref } from "@typegoose/typegoose";
 import { BaseModel } from "./base.model";
+import { MasterIssue } from "./master.issue.model";
 
 export class CustomerService extends BaseModel {
   @prop()
@@ -8,8 +9,8 @@ export class CustomerService extends BaseModel {
   @prop()
   public subject!: string;
 
-  @prop()
-  public issue!: string;
+  @prop({ ref: () => MasterIssue })
+  public issue!: Ref<MasterIssue>;
 
   @prop()
   public specifyIssue!: string;
