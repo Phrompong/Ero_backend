@@ -36,16 +36,16 @@ export class Order extends BaseModel {
   public stockVolume!: number;
 
   @prop({ type: String })
-  public rightSpacialName!: string;
+  public rightSpecialName!: string;
 
   @prop({ type: Number })
-  public rightSpacialVolume!: number;
+  public rightSpecialVolume!: number;
 
   @prop({ type: Number })
   public paidRightVolume!: number;
 
   @prop({ type: Number })
-  public paidSpacialVolume!: number;
+  public paidSpecialVolume!: number;
 
   @prop({ type: Number })
   public paymentAmount!: number;
@@ -80,14 +80,17 @@ export class Order extends BaseModel {
   @prop({ ref: () => CustomerStock })
   public customerStockId!: Ref<CustomerStock>;
 
-  @prop({ _id: false, type: Address })
-  public address!: Address;
+  @prop({ type: String })
+  public address!: string;
 
   @prop({ type: String })
   public registrationNo!: string;
 
   @prop({ ref: () => MasterBank })
   public bankRefund!: Ref<MasterBank>;
+
+  @prop({ type: String })
+  public bankRefundNo!: string;
 }
 
 export const OrderModel = getModelForClass(Order, {

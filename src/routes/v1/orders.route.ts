@@ -25,8 +25,8 @@ router.post("/", async (req, res) => {
     const {
       rightStockName,
       stockVolume,
-      rightSpacialName,
-      rightSpacialVolume,
+      rightSpecialName,
+      rightSpecialVolume,
       paidRightVolume,
       paidSpecialVolume,
       paymentAmount,
@@ -39,6 +39,7 @@ router.post("/", async (req, res) => {
       customerStockId,
       address,
       bankRefund,
+      bankRefundNo,
       registrationNo,
     } = body as any;
 
@@ -63,8 +64,8 @@ router.post("/", async (req, res) => {
       customerId: mongoose.Types.ObjectId(body.customerId),
       rightStockName,
       stockVolume,
-      rightSpacialName,
-      rightSpacialVolume,
+      rightSpecialName,
+      rightSpecialVolume,
       paidRightVolume,
       paidSpecialVolume,
       paymentAmount,
@@ -78,9 +79,10 @@ router.post("/", async (req, res) => {
       brokerId,
       accountNo,
       customerStockId: mongoose.Types.ObjectId(customerStockId),
-      address: { name, houseNo, district, province, zipcode, tel },
+      address,
       registrationNo,
       bankRefund: mongoose.Types.ObjectId(bankRefund),
+      bankRefundNo,
     });
 
     return res

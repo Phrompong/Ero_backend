@@ -62,7 +62,6 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
     const temps = reader.utils.sheet_to_json(file.Sheets[file.SheetNames[0]]);
 
     // * Insert value to mongo
-
     for (const temp of temps) {
       const customerId = temp["Customer ID"];
       const customerName = temp["Customer Name"];
@@ -83,6 +82,13 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
       const rightSpecialName = temp["RightSpecialName"];
       const rightSpecialVolume = temp["RightSpecialVolume"];
       const registrationNo = temp["RegistrationNo"];
+
+      if (!customerNationalId || !taxId || !registrationNo) {
+        return res.status(400).send({
+          code: "ERO-0011",
+          message: "customerNationalId taxId or redistrationNo is missing",
+        });
+      }
 
       // * Insert master customer
       const insertMasterCustomer = await MasterCustomerModel.updateOne(
@@ -158,19 +164,6 @@ router.post("/image", uploadImage.any(), async (req: any, res: any) => {
         .status(400)
         .send({ code: "ERO-0011", message: "orderId is missing" });
     }
-
-    // const key = `${userAgent}${platform}`;
-
-    // const token = await getToken(key);
-
-    // if (!token) {
-    //   return res.status(400).send({
-    //     code: "ERO-0011",
-    //     message: "Unable to get payload from token",
-    //   });
-    // }
-
-    // /const paylaod = await decodeJwtToken(token);
 
     const attachedFile = `${process.env.IPADDRESS_URI}:${process.env.PORT}/api/v1/renders?filename=${files[0].filename}`;
 
