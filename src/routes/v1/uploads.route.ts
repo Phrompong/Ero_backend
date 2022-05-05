@@ -127,7 +127,7 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
       const insertCustomerStock = await CustomerStockModel.updateOne(
         {
           customerId: mongoose.Types.ObjectId(masterCustomer._id),
-          rightStockName,
+          registrationNo,
         },
         {
           customerId: mongoose.Types.ObjectId(masterCustomer._id),
