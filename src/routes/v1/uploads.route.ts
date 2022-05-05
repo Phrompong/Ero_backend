@@ -83,7 +83,8 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
       const rightSpecialVolume = temp["RightSpecialVolume"];
       const registrationNo = temp["RegistrationNo"];
       const company = temp["Company"];
-      const detail = temp["Detail"];
+      const detailShort = temp["DetailShort"];
+      const detailFull = temp["DetailFull"];
 
       if (!customerNationalId || !taxId || !registrationNo) {
         return res.status(400).send({
@@ -142,7 +143,8 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
           isActive: true,
           registrationNo,
           company,
-          detail,
+          detailShort,
+          detailFull,
         },
         { upsert: true }
       );
