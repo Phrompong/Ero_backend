@@ -37,7 +37,10 @@ export class CustomerStock extends BaseModel {
   public company!: string;
 
   @prop({ type: String })
-  public detail!: string;
+  public detailShort!: string;
+
+  @prop({ type: String })
+  public detailFull!: string;
 }
 
 export const CustomerStockModel = getModelForClass(CustomerStock, {
