@@ -82,6 +82,8 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
       const rightSpecialName = temp["RightSpecialName"];
       const rightSpecialVolume = temp["RightSpecialVolume"];
       const registrationNo = temp["RegistrationNo"];
+      const company = temp["Company"];
+      const detail = temp["Detail"];
 
       if (!customerNationalId || !taxId || !registrationNo) {
         return res.status(400).send({
@@ -122,19 +124,28 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
       }
 
       // * Insert customer stock
-      const insertCustomerStock = await CustomerStockModel.create({
-        customerId: mongoose.Types.ObjectId(masterCustomer._id),
-        rightStockName,
-        stockVolume,
-        rightStockVolume,
-        rightSpecialName,
-        offerPrice,
-        rightSpecialVolume,
-        createdOn: new Date(),
-        createdBy: "Import from excel",
-        isActive: true,
-        registrationNo,
-      });
+      const insertCustomerStock = await CustomerStockModel.updateOne(
+        {
+          customerId: mongoose.Types.ObjectId(masterCustomer._id),
+          rightStockName,
+        },
+        {
+          customerId: mongoose.Types.ObjectId(masterCustomer._id),
+          rightStockName,
+          stockVolume,
+          rightStockVolume,
+          rightSpecialName,
+          offerPrice,
+          rightSpecialVolume,
+          createdOn: new Date(),
+          createdBy: "Import from excel",
+          isActive: true,
+          registrationNo,
+          company,
+          detail,
+        },
+        { upsert: true }
+      );
     }
 
     return res.status(200).send({ code: "ERO-0001", message: "ok" });

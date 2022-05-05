@@ -32,6 +32,12 @@ export class CustomerStock extends BaseModel {
 
   @prop({ ref: () => MasterCustomer })
   public customerId!: Ref<MasterCustomer>;
+
+  @prop({ type: String })
+  public company!: string;
+
+  @prop({ type: String })
+  public detail!: string;
 }
 
 export const CustomerStockModel = getModelForClass(CustomerStock, {
