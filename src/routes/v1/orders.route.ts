@@ -212,7 +212,7 @@ router.get("/:id", async (req, res) => {
 // * For search name-surname , rightStockName
 router.get("/search/value", async (req, res) => {
   try {
-    const { key, type } = req.query;
+    const { key, type, customerId } = req.query;
 
     const limitInput = req.query.limit?.toString() || "10";
     const pageInput = req.query.page?.toString() || "1";
@@ -233,8 +233,15 @@ router.get("/search/value", async (req, res) => {
       endDate = endOfYear(new Date());
     }
 
+    const obj: any = {};
+    if (customerId) {
+      obj.customerId = { $eq: mongoose.Types.ObjectId(customerId.toString()) };
+    }
+
+    const filter = obj;
+
     const find = await getDataWithPaging(
-      null,
+      filter,
       +pageInput,
       +limitInput,
       sort,

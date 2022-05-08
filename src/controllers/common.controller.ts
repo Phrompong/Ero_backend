@@ -381,6 +381,12 @@ export async function getDataWithPaging(
                         {
                           tempRightStockName: new RegExp(key || ""),
                         },
+                        {
+                          "customerId.nationalId": new RegExp(key || ""),
+                        },
+                        {
+                          "customerId.taxId": new RegExp(key || ""),
+                        },
                       ],
                     }
                   : {},
@@ -518,15 +524,23 @@ export async function getDataWithPaging(
                         {
                           tempRightStockName: new RegExp(key || ""),
                         },
+                        {
+                          "customerId.nationalId": new RegExp(key || ""),
+                        },
+                        {
+                          "customerId.taxId": new RegExp(key || ""),
+                        },
                       ],
                     }
                   : {},
-                {
-                  createdOn: {
-                    $gte: startDate,
-                    $lt: endDate,
-                  },
-                },
+                startDate && endDate
+                  ? {
+                      createdOn: {
+                        $gte: startDate,
+                        $lt: endDate,
+                      },
+                    }
+                  : {},
               ],
             },
           },
