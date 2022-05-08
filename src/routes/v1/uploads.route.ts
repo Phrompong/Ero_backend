@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 import { decodeJwtToken, getToken } from "../../controllers/auth.controller";
 import { OrderModel } from "../../models/order.model";
 import { statusData } from "../../controllers/status.controller";
+import { ConsentHistoryModel } from "../../models/consentHistory.model";
 
 const multer = require("multer");
 const reader = require("xlsx");
@@ -85,6 +86,8 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
       const company = temp["Company"];
       const detailShort = temp["DetailShort"];
       const detailFull = temp["DetailFull"];
+      const ratio = temp["Ratio"];
+      const getRight = temp["GetRight"];
 
       if (!customerNationalId || !taxId || !registrationNo) {
         return res.status(400).send({
@@ -145,6 +148,8 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
           company,
           detailShort,
           detailFull,
+          ratio,
+          getRight,
         },
         { upsert: true }
       );
@@ -216,6 +221,18 @@ router.get("/", async (req: any, res: any) => {
 
     return res.status(400).send({ code: "ERO-0010", message: err.message });
   }
+});
+
+router.get("/delete", async (req: any, res: any) => {
+  await ConsentHistoryModel.deleteMany({});
+
+  await CustomerStockModel.deleteMany({});
+
+  await MasterCustomerModel.deleteMany({});
+
+  await OrderModel.deleteMany({});
+
+  return res.status(400).send({ code: "ERO-0010", message: "delete ok" });
 });
 
 export default router;
