@@ -111,7 +111,12 @@ async function init() {
     .then(connectToDatabase)
     .then(() => {
       app.use(helmet());
-      app.use(cors());
+      app.use(
+        cors({
+          origin: "https://ero-test.asiawealth.co.th/",
+          optionsSuccessStatus: 200,
+        })
+      );
       app.use(expressMiddleware());
       app.use(express.text({ type: "text/plain" }));
       app.use(bodyParser.json());
