@@ -1,9 +1,11 @@
 import { mongoose } from "@typegoose/typegoose";
+import { sendEmail } from "../../controllers/notification.controller";
 import express from "express";
 import {
   CustomerService,
   CustomerServiceModel,
 } from "../../models/customerService.model";
+import { MasterIssueModel } from "../../models/master.issue.model";
 
 var router = express.Router();
 
@@ -47,22 +49,31 @@ router.post("/", async (req, res) => {
       createdOn: new Date(),
     });
 
+    const getIssue = await MasterIssueModel.findById(issue.toString()).lean();
+
+    await sendEmail({
+      subject: `ERO - ${subject}`,
+      issue: getIssue ? getIssue.nameTH : "",
+      specifyIssue,
+      email,
+    });
+
     // * value issue
-    const getIssue = await CustomerServiceModel.aggregate([
-      {
-        $lookup: {
-          from: "cltMasterIssues",
-          localField: "issue",
-          foreignField: "_id",
-          as: "issue",
-        },
-      },
-      {
-        $unwind: {
-          path: "$issue",
-        },
-      },
-    ]);
+    // const getIssue = await CustomerServiceModel.aggregate([
+    //   {
+    //     $lookup: {
+    //       from: "cltMasterIssues",
+    //       localField: "issue",
+    //       foreignField: "_id",
+    //       as: "issue",
+    //     },
+    //   },
+    //   {
+    //     $unwind: {
+    //       path: "$issue",
+    //     },
+    //   },
+    // ]);
 
     return res
       .status(200)
