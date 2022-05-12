@@ -17,9 +17,6 @@ export async function sendEmail(obj: any): Promise<boolean> {
 
     const text = `<p style='color:black'>เรื่อง ${subject} <br />  <br /> เรียน Customer service <br />  <br /> &nbsp;&nbsp;   ปัญหาที่พบ : ${issue} <br />  <br />&nbsp;&nbsp;      รายละเอียด :${specifyIssue} <br />  <br />&nbsp;&nbsp;      ผู้แจ้งปัญหา : ${email} </p> <br />  <br /> <p style='color:red'>* This is only an automated notification email. Please do not reply to this e-mail address</p>`;
 
-    const body =
-      "<p style='color:black`>เรื่อง  <br />  <br /> เรียน Customer service <br />  <br />&nbsp;&nbsp;     ปัญหาที่พบ :  <br />  <br />&nbsp;&nbsp;         รายละเอียด : รายละเอียด <br />  <br />&nbsp;&nbsp;       ผู้แจ้งปัญหา : Test@mail.com</p> <br />  <br /> <p style=`color:red`>* This is only an automated notification email. Please do not reply to this e-mail address</p>";
-
     // * setup email data with unicode symbols
     const mailOptions = {
       from: "aquila.api@gmail.com", // sender
