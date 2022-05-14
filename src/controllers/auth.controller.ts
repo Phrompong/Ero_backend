@@ -18,9 +18,9 @@ export async function adminSignIn(username: string, password: string) {
   };
 }
 
-export async function customerSignIn(nationalId: string): Promise<any> {
+export async function customerSignIn(key: string): Promise<any> {
   const masterCustomer = await MasterCustomerModel.aggregate([
-    { $match: { nationalId: { $eq: nationalId } } },
+    { $match: { $or: [{ nationalId: key }, { refNo: key }] } },
     {
       $lookup: {
         from: "cltConsentHistories",
@@ -38,7 +38,7 @@ export async function customerSignIn(nationalId: string): Promise<any> {
   const { _id, consentHistories } = masterCustomer[0];
 
   return {
-    token: createJwtToken(nationalId, masterCustomer[0]._id),
+    token: createJwtToken(key, masterCustomer[0]._id),
     customerId: _id,
     isAccept:
       consentHistories.length > 0 ? consentHistories[0].isAccept : false,

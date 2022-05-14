@@ -8,8 +8,8 @@ export class BaseModel {
   public createdBy!: string;
 
   @prop({ type: Date })
-  public updatedOn!: Date;
+  public updatedOn?: Date;
 
   @prop({ type: String })
-  public updatedBy!: string;
+  public updatedBy?: string;
 }

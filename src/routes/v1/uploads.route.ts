@@ -1,13 +1,20 @@
 import { mongoose } from "@typegoose/typegoose";
 import express from "express";
-import { MasterCustomerModel } from "../../models/master.customer.model";
-import { CustomerStockModel } from "../../models/customer.stock.model";
+import {
+  MasterCustomer,
+  MasterCustomerModel,
+} from "../../models/master.customer.model";
+import {
+  CustomerStock,
+  CustomerStockModel,
+} from "../../models/customer.stock.model";
 import { TestModel } from "../../models/test.model";
 import { v4 as uuidv4 } from "uuid";
 import { decodeJwtToken, getToken } from "../../controllers/auth.controller";
 import { OrderModel } from "../../models/order.model";
 import { statusData } from "../../controllers/status.controller";
 import { ConsentHistoryModel } from "../../models/consentHistory.model";
+import { validateHeaderExcel } from "../../controllers/validate.controller";
 
 const multer = require("multer");
 const reader = require("xlsx");
@@ -60,96 +67,145 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
       path.join(__dirname, `../../../excels/${files[0].filename}`)
     );
 
-    const temps = reader.utils.sheet_to_json(file.Sheets[file.SheetNames[0]]);
+    const temps = reader.utils.sheet_to_json(file.Sheets[file.SheetNames[0]], {
+      defval: "",
+    });
 
     // * Insert value to mongo
     for (const temp of temps) {
-      const customerId = temp["Customer ID"];
-      const customerName = temp["Customer Name"];
-      const customerLastname = temp["Customer Lastname"];
-      const customerNationalId = temp["Customer National ID"];
-      const telephone = temp["Telephone"];
-      const atsBank = temp["ATS Bank"];
-      const atsBankNo = temp["ATS Bank No"];
-      const rightStockName = temp["Right Stock Name"];
-      const stockVolume = temp["Stock Volume"];
-      const email = temp["e-Mail"];
-      const address = temp["Address"];
-      const zipcode = temp["Zipcode"];
-      const taxId = temp["TaxID"];
+      const keys = Object.keys(temp);
 
-      const offerPrice = temp["OfferPrice"];
-      const rightStockVolume = temp["RightStockVolume"];
-      const rightSpecialName = temp["RightSpecialName"];
-      const rightSpecialVolume = temp["RightSpecialVolume"];
-      const registrationNo = temp["RegistrationNo"];
-      const company = temp["Company"];
-      const detailShort = temp["DetailShort"];
-      const detailFull = temp["DetailFull"];
-      const ratio = temp["Ratio"];
-      const getRight = temp["GetRight"];
-
-      if (!customerNationalId || !taxId || !registrationNo) {
-        return res.status(400).send({
-          code: "ERO-0011",
-          message: "customerNationalId taxId or redistrationNo is missing",
-        });
-      }
+      const no = temp[validateHeaderExcel(0, keys[0])];
+      const rightStockName = temp[validateHeaderExcel(1, keys[1])];
+      const registrationNo = temp[validateHeaderExcel(2, keys[2])];
+      const holderType = temp[validateHeaderExcel(3, keys[3])];
+      const stockVolume = temp[validateHeaderExcel(4, keys[4])];
+      const titleCode = temp[validateHeaderExcel(5, keys[5])];
+      const title = temp[validateHeaderExcel(6, keys[6])];
+      const name = temp[validateHeaderExcel(7, keys[7])];
+      const lastname = temp[validateHeaderExcel(8, keys[8])];
+      const address = temp[validateHeaderExcel(9, keys[9])];
+      const zipcode = temp[validateHeaderExcel(10, keys[10])];
+      const home = temp[validateHeaderExcel(11, keys[11])];
+      const office = temp[validateHeaderExcel(12, keys[12])];
+      const telephone = temp[validateHeaderExcel(13, keys[13])];
+      const fax = temp[validateHeaderExcel(14, keys[14])];
+      const email = temp[validateHeaderExcel(15, keys[15])];
+      const withHoldingTaxType = temp[validateHeaderExcel(16, keys[16])];
+      const taxId = temp[validateHeaderExcel(17, keys[17])];
+      const taxRate = temp[validateHeaderExcel(18, keys[18])];
+      const nationalityCode = temp[validateHeaderExcel(19, keys[19])];
+      const occupationCode = temp[validateHeaderExcel(20, keys[20])];
+      const bankCode = temp[validateHeaderExcel(21, keys[21])];
+      const account = temp[validateHeaderExcel(22, keys[22])];
+      const partiNo = temp[validateHeaderExcel(23, keys[23])];
+      const refType = temp[validateHeaderExcel(24, keys[24])];
+      const refNo = temp[validateHeaderExcel(25, keys[25])];
+      const eligibleSecurities = temp[validateHeaderExcel(26, keys[26])];
+      const noForCalculation = temp[validateHeaderExcel(27, keys[27])];
+      const ratio = temp[validateHeaderExcel(28, keys[28])];
+      const rightStockVolume = temp[validateHeaderExcel(29, keys[29])];
+      const noSubAllocate = temp[validateHeaderExcel(30, keys[30])];
+      const partiNo2 = temp[validateHeaderExcel(31, keys[31])];
+      const brokerateAccount = temp[validateHeaderExcel(32, keys[32])];
+      const rightSpecialName = temp[validateHeaderExcel(33, keys[33])];
+      const rightSpecialVolume = temp[validateHeaderExcel(34, keys[34])];
+      const detailShort = temp[validateHeaderExcel(35, keys[35])];
+      const detailFull = temp[validateHeaderExcel(36, keys[36])];
 
       // * Insert master customer
+      const masterCustome: MasterCustomer = {
+        no,
+        holderType,
+        titleCode,
+        title,
+        name,
+        lastname,
+        address,
+        zipcode,
+        home,
+        office,
+        telephone,
+        fax,
+        email,
+        taxId,
+        taxRate,
+        nationalityCode,
+        occupationCode,
+        bankCode,
+        account,
+        createdOn: new Date(),
+        createdBy: "Import excel",
+        atsBank: "",
+        atsBankNo: "",
+        refNo,
+      };
+
       const insertMasterCustomer = await MasterCustomerModel.updateOne(
-        { nationalId: customerNationalId },
+        { taxId, refNo },
         {
           $set: {
-            id: customerId,
-            name: customerName,
-            lastname: customerLastname,
-            nationalId: customerNationalId,
-            telephone,
-            atsBank,
-            atsBankNo,
-            email,
-            address,
-            zipcode,
-            taxId,
-            createdOn: new Date(),
-            createdBy: "Import from excel",
+            ...masterCustome,
           },
         },
         { upsert: true, new: true }
       );
 
       const masterCustomer = await MasterCustomerModel.findOne({
-        nationalId: customerNationalId,
+        taxId,
+        refNo,
       }).lean();
 
       if (!masterCustomer) {
-        return;
+        return res
+          .status(400)
+          .send({ code: "ERO-0012", message: "Unable to create customer" });
       }
 
+      const splitRatio = ratio.split("@");
+      const offerPrice = splitRatio[1].trim();
+
+      const splitFirstRatio = splitRatio[0].split(":");
+
+      let getRight = splitFirstRatio[0].trim();
+      let resultRatio = splitFirstRatio[1].trim();
+
       // * Insert customer stock
+      const customerStock: CustomerStock = {
+        customerId: masterCustomer._id,
+        rightStockName,
+        registrationNo,
+        stockVolume,
+        withHoldingTaxType,
+        partiNo,
+        refType,
+        eligibleSecurities,
+        noForCalculation,
+        ratio: +resultRatio,
+        rightStockVolume,
+        noSubAllocate,
+        partiNo2,
+        brokerateAccount,
+        rightSpecialName,
+        rightSpecialVolume,
+        detailFull,
+        detailShort,
+        isActive: true,
+        offerPrice,
+        company: "",
+        getRight,
+        taxRate,
+        createdOn: new Date(),
+        createdBy: "Import excel",
+      };
+
       const insertCustomerStock = await CustomerStockModel.updateOne(
         {
           customerId: mongoose.Types.ObjectId(masterCustomer._id),
           registrationNo,
         },
         {
-          customerId: mongoose.Types.ObjectId(masterCustomer._id),
-          rightStockName,
-          stockVolume,
-          rightStockVolume,
-          rightSpecialName,
-          offerPrice,
-          rightSpecialVolume,
-          createdOn: new Date(),
-          createdBy: "Import from excel",
-          isActive: true,
-          registrationNo,
-          company,
-          detailShort,
-          detailFull,
-          ratio,
-          getRight,
+          $set: { ...customerStock },
         },
         { upsert: true }
       );
