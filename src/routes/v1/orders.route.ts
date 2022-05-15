@@ -195,7 +195,7 @@ router.get("/:id", async (req, res) => {
     }
 
     const result = await OrderModel.findById(id)
-      .populate("customerStockId")
+      .populate("customerStock")
       .populate("status")
       .lean();
 
