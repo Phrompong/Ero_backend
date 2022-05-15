@@ -78,7 +78,7 @@ router.post("/", async (req, res) => {
       customerTel,
       brokerId,
       accountNo,
-      customerStock: mongoose.Types.ObjectId(customerStockId),
+      customerStockId: mongoose.Types.ObjectId(customerStockId),
       address,
       registrationNo,
       bankRefund: mongoose.Types.ObjectId(bankRefund),
@@ -195,7 +195,7 @@ router.get("/:id", async (req, res) => {
     }
 
     const result = await OrderModel.findById(id)
-      .populate("customerStock")
+      .populate("customerStockId")
       .populate("status")
       .lean();
 

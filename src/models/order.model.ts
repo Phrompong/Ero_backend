@@ -78,7 +78,7 @@ export class Order extends BaseModel {
   public accountNo!: string;
 
   @prop({ ref: () => CustomerStock })
-  public customerStock!: Ref<CustomerStock>;
+  public customerStockId!: Ref<CustomerStock>;
 
   @prop({ type: String })
   public address!: string;
