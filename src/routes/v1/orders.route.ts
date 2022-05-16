@@ -76,7 +76,7 @@ router.post("/", async (req, res) => {
       createdOn: new Date(),
       customerName,
       customerTel,
-      brokerId,
+      brokerId: mongoose.Types.ObjectId(brokerId),
       accountNo,
       customerStockId: mongoose.Types.ObjectId(customerStockId),
       address,
