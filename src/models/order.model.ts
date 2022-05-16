@@ -2,6 +2,7 @@ import { prop, getModelForClass, Ref } from "@typegoose/typegoose";
 import { BaseModel } from "./base.model";
 import { CustomerStock } from "./customer.stock.model";
 import { MasterBank } from "./master.bank.model";
+import { MasterBroker } from "./master.broker.model";
 import { MasterCustomer } from "./master.customer.model";
 import { Status } from "./status.model";
 
@@ -71,8 +72,8 @@ export class Order extends BaseModel {
   @prop({ type: String })
   public customerTel!: string;
 
-  @prop({ type: String })
-  public brokerId!: string;
+  @prop({ ref: () => MasterBroker })
+  public brokerId!: Ref<MasterBroker>;
 
   @prop({ type: String })
   public accountNo!: string;
