@@ -678,6 +678,19 @@ export async function getDataWithPaging(
           },
           {
             $lookup: {
+              from: "cltMasterBanks",
+              localField: "orders.bankRefund",
+              foreignField: "_id",
+              as: "orders.bankRefund",
+            },
+          },
+          {
+            $unwind: {
+              path: "$orders.bankRefund",
+            },
+          },
+          {
+            $lookup: {
               from: "cltStatus",
               localField: "orders.status",
               foreignField: "_id",
@@ -750,6 +763,19 @@ export async function getDataWithPaging(
           {
             $unwind: {
               path: "$orders.brokerId",
+            },
+          },
+          {
+            $lookup: {
+              from: "cltMasterBanks",
+              localField: "orders.bankRefund",
+              foreignField: "_id",
+              as: "orders.bankRefund",
+            },
+          },
+          {
+            $unwind: {
+              path: "$orders.bankRefund",
             },
           },
           {
