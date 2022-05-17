@@ -278,6 +278,19 @@ export async function getDataWithPaging(
             },
           },
           {
+            $lookup: {
+              from: "cltMasterBrokers",
+              localField: "brokerId",
+              foreignField: "_id",
+              as: "brokerId",
+            },
+          },
+          {
+            $unwind: {
+              path: "$brokerId",
+            },
+          },
+          {
             $unwind: {
               path: "$customerId",
             },

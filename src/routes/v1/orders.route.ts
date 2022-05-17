@@ -9,6 +9,8 @@ import { Order, OrderModel } from "../../models/order.model";
 import { statusData } from "../../controllers/status.controller";
 import { startOfToday, endOfToday, startOfYear, endOfYear } from "date-fns";
 import { CustomerStockModel } from "../../models/customer.stock.model";
+import * as excelJS from "exceljs";
+import { dataExport } from "../../controllers/order.controller";
 
 var router = express.Router();
 
@@ -345,6 +347,62 @@ router.get("/progressPie/orderCompareSales", async (req, res) => {
     const err = error as Error;
 
     return res.status(400).send({ code: "ERO-0010", message: err.message });
+  }
+});
+
+// * Export data
+router.get("/export/excel", async (req, res) => {
+  try {
+    const workbook = new excelJS.Workbook();
+    let sheet = workbook.addWorksheet("ERO");
+
+    sheet.columns = [
+      {
+        header: "Customer ID",
+        key: "customerId",
+        width: 20,
+        border: {
+          top: { style: "thin" },
+          left: { style: "thin" },
+          bottom: { style: "thin" },
+          right: { style: "thin" },
+        },
+      },
+      { header: "Customer Name", key: "customerName", width: 20 },
+      { header: "Customer Lastname", key: "customerLastname", width: 20 },
+      { header: "Customer National ID", key: "customerNationalId", width: 20 },
+      { header: "Telephone", key: "telephone", width: 20 },
+      { header: "ATS Bank", key: "atsBank", width: 20 },
+      { header: "ATS Bank No", key: "atsBankNo", width: 20 },
+      { header: "Right Stock Name", key: "rightStockName", width: 20 },
+      { header: "Stock Volume", key: "stockVolume", width: 20 },
+      { header: "Right Special Name", key: "rightSpecialName", width: 20 },
+      { header: "Right Stock Volume", key: "rightStockVolume", width: 20 },
+      { header: "Right Special Volume", key: "rightSpecialVolume", width: 20 },
+      { header: "Paid Right Volume", key: "paidRightVolume", width: 20 },
+      { header: "Paid Special Volume", key: "paidSpecialVolome", width: 20 },
+      { header: "Payment Amount", key: "paymentAmount", width: 20 },
+      { header: "Allowed Amount", key: "allowAmount", width: 20 },
+      { header: "Return Amount", key: "returnAmount", width: 20 },
+    ];
+
+    const data = await dataExport();
+
+    sheet.addRows(data);
+
+    // res is a Stream object
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader("Content-Disposition", "attachment; filename=" + `rop.xlsx`);
+
+    return workbook.xlsx.write(res).then(function () {
+      res.status(200).end();
+    });
+  } catch (error) {
+    const err = error as Error;
+    return res.status(400).send({ code: "ERO-0011", message: err.message });
   }
 });
 
