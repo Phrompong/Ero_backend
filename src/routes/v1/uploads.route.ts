@@ -265,6 +265,49 @@ router.post("/image", uploadImage.any(), async (req: any, res: any) => {
   }
 });
 
+router.post("/bookbank", uploadImage.any(), async (req: any, res: any) => {
+  try {
+    const files = req.files;
+    const userAgent = req.headers["user-agent"];
+    const platform = req.headers["sec-ch-ua-platform"];
+    const { orderId } = req.query;
+
+    if (files.length === 0) {
+      return res
+        .status(400)
+        .send({ code: "ERO-0011", message: "Request file not found" });
+    }
+
+    if (!orderId) {
+      return res
+        .status(400)
+        .send({ code: "ERO-0011", message: "orderId is missing" });
+    }
+
+    const attachedFileBookBank = `${process.env.IPADDRESS_URI}:${process.env.PORT}/api/v1/renders?filename=${files[0].filename}`;
+
+    // * Upsert to orders
+    await OrderModel.findByIdAndUpdate(
+      orderId,
+      {
+        attachedFileBookBank,
+        attachedBookBankOn: new Date(),
+      },
+      {
+        upsert: true,
+      }
+    );
+
+    return res
+      .status(200)
+      .send({ code: "ERO-0001", message: "ok", data: attachedFileBookBank });
+  } catch (error) {
+    const err = error as Error;
+
+    return res.status(400).send({ code: "ERO-0010", message: err.message });
+  }
+});
+
 router.get("/", async (req: any, res: any) => {
   try {
     const results = await TestModel.find().lean();

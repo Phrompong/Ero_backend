@@ -39,6 +39,10 @@ export async function dataExport() {
       rightSpecialName,
       customerStock,
       rightSpecialVolume,
+      paidRightVolume,
+      paidSpecialVolume,
+      paymentAmount,
+      returnAmount,
     } = obj;
 
     const { id, name, lastname, nationalId, telephone, atsBank, atsBankNo } =
@@ -59,6 +63,10 @@ export async function dataExport() {
       rightSpecialName,
       rightStockVolume,
       rightSpecialVolume,
+      paidRightVolume,
+      paidSpecialVolume,
+      paymentAmount,
+      returnAmount,
     });
   }
 

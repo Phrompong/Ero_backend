@@ -382,7 +382,7 @@ router.get("/export/excel", async (req, res) => {
       { header: "Paid Right Volume", key: "paidRightVolume", width: 20 },
       { header: "Paid Special Volume", key: "paidSpecialVolome", width: 20 },
       { header: "Payment Amount", key: "paymentAmount", width: 20 },
-      { header: "Allowed Amount", key: "allowAmount", width: 20 },
+      { header: "Allowed Amount", key: "allowedAmount", width: 20 },
       { header: "Return Amount", key: "returnAmount", width: 20 },
     ];
 

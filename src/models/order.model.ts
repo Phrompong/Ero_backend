@@ -60,6 +60,12 @@ export class Order extends BaseModel {
   @prop({ type: String })
   public attachedFile?: String;
 
+  @prop({ type: Date })
+  public attachedBookBankOn?: Date;
+
+  @prop({ type: String })
+  public attachedFileBookBank?: String;
+
   @prop({ ref: () => Status })
   public status!: Ref<Status>;
 
