@@ -284,7 +284,7 @@ router.post("/bookbank", uploadImage.any(), async (req: any, res: any) => {
         .send({ code: "ERO-0011", message: "orderId is missing" });
     }
 
-    const attachedFileBookBank = `${process.env.IPADDRESS_URI}:${process.env.PORT}/api/v1/renders?filename=${files[0].filename}`;
+    const attachedFileBookBank = `${process.env.IPADDRESS_URI}/api/v1/renders?filename=${files[0].filename}`;
 
     // * Upsert to orders
     await OrderModel.findByIdAndUpdate(
