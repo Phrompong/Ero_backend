@@ -661,6 +661,7 @@ export async function getDataWithPaging(
           {
             $unwind: {
               path: "$orders",
+              preserveNullAndEmptyArrays: true,
             },
           },
           {
@@ -674,6 +675,7 @@ export async function getDataWithPaging(
           {
             $unwind: {
               path: "$orders.brokerId",
+              preserveNullAndEmptyArrays: true,
             },
           },
           {
@@ -687,6 +689,7 @@ export async function getDataWithPaging(
           {
             $unwind: {
               path: "$orders.bankRefund",
+              preserveNullAndEmptyArrays: true,
             },
           },
           {
@@ -700,6 +703,7 @@ export async function getDataWithPaging(
           {
             $unwind: {
               path: "$customers",
+              preserveNullAndEmptyArrays: true,
             },
           },
           {
@@ -750,6 +754,7 @@ export async function getDataWithPaging(
           {
             $unwind: {
               path: "$orders",
+              preserveNullAndEmptyArrays: true,
             },
           },
           {
@@ -763,6 +768,7 @@ export async function getDataWithPaging(
           {
             $unwind: {
               path: "$orders.brokerId",
+              preserveNullAndEmptyArrays: true,
             },
           },
           {
@@ -776,6 +782,7 @@ export async function getDataWithPaging(
           {
             $unwind: {
               path: "$orders.bankRefund",
+              preserveNullAndEmptyArrays: true,
             },
           },
           {
@@ -789,6 +796,7 @@ export async function getDataWithPaging(
           {
             $unwind: {
               path: "$customers",
+              preserveNullAndEmptyArrays: true,
             },
           },
           {

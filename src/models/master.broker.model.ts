@@ -8,6 +8,9 @@ export class MasterBroker extends BaseModel {
   @prop({ type: String })
   public name!: string;
 
+  @prop({ type: String })
+  public nameEN!: string;
+
   @prop({ type: Boolean })
   public status!: boolean;
 }
