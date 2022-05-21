@@ -192,7 +192,7 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
           noSubAllocate,
           partiNo2,
           brokerateAccount,
-          rightSpecialName,
+          rightSpecialName: rightSpecialName || "NCAP-W1",
           rightSpecialVolume,
           detailFull,
           detailShort,

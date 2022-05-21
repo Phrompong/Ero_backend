@@ -403,12 +403,14 @@ export async function getDataWithPaging(
                       ],
                     }
                   : {},
-                {
-                  createdOn: {
-                    $gte: startDate,
-                    $lt: endDate,
-                  },
-                },
+                startDate && endDate
+                  ? {
+                      createdOn: {
+                        $gte: startDate,
+                        $lt: endDate,
+                      },
+                    }
+                  : {},
               ],
             },
           },
@@ -865,8 +867,8 @@ export async function getDataWithPaging(
 
 export async function getCurrentOrderAmount(
   key: string,
-  startDate: Date,
-  endDate: Date
+  startDate?: Date,
+  endDate?: Date
 ) {
   const results = await OrderModel.aggregate([
     {
@@ -953,12 +955,14 @@ export async function getCurrentOrderAmount(
                 ],
               }
             : {},
-          {
-            createdOn: {
-              $gte: startDate,
-              $lt: endDate,
-            },
-          },
+          startDate && endDate
+            ? {
+                createdOn: {
+                  $gte: startDate,
+                  $lt: endDate,
+                },
+              }
+            : {},
         ],
       },
     },
@@ -1043,8 +1047,8 @@ export async function getCurrentOrderAmount(
 
 export async function getOrderCompareSales(
   key: string,
-  startDate: Date,
-  endDate: Date
+  startDate?: Date,
+  endDate?: Date
 ) {
   const results = await OrderModel.aggregate([
     {
@@ -1131,12 +1135,14 @@ export async function getOrderCompareSales(
                 ],
               }
             : {},
-          {
-            createdOn: {
-              $gte: startDate,
-              $lt: endDate,
-            },
-          },
+          startDate && endDate
+            ? {
+                createdOn: {
+                  $gte: startDate,
+                  $lt: endDate,
+                },
+              }
+            : {},
         ],
       },
     },

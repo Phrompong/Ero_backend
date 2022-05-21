@@ -7,7 +7,13 @@ import {
 import express from "express";
 import { Order, OrderModel } from "../../models/order.model";
 import { statusData } from "../../controllers/status.controller";
-import { startOfToday, endOfToday, startOfYear, endOfYear } from "date-fns";
+import {
+  startOfToday,
+  startOfDay,
+  endOfDay,
+  startOfYear,
+  endOfYear,
+} from "date-fns";
 import { CustomerStockModel } from "../../models/customer.stock.model";
 import * as excelJS from "exceljs";
 import { dataExport } from "../../controllers/order.controller";
@@ -214,7 +220,7 @@ router.get("/:id", async (req, res) => {
 // * For search name-surname , rightStockName
 router.get("/search/value", async (req, res) => {
   try {
-    const { key, type, customerId } = req.query;
+    let { key, type, customerId, startDate, endDate } = req.query;
 
     const limitInput = req.query.limit?.toString() || "10";
     const pageInput = req.query.page?.toString() || "1";
@@ -224,15 +230,12 @@ router.get("/search/value", async (req, res) => {
       },
     };
 
-    let startDate: Date | undefined = undefined;
-    let endDate: Date | undefined = undefined;
+    let startDataValue;
+    let endDateValue;
 
-    if (type === "day") {
-      startDate = startOfToday();
-      endDate = endOfToday();
-    } else if (type === "year") {
-      startDate = startOfYear(new Date());
-      endDate = endOfYear(new Date());
+    if (startDate && endDate) {
+      startDataValue = startOfDay(new Date(startDate as string));
+      endDateValue = endOfDay(new Date(endDate as string));
     }
 
     const obj: any = {};
@@ -250,8 +253,8 @@ router.get("/search/value", async (req, res) => {
       OrderModel,
       "orderSearch",
       key ? key.toString().toLowerCase() : "",
-      startDate,
-      endDate
+      startDataValue,
+      endDateValue
     );
 
     if (!find) {
@@ -282,27 +285,20 @@ router.get("/search/value", async (req, res) => {
 // * For get order using progress bar
 router.get("/progressPie/currentOrderAmount", async (req, res) => {
   try {
-    const { key, type } = req.query;
+    const { key, type, startDate, endDate } = req.query;
 
-    let startDate: Date;
-    let endDate: Date;
+    let startDataValue;
+    let endDateValue;
 
-    if (type === "day") {
-      startDate = startOfToday();
-      endDate = endOfToday();
-    } else if (type === "year") {
-      startDate = startOfYear(new Date());
-      endDate = endOfYear(new Date());
-    } else {
-      return res
-        .status(400)
-        .send({ code: "ERO-0011", message: "Please select type day and year" });
+    if (startDate && endDate) {
+      startDataValue = startOfDay(new Date(startDate as string));
+      endDateValue = endOfDay(new Date(endDate as string));
     }
 
     const result = await getCurrentOrderAmount(
       key?.toString().toLocaleLowerCase() || "",
-      startDate,
-      endDate
+      startDataValue,
+      endDateValue
     );
 
     return res
@@ -317,27 +313,20 @@ router.get("/progressPie/currentOrderAmount", async (req, res) => {
 
 router.get("/progressPie/orderCompareSales", async (req, res) => {
   try {
-    const { key, type } = req.query;
+    const { key, type, startDate, endDate } = req.query;
 
-    let startDate: Date;
-    let endDate: Date;
+    let startDataValue;
+    let endDateValue;
 
-    if (type === "day") {
-      startDate = startOfToday();
-      endDate = endOfToday();
-    } else if (type === "year") {
-      startDate = startOfYear(new Date());
-      endDate = endOfYear(new Date());
-    } else {
-      return res
-        .status(400)
-        .send({ code: "ERO-0011", message: "Please select type day and year" });
+    if (startDate && endDate) {
+      startDataValue = startOfDay(new Date(startDate as string));
+      endDateValue = endOfDay(new Date(endDate as string));
     }
 
     const result = await getOrderCompareSales(
       key?.toString().toLocaleLowerCase() || "",
-      startDate,
-      endDate
+      startDataValue,
+      endDateValue
     );
 
     return res

@@ -97,4 +97,22 @@ router.get("/search/value", async (req, res) => {
   }
 });
 
+router.patch("/", async (req, res) => {
+  try {
+    const { id } = req.query;
+
+    if (!id) {
+      await CustomerStockModel.updateMany(
+        {},
+        { $set: { rightSpecialName: "NCAP-W1" } }
+      );
+
+      return res.status(200).respond(0, "ok");
+    }
+  } catch (error) {
+    const err = error as Error;
+    return res.status(400).respond(-1, err.message);
+  }
+});
+
 export default router;
