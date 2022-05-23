@@ -43,18 +43,29 @@ export async function dataExport() {
       paidSpecialVolume,
       paymentAmount,
       returnAmount,
+      excessAmount,
     } = obj;
 
-    const { id, name, lastname, nationalId, telephone, atsBank, atsBankNo } =
-      customerId;
+    const {
+      id,
+      name,
+      lastname,
+      nationalId,
+      telephone,
+      atsBank,
+      atsBankNo,
+      refNo,
+    } = customerId;
 
     const { rightStockVolume } = customerStock;
 
+    let tempAllow = paidRightVolume - excessAmount;
+
     response.push({
-      customerId: id,
+      customerId: refNo,
       customerName: name,
       customerLastname: lastname,
-      customerNationalId: nationalId,
+      customerNationalId: refNo,
       telephone,
       atsBank,
       atsBankNo,
@@ -66,7 +77,8 @@ export async function dataExport() {
       paidRightVolume,
       paidSpecialVolume,
       paymentAmount,
-      returnAmount,
+      returnAmount: excessAmount,
+      allowedAmount: tempAllow < 0 ? tempAllow * -1 : tempAllow,
     });
   }
 
