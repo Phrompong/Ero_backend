@@ -106,7 +106,7 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
         const account = temp[validateHeaderExcel(22, keys[22])];
         const partiNo = temp[validateHeaderExcel(23, keys[23])];
         const refType = temp[validateHeaderExcel(24, keys[24])];
-        const refNo = temp[validateHeaderExcel(25, keys[25])];
+        const refNo = temp[validateHeaderExcel(25, keys[25])].trim();
         const eligibleSecurities = temp[validateHeaderExcel(26, keys[26])];
         const noForCalculation = temp[validateHeaderExcel(27, keys[27])];
         const ratio = temp[validateHeaderExcel(28, keys[28])];
@@ -116,8 +116,9 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
         const brokerateAccount = temp[validateHeaderExcel(32, keys[32])];
         const rightSpecialName = temp[validateHeaderExcel(33, keys[33])];
         const rightSpecialVolume = temp[validateHeaderExcel(34, keys[34])];
-        const detailShort = temp[validateHeaderExcel(35, keys[35])];
-        const detailFull = temp[validateHeaderExcel(36, keys[36])];
+        const company = temp[validateHeaderExcel(35, keys[35])];
+        const detailShort = temp[validateHeaderExcel(36, keys[36])];
+        const detailFull = temp[validateHeaderExcel(37, keys[37])];
 
         // * Insert master customer
         const masterCustome: MasterCustomer = {
@@ -144,7 +145,7 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
           createdBy: "Import excel",
           atsBank: "",
           atsBankNo: "",
-          refNo: refNo.trim(),
+          refNo,
         };
 
         const insertMasterCustomer = await MasterCustomerModel.updateOne(
@@ -250,7 +251,7 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
   } catch (error) {
     const err = error as Error;
 
-    return res.status(400).send({ code: "ERO-0010", message: err.message });
+    return res.status(400).send({ code: "ERO-0010", message: err });
   }
 });
 

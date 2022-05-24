@@ -37,6 +37,7 @@ export function validateHeaderExcel(index: number, value: string) {
     new RegExp(/บัญชีสมาชิก/),
     new RegExp(/RightSpecialName/),
     new RegExp(/RightSpecialVolume/),
+    new RegExp(/Company/),
     new RegExp(/DetailShort/),
     new RegExp(/DetailFull/),
   ];
