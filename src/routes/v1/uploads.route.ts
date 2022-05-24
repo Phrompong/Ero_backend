@@ -144,7 +144,7 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
           createdBy: "Import excel",
           atsBank: "",
           atsBankNo: "",
-          refNo,
+          refNo: refNo.trim(),
         };
 
         const insertMasterCustomer = await MasterCustomerModel.updateOne(

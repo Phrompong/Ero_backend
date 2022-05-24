@@ -59,7 +59,7 @@ export async function dataExport() {
 
     const { rightStockVolume } = customerStock;
 
-    let tempAllow = paidRightVolume - excessAmount;
+    let tempAllow = paymentAmount - excessAmount;
 
     response.push({
       customerId: refNo,
