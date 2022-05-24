@@ -111,6 +111,7 @@ async function init() {
     .then(connectToDatabase)
     .then(() => {
       app.use(helmet());
+      app.use(bodyParser.json({ limit: "50mb" }));
       app.use(cors({ origin: "*" }));
       app.use(expressMiddleware());
       app.use(express.text({ type: "text/plain" }));
