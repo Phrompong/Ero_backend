@@ -3,6 +3,7 @@ import { Order, OrderModel } from "../models/order.model";
 import { getDataWithPaging } from "./common.controller";
 import * as excelJS from "exceljs";
 import { forEach } from "lodash";
+import { format } from "date-fns";
 
 export async function insert(order: Order) {
   if (!order) {
@@ -14,81 +15,6 @@ export async function insert(order: Order) {
   return result;
 }
 
-// * Export data
-export async function dataExport() {
-  const sort = {
-    $sort: {
-      createdOn: -1,
-    },
-  };
-
-  const find = await getDataWithPaging(
-    null,
-    1,
-    1000000,
-    sort,
-    OrderModel,
-    "order"
-  );
-
-  const { data } = find;
-
-  let response: any[] = [];
-
-  for (const obj of data) {
-    const {
-      customerId,
-      rightStockName,
-      stockVolume,
-      rightSpecialName,
-      customerStock,
-      rightSpecialVolume,
-      paidRightVolume,
-      paidSpecialVolume,
-      paymentAmount,
-      returnAmount,
-      excessAmount,
-    } = obj;
-
-    const {
-      id,
-      name,
-      lastname,
-      nationalId,
-      telephone,
-      atsBank,
-      atsBankNo,
-      refNo,
-    } = customerId;
-
-    const { rightStockVolume } = customerStock;
-
-    let tempAllow = paymentAmount - excessAmount;
-
-    response.push({
-      customerId: refNo,
-      customerName: name,
-      customerLastname: lastname,
-      customerNationalId: refNo,
-      telephone,
-      atsBank,
-      atsBankNo,
-      rightStockName,
-      stockVolume,
-      rightSpecialName,
-      rightStockVolume,
-      rightSpecialVolume,
-      paidRightVolume,
-      paidSpecialVolume,
-      paymentAmount,
-      returnAmount: excessAmount,
-      allowedAmount: tempAllow < 0 ? tempAllow * -1 : tempAllow,
-    });
-  }
-
-  return response;
-}
-
 export async function exportExcel(obj: any) {
   const { key, res, filename, sheetname } = obj;
 
@@ -97,211 +23,11 @@ export async function exportExcel(obj: any) {
   const width = 20;
 
   const excelHandler: { [key: string]: any } = {
-    atsSba: {
-      func: {},
+    aqs: {
+      func: getOrderExport,
       columns: [
         {
-          header: "Account",
-          key: "",
-          width,
-        },
-        {
-          header: "BankCode",
-          key: "",
-          width,
-        },
-        {
-          header: "DueDate",
-          key: "",
-          width,
-        },
-        {
-          header: "ReceiveType",
-          key: "",
-          width,
-        },
-        {
-          header: "BankAccount",
-          key: "",
-          width,
-        },
-        {
-          header: "CustName",
-          key: "",
-          width,
-        },
-        {
-          header: "Price",
-          key: "",
-          width,
-        },
-        {
-          header: "ID",
-          key: "",
-          width,
-        },
-        {
-          header: "DelFlag",
-          key: "",
-          width,
-        },
-        {
-          header: "ExportDate",
-          key: "",
-          width,
-        },
-        {
-          header: "ExportNo",
-          key: "",
-          width,
-        },
-        {
-          header: "ExportTime",
-          key: "",
-          width,
-        },
-        {
-          header: "AuthorUserID",
-          key: "",
-          width,
-        },
-        {
-          header: "ExportGroupNo",
-          key: "",
-          width,
-        },
-        {
-          header: "GroupDate",
-          key: "",
-          width,
-        },
-      ],
-    },
-    dss: {
-      func: {},
-      columns: [
-        {
-          header: "Transaction Type of Corporate Action",
-          key: "",
-          width,
-        },
-        {
-          header: "Securities Symbol at",
-          key: "",
-          width,
-        },
-        {
-          header: "Book Closing Date",
-          key: "",
-          width,
-        },
-        {
-          header: "Record Date",
-          key: "",
-          width,
-        },
-        {
-          header: "Market ID",
-          key: "",
-          width,
-        },
-        {
-          header: "Subscription No.",
-          key: "",
-          width,
-        },
-        {
-          header: "Account ID",
-          key: "",
-          width,
-        },
-        {
-          header: "Reference Type",
-          key: "",
-          width,
-        },
-        {
-          header: "Reference No",
-          key: "",
-          width,
-        },
-        {
-          header: "Prefix",
-          key: "",
-          width,
-        },
-        {
-          header: "Official Prefix",
-          key: "",
-          width,
-        },
-        {
-          header: "Official First Name",
-          key: "",
-          width,
-        },
-        {
-          header: "Official Last Name",
-          key: "",
-          width,
-        },
-        {
-          header: "Address",
-          key: "",
-          width,
-        },
-        {
-          header: "Zip Code",
-          key: "",
-          width,
-        },
-        {
-          header: "Country Abbr",
-          key: "",
-          width,
-        },
-        {
-          header: "Nationality",
-          key: "",
-          width,
-        },
-        {
-          header: "Holder Type Code",
-          key: "",
-          width,
-        },
-        {
-          header: "Number of Share at Book Close",
-          key: "",
-          width,
-        },
-        {
-          header: "Number of right subscribe/exercise",
-          key: "",
-          width,
-        },
-        {
-          header: "Amount (BAHT)",
-          key: "",
-          width,
-        },
-        {
-          header: "Subscription/Exercise Price",
-          key: "",
-          width,
-        },
-        {
-          header: "Subscription / Exercise Ratio",
-          key: "",
-          width,
-        },
-      ],
-    },
-    other: {
-      func: dataExport,
-      columns: [
-        {
-          header: "Customer ID",
+          header: "Customer ID (เลขทะเบียนผู้ถือหุ้น)",
           key: "customerId",
           width: 20,
         },
@@ -329,6 +55,216 @@ export async function exportExcel(obj: any) {
         { header: "Payment Amount", key: "paymentAmount", width: 20 },
         { header: "Allowed Amount", key: "allowedAmount", width: 20 },
         { header: "Return Amount", key: "returnAmount", width: 20 },
+        { header: "วันที่โอนเงิน", key: "paymentDate", width: 20 },
+        { header: "เวลาโอนเงิน", key: "paymentTime", width: 20 },
+        { header: "สถานะรายการ", key: "status", width: 20 },
+        { header: "ธนาคารสำหรับคืนเงิน", key: "bankRefundName", width: 20 },
+        {
+          header: "เลขบัญชีธนาคารสำหรับคืนเงิน",
+          key: "bankRefundNo",
+          width: 20,
+        },
+        { header: "ที่อยู่", key: "address", width: 20 },
+      ],
+    },
+    atsSba: {
+      func: getOrderExport,
+      columns: [
+        {
+          header: "Account",
+          key: "",
+          width,
+        },
+        {
+          header: "BankCode",
+          key: "",
+          width,
+        },
+        {
+          header: "DueDate",
+          key: "",
+          width,
+        },
+        {
+          header: "ReceiveType",
+          key: "",
+          width,
+        },
+        {
+          header: "BankAccount",
+          key: "bankRefundNo",
+          width,
+        },
+        {
+          header: "CustName",
+          key: "customerName",
+          width,
+        },
+        {
+          header: "Price",
+          key: "paymentAmount",
+          width,
+        },
+        {
+          header: "ID",
+          key: "",
+          width,
+        },
+        {
+          header: "DelFlag",
+          key: "",
+          width,
+        },
+        {
+          header: "ExportDate",
+          key: "exportDate",
+          width,
+        },
+        {
+          header: "ExportNo",
+          key: "",
+          width,
+        },
+        {
+          header: "ExportTime",
+          key: "exportTime",
+          width,
+        },
+        {
+          header: "AuthorUserID",
+          key: "",
+          width,
+        },
+        {
+          header: "ExportGroupNo",
+          key: "",
+          width,
+        },
+        {
+          header: "GroupDate",
+          key: "exportDate",
+          width,
+        },
+      ],
+    },
+    dss: {
+      func: getOrderExport,
+      columns: [
+        {
+          header: "Transaction Type of Corporate Action",
+          key: "",
+          width,
+        },
+        {
+          header: "Securities Symbol at",
+          key: "rightStockName",
+          width,
+        },
+        {
+          header: "Book Closing Date",
+          key: "",
+          width,
+        },
+        {
+          header: "Record Date",
+          key: "",
+          width,
+        },
+        {
+          header: "Market ID",
+          key: "",
+          width,
+        },
+        {
+          header: "Subscription No.",
+          key: "",
+          width,
+        },
+        {
+          header: "Account ID",
+          key: "registrationNo",
+          width,
+        },
+        {
+          header: "Reference Type",
+          key: "refType",
+          width,
+        },
+        {
+          header: "Reference No",
+          key: "refNo",
+          width,
+        },
+        {
+          header: "Prefix",
+          key: "titleCode",
+          width,
+        },
+        {
+          header: "Official Prefix",
+          key: "title",
+          width,
+        },
+        {
+          header: "Official First Name",
+          key: "name",
+          width,
+        },
+        {
+          header: "Official Last Name",
+          key: "lastname",
+          width,
+        },
+        {
+          header: "Address",
+          key: "address",
+          width,
+        },
+        {
+          header: "Zip Code",
+          key: "zipcode",
+          width,
+        },
+        {
+          header: "Country Abbr",
+          key: "",
+          width,
+        },
+        {
+          header: "Nationality",
+          key: "",
+          width,
+        },
+        {
+          header: "Holder Type Code",
+          key: "holderType",
+          width,
+        },
+        {
+          header: "Number of Share at Book Close",
+          key: "",
+          width,
+        },
+        {
+          header: "Number of right subscribe/exercise",
+          key: "",
+          width,
+        },
+        {
+          header: "Amount (BAHT)",
+          key: "",
+          width,
+        },
+        {
+          header: "Subscription/Exercise Price",
+          key: "offerPrice",
+          width,
+        },
+        {
+          header: "Subscription / Exercise Ratio",
+          key: "ratio",
+          width,
+        },
       ],
     },
   };
@@ -396,4 +332,121 @@ export async function exportExcel(obj: any) {
   return workbook.xlsx.write(res).then(function () {
     res.status(200).end();
   });
+}
+
+// * Export data
+export async function getOrderExport() {
+  const sort = {
+    $sort: {
+      createdOn: -1,
+    },
+  };
+
+  const find = await getDataWithPaging(
+    null,
+    1,
+    100000000,
+    sort,
+    OrderModel,
+    "order"
+  );
+
+  const { data } = find;
+
+  let response: any[] = [];
+  const exportDate = new Date();
+  for (const obj of data) {
+    const {
+      customerId,
+      rightStockName,
+      stockVolume,
+      rightSpecialName,
+      customerStock,
+      rightSpecialVolume,
+      paidRightVolume,
+      paidSpecialVolume,
+      paymentAmount,
+      returnAmount,
+      excessAmount,
+      paymentDate,
+      bankRefund,
+      bankRefundNo,
+      address,
+      status,
+    } = obj;
+
+    // * collection master customer
+    const {
+      id,
+      name,
+      lastname,
+      nationalId,
+      telephone,
+      atsBank,
+      atsBankNo,
+      refNo,
+      registrationNo,
+      zipcode,
+      holderType,
+    } = customerId;
+
+    // * collection customer stock
+    const {
+      rightStockVolume,
+      refType,
+      titleCode,
+      title,
+      offerPrice,
+      getRight,
+      ratio,
+    } = customerStock;
+
+    // * collection master bank
+    const { nameTH } = bankRefund;
+
+    // * collection status
+
+    let tempAllow = paymentAmount - excessAmount;
+
+    response.push({
+      customerId: refNo,
+      customerName: name,
+      customerLastname: lastname,
+      customerNationalId: refNo,
+      telephone,
+      atsBank,
+      atsBankNo,
+      rightStockName,
+      stockVolume,
+      rightSpecialName,
+      rightStockVolume,
+      rightSpecialVolume,
+      paidRightVolume,
+      paidSpecialVolume,
+      paymentAmount,
+      returnAmount: excessAmount,
+      allowedAmount: tempAllow < 0 ? tempAllow * -1 : tempAllow,
+      paymentDate: paymentDate ? format(paymentDate, "dd/MM/yyyy") : "",
+      paymentTime: paymentDate ? format(paymentDate, "HH:mm:ss") : "",
+      status: status.status,
+      bankRefundName: nameTH,
+      bankRefundNo,
+      address,
+      exportDate: exportDate ? format(exportDate, "dd/MM/yyyy") : "",
+      exportTime: exportDate ? format(exportDate, "HH:mm:ss") : "",
+      registrationNo,
+      refType,
+      refNo,
+      titleCode,
+      title,
+      name,
+      lastname,
+      zipcode,
+      offerPrice,
+      ratio: `${getRight} : ${ratio}`,
+      holderType,
+    });
+  }
+
+  return response;
 }

@@ -16,7 +16,10 @@ import {
 } from "date-fns";
 import { CustomerStockModel } from "../../models/customer.stock.model";
 import * as excelJS from "exceljs";
-import { dataExport, exportExcel } from "../../controllers/order.controller";
+import {
+  getOrderExport,
+  exportExcel,
+} from "../../controllers/order.controller";
 
 var router = express.Router();
 

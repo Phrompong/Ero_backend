@@ -398,6 +398,14 @@ export async function getDataWithPaging(
             },
           },
           {
+            $lookup: {
+              from: "cltMasterBanks",
+              localField: "bankRefund",
+              foreignField: "_id",
+              as: "bankRefund",
+            },
+          },
+          {
             $unwind: {
               path: "$customerStock",
             },
@@ -410,6 +418,11 @@ export async function getDataWithPaging(
           {
             $unwind: {
               path: "$status",
+            },
+          },
+          {
+            $unwind: {
+              path: "$bankRefund",
             },
           },
           {
@@ -435,6 +448,9 @@ export async function getDataWithPaging(
               excessAmount: 1,
               customerStock: 1,
               customerTel: 1,
+              bankRefund: 1,
+              bankRefundNo: 1,
+              address: 1,
             },
           },
           {
@@ -463,6 +479,9 @@ export async function getDataWithPaging(
               excessAmount: 1,
               customerStock: 1,
               customerTel: 1,
+              bankRefund: 1,
+              bankRefundNo: 1,
+              address: 1,
             },
           },
           {
@@ -517,6 +536,9 @@ export async function getDataWithPaging(
               excessAmount: 1,
               customerStock: 1,
               customerTel: 1,
+              bankRefund: 1,
+              bankRefundNo: 1,
+              address: 1,
             },
           },
 
