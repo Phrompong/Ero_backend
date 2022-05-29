@@ -1,24 +1,23 @@
 import express from "express";
-import { exportExcel } from "../../controllers/order.controller";
+import { exportExcel, exportText } from "../../controllers/order.controller";
 
 var router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
-    const { topic } = req.query;
+    const { topic, fileExtension } = req.query;
 
-    if (!topic) {
-      return res
-        .status(400)
-        .send({ code: "ERO-0011", message: "topic is missing value" });
+    switch (fileExtension) {
+      case "xlsx":
+        return await exportExcel({
+          key: topic,
+          res,
+          filename: topic,
+          sheetname: `sheet_${topic}`,
+        });
+      case "txt":
+        return await exportText({ key: topic, filename: topic, res });
     }
-
-    return await exportExcel({
-      key: topic,
-      res,
-      filename: topic,
-      sheetname: `sheet_${topic}`,
-    });
   } catch (error) {
     const err = error as Error;
 

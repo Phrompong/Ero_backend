@@ -334,6 +334,41 @@ export async function exportExcel(obj: any) {
   });
 }
 
+export async function exportText(obj: any) {
+  const { key, filename, res } = obj;
+
+  const excelHandler: { [key: string]: any } = {
+    atsSba: {
+      func: getAtsTxt,
+    },
+    dss: {
+      func: getDssTxt,
+    },
+  };
+
+  const select = await excelHandler[key as string];
+
+  const { func } = select;
+
+  const data = await func();
+
+  let value = "";
+  for (const obj of data) {
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        const element = obj[key];
+        value += `${element}|`;
+      }
+    }
+
+    value += "\n";
+  }
+
+  res.attachment(`${filename}.txt`);
+  res.type("txt");
+  res.send(value);
+}
+
 // * Export data
 export async function getOrderExport() {
   const sort = {
@@ -445,6 +480,114 @@ export async function getOrderExport() {
       offerPrice,
       ratio: `${getRight} : ${ratio}`,
       holderType,
+    });
+  }
+
+  return response;
+}
+
+export async function getAtsTxt() {
+  const data = await getOrderExport();
+
+  let response: any[] = [];
+
+  for (const obj of data) {
+    const {
+      account,
+      bankCode,
+      dueDate,
+      receiveType,
+      bankRefundNo,
+      customerName,
+      paymentAmount,
+      id,
+      delFlag,
+      exportDate,
+      exportNo,
+      exportTime,
+      authorUser,
+      authorUserId,
+      exportGroupNo,
+      groupDate,
+    } = obj;
+    response.push({
+      account: account || "",
+      bankCode: bankCode || "",
+      dueDate: dueDate || "",
+      receiveType: receiveType || "",
+      bankRefundNo: bankRefundNo || "",
+      customerName: customerName || "",
+      paymentAmount: paymentAmount || "",
+      id: id || "",
+      delFlag: delFlag || "",
+      exportDate: exportDate || "",
+      exportNo: exportNo || "",
+      exportTime: exportTime || "",
+      authorUser: authorUser || "",
+      authorUserId: authorUserId || "",
+      exportGroupNo: exportGroupNo || "",
+      groupDate: groupDate || "",
+    });
+  }
+
+  return response;
+}
+
+export async function getDssTxt() {
+  const data = await getOrderExport();
+
+  let response: any[] = [];
+
+  for (const obj of data) {
+    const {
+      transaction,
+      rightStockName,
+      bookCloseDate,
+      recordDate,
+      marketId,
+      subscriptionm,
+      registrationNo,
+      refType,
+      customerNationalId,
+      titleCode,
+      title,
+      name,
+      lastname,
+      address,
+      zipcode,
+      countryAbbr,
+      nationality,
+      holderType,
+      numberOfShareBookClose,
+      numberOfRightSub,
+      amount,
+      offerPrice,
+      ratio,
+    } = obj;
+    response.push({
+      transaction: transaction || "",
+      rightStockName: rightStockName || "",
+      bookCloseDate: bookCloseDate || "",
+      recordDate: recordDate || "",
+      marketId: marketId || "",
+      subscriptionm: subscriptionm || "",
+      registrationNo: registrationNo || "",
+      refType: refType || "",
+      customerNationalId: customerNationalId || "",
+      titleCode: titleCode || "",
+      title: title || "",
+      name: name || "",
+      lastname: lastname || "",
+      address: address || "",
+      zipcode: zipcode || "",
+      countryAbbr: countryAbbr || "",
+      nationality: nationality || "",
+      holderType: holderType || "",
+      numberOfShareBookClose: numberOfShareBookClose || "",
+      numberOfRightSub: numberOfRightSub || "",
+      amount: amount || "",
+      offerPrice: offerPrice || "",
+      ratio: ratio || "",
     });
   }
 
