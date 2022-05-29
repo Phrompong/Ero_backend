@@ -248,68 +248,6 @@ export async function getDataWithPaging(
 
   switch (mode) {
     case "order":
-      toFacet = {
-        _metadata: [match, count],
-        data: [
-          sort,
-          match,
-          {
-            $lookup: {
-              from: "cltMasterCustomer",
-              localField: "customerId",
-              foreignField: "_id",
-              as: "customerId",
-            },
-          },
-          {
-            $lookup: {
-              from: "cltStatus",
-              localField: "status",
-              foreignField: "_id",
-              as: "status",
-            },
-          },
-          {
-            $lookup: {
-              from: "cltCustomerStock",
-              localField: "customerStockId",
-              foreignField: "_id",
-              as: "customerStock",
-            },
-          },
-          {
-            $lookup: {
-              from: "cltMasterBrokers",
-              localField: "brokerId",
-              foreignField: "_id",
-              as: "brokerId",
-            },
-          },
-          {
-            $unwind: {
-              path: "$brokerId",
-            },
-          },
-          {
-            $unwind: {
-              path: "$customerId",
-            },
-          },
-          {
-            $unwind: {
-              path: "$status",
-            },
-          },
-          {
-            $unwind: {
-              path: "$customerStock",
-            },
-          },
-          skip,
-          pageSize,
-        ],
-      };
-      break;
     case "orderSearch":
       toFacet = {
         _metadata: [
@@ -588,58 +526,6 @@ export async function getDataWithPaging(
       };
       break;
     case "customer":
-      toFacet = {
-        _metadata: [
-          {
-            $match: {
-              $and: [
-                key
-                  ? {
-                      $or: [
-                        {
-                          nationalId: new RegExp(key || ""),
-                        },
-                        {
-                          passportNo: new RegExp(key || ""),
-                        },
-                        {
-                          passportNo: new RegExp(key || ""),
-                        },
-                      ],
-                    }
-                  : {},
-              ],
-            },
-          },
-          ,
-          count,
-        ],
-        data: [
-          sort,
-          {
-            $match: {
-              $and: [
-                key
-                  ? {
-                      $or: [
-                        {
-                          nationalId: new RegExp(key || ""),
-                        },
-                        {
-                          passportNo: new RegExp(key || ""),
-                        },
-                        {
-                          taxId: new RegExp(key || ""),
-                        },
-                      ],
-                    }
-                  : {},
-              ],
-            },
-          },
-        ],
-      };
-      break;
     case "customerStockSearch":
       toFacet = {
         _metadata: [
@@ -1230,3 +1116,1175 @@ interface RemoveEmptyOptions {
    */
   removeZeros?: boolean;
 }
+
+// switch (mode) {
+//   case "order":
+//     toFacet = {
+//       _metadata: [match, count],
+//       data: [
+//         sort,
+//         match,
+//         {
+//           $lookup: {
+//             from: "cltMasterCustomer",
+//             localField: "customerId",
+//             foreignField: "_id",
+//             as: "customerId",
+//           },
+//         },
+//         {
+//           $lookup: {
+//             from: "cltStatus",
+//             localField: "status",
+//             foreignField: "_id",
+//             as: "status",
+//           },
+//         },
+//         {
+//           $lookup: {
+//             from: "cltCustomerStock",
+//             localField: "customerStockId",
+//             foreignField: "_id",
+//             as: "customerStock",
+//           },
+//         },
+//         {
+//           $lookup: {
+//             from: "cltMasterBrokers",
+//             localField: "brokerId",
+//             foreignField: "_id",
+//             as: "brokerId",
+//           },
+//         },
+//         {
+//           $unwind: {
+//             path: "$brokerId",
+//           },
+//         },
+//         {
+//           $unwind: {
+//             path: "$customerId",
+//           },
+//         },
+//         {
+//           $unwind: {
+//             path: "$status",
+//           },
+//         },
+//         {
+//           $unwind: {
+//             path: "$customerStock",
+//           },
+//         },
+//         skip,
+//         pageSize,
+//       ],
+//     };
+//     break;
+//   case "orderSearch":
+//     toFacet = {
+//       _metadata: [
+//         {
+//           $lookup: {
+//             from: "cltMasterCustomer",
+//             localField: "customerId",
+//             foreignField: "_id",
+//             as: "customerId",
+//           },
+//         },
+//         {
+//           $lookup: {
+//             from: "cltStatus",
+//             localField: "status",
+//             foreignField: "_id",
+//             as: "status",
+//           },
+//         },
+//         {
+//           $unwind: {
+//             path: "$customerId",
+//           },
+//         },
+//         {
+//           $unwind: {
+//             path: "$status",
+//           },
+//         },
+//         {
+//           $project: {
+//             name: {
+//               $concat: ["$customerId.name", " ", "$customerId.lastname"],
+//             },
+//             customerId: 1,
+//             rightStockName: 1,
+//             stockVolume: 1,
+//             rightSpacialName: 1,
+//             rightSpacialVolume: 1,
+//             paidRightVolume: 1,
+//             paymentAmount: 1,
+//             returnAmount: 1,
+//             status: 1,
+//             createdOn: 1,
+//             createdBy: 1,
+//             updatedOn: 1,
+//             updatedBy: 1,
+//           },
+//         },
+//         {
+//           $project: {
+//             name: {
+//               $toLower: "$name",
+//             },
+//             tempRightStockName: {
+//               $toLower: "$rightStockName",
+//             },
+//             customerId: 1,
+//             rightStockName: 1,
+//             stockVolume: 1,
+//             rightSpacialName: 1,
+//             rightSpacialVolume: 1,
+//             paidRightVolume: 1,
+//             paymentAmount: 1,
+//             returnAmount: 1,
+//             status: 1,
+//             createdOn: 1,
+//             createdBy: 1,
+//             updatedOn: 1,
+//             updatedBy: 1,
+//           },
+//         },
+//         {
+//           $match: {
+//             $and: [
+//               key
+//                 ? {
+//                     $or: [
+//                       {
+//                         name: new RegExp(key || ""),
+//                       },
+//                       {
+//                         tempRightStockName: new RegExp(key || ""),
+//                       },
+//                       {
+//                         "customerId.nationalId": new RegExp(key || ""),
+//                       },
+//                       {
+//                         "customerId.taxId": new RegExp(key || ""),
+//                       },
+//                     ],
+//                   }
+//                 : {},
+//               startDate && endDate
+//                 ? {
+//                     createdOn: {
+//                       $gte: startDate,
+//                       $lt: endDate,
+//                     },
+//                   }
+//                 : {},
+//             ],
+//           },
+//         },
+//         {
+//           $project: {
+//             customerId: 1,
+//             rightStockName: 1,
+//             stockVolume: 1,
+//             rightSpacialName: 1,
+//             rightSpacialVolume: 1,
+//             paidRightVolume: 1,
+//             paymentAmount: 1,
+//             returnAmount: 1,
+//             status: 1,
+//             createdOn: 1,
+//             createdBy: 1,
+//             updatedOn: 1,
+//             updatedBy: 1,
+//           },
+//         },
+//         count,
+//       ],
+//       data: [
+//         sort,
+//         {
+//           $lookup: {
+//             from: "cltMasterCustomer",
+//             localField: "customerId",
+//             foreignField: "_id",
+//             as: "customerId",
+//           },
+//         },
+//         {
+//           $lookup: {
+//             from: "cltStatus",
+//             localField: "status",
+//             foreignField: "_id",
+//             as: "status",
+//           },
+//         },
+//         {
+//           $lookup: {
+//             from: "cltCustomerStock",
+//             localField: "customerStockId",
+//             foreignField: "_id",
+//             as: "customerStock",
+//           },
+//         },
+//         {
+//           $unwind: {
+//             path: "$customerStock",
+//           },
+//         },
+//         {
+//           $unwind: {
+//             path: "$customerId",
+//           },
+//         },
+//         {
+//           $unwind: {
+//             path: "$status",
+//           },
+//         },
+//         {
+//           $project: {
+//             name: {
+//               $concat: ["$customerId.name", " ", "$customerId.lastname"],
+//             },
+//             customerId: 1,
+//             rightStockName: 1,
+//             stockVolume: 1,
+//             rightSpacialName: 1,
+//             rightSpacialVolume: 1,
+//             paidRightVolume: 1,
+//             paymentAmount: 1,
+//             returnAmount: 1,
+//             status: 1,
+//             createdOn: 1,
+//             createdBy: 1,
+//             updatedOn: 1,
+//             updatedBy: 1,
+//             attachedFile: 1,
+//             attachedOn: 1,
+//             excessAmount: 1,
+//             customerStock: 1,
+//             customerTel: 1,
+//           },
+//         },
+//         {
+//           $project: {
+//             name: {
+//               $toLower: "$name",
+//             },
+//             tempRightStockName: {
+//               $toLower: "$rightStockName",
+//             },
+//             customerId: 1,
+//             rightStockName: 1,
+//             stockVolume: 1,
+//             rightSpacialName: 1,
+//             rightSpacialVolume: 1,
+//             paidRightVolume: 1,
+//             paymentAmount: 1,
+//             returnAmount: 1,
+//             status: 1,
+//             createdOn: 1,
+//             createdBy: 1,
+//             updatedOn: 1,
+//             updatedBy: 1,
+//             attachedFile: 1,
+//             attachedOn: 1,
+//             excessAmount: 1,
+//             customerStock: 1,
+//             customerTel: 1,
+//           },
+//         },
+//         {
+//           $match: {
+//             $and: [
+//               key
+//                 ? {
+//                     $or: [
+//                       {
+//                         name: new RegExp(key || ""),
+//                       },
+//                       {
+//                         tempRightStockName: new RegExp(key || ""),
+//                       },
+//                       {
+//                         "customerId.nationalId": new RegExp(key || ""),
+//                       },
+//                       {
+//                         "customerId.taxId": new RegExp(key || ""),
+//                       },
+//                     ],
+//                   }
+//                 : {},
+//               startDate && endDate
+//                 ? {
+//                     createdOn: {
+//                       $gte: startDate,
+//                       $lt: endDate,
+//                     },
+//                   }
+//                 : {},
+//             ],
+//           },
+//         },
+//         {
+//           $project: {
+//             customerId: 1,
+//             rightStockName: 1,
+//             stockVolume: 1,
+//             rightSpacialName: 1,
+//             rightSpacialVolume: 1,
+//             paidRightVolume: 1,
+//             paymentAmount: 1,
+//             returnAmount: 1,
+//             status: 1,
+//             createdOn: 1,
+//             createdBy: 1,
+//             updatedOn: 1,
+//             updatedBy: 1,
+//             attachedFile: 1,
+//             attachedOn: 1,
+//             excessAmount: 1,
+//             customerStock: 1,
+//             customerTel: 1,
+//           },
+//         },
+
+//         skip,
+//         pageSize,
+//       ],
+//     };
+//     break;
+//   case "customer":
+//     toFacet = {
+//       _metadata: [
+//         {
+//           $match: {
+//             $and: [
+//               key
+//                 ? {
+//                     $or: [
+//                       {
+//                         nationalId: new RegExp(key || ""),
+//                       },
+//                       {
+//                         passportNo: new RegExp(key || ""),
+//                       },
+//                       {
+//                         passportNo: new RegExp(key || ""),
+//                       },
+//                     ],
+//                   }
+//                 : {},
+//             ],
+//           },
+//         },
+//         ,
+//         count,
+//       ],
+//       data: [
+//         sort,
+//         {
+//           $match: {
+//             $and: [
+//               key
+//                 ? {
+//                     $or: [
+//                       {
+//                         nationalId: new RegExp(key || ""),
+//                       },
+//                       {
+//                         passportNo: new RegExp(key || ""),
+//                       },
+//                       {
+//                         taxId: new RegExp(key || ""),
+//                       },
+//                     ],
+//                   }
+//                 : {},
+//             ],
+//           },
+//         },
+//       ],
+//     };
+//     break;
+//   case "customerStockSearch":
+//     toFacet = {
+//       _metadata: [
+//         match,
+//         {
+//           $lookup: {
+//             from: "cltMasterCustomer",
+//             localField: "customerId",
+//             foreignField: "_id",
+//             as: "customers",
+//           },
+//         },
+//         {
+//           $lookup: {
+//             from: "cltOrders",
+//             localField: "_id",
+//             foreignField: "customerStockId",
+//             as: "orders",
+//           },
+//         },
+//         {
+//           $unwind: {
+//             path: "$orders",
+//             preserveNullAndEmptyArrays: true,
+//           },
+//         },
+//         {
+//           $lookup: {
+//             from: "cltMasterBrokers",
+//             localField: "orders.brokerId",
+//             foreignField: "_id",
+//             as: "orders.brokerId",
+//           },
+//         },
+//         {
+//           $unwind: {
+//             path: "$orders.brokerId",
+//             preserveNullAndEmptyArrays: true,
+//           },
+//         },
+//         {
+//           $lookup: {
+//             from: "cltMasterBanks",
+//             localField: "orders.bankRefund",
+//             foreignField: "_id",
+//             as: "orders.bankRefund",
+//           },
+//         },
+//         {
+//           $unwind: {
+//             path: "$orders.bankRefund",
+//             preserveNullAndEmptyArrays: true,
+//           },
+//         },
+//         {
+//           $lookup: {
+//             from: "cltStatus",
+//             localField: "orders.status",
+//             foreignField: "_id",
+//             as: "status",
+//           },
+//         },
+//         {
+//           $unwind: {
+//             path: "$customers",
+//             preserveNullAndEmptyArrays: true,
+//           },
+//         },
+//         {
+//           $addFields: {
+//             keyNationalId: "$customers.nationalId",
+//             keyTaxId: "$customers.taxId",
+//           },
+//         },
+//         {
+//           $match: {
+//             $and: [
+//               key
+//                 ? {
+//                     $or: [
+//                       {
+//                         keyNationalId: new RegExp(key || ""),
+//                       },
+//                       {
+//                         keyTaxId: new RegExp(key || ""),
+//                       },
+//                     ],
+//                   }
+//                 : {},
+//             ],
+//           },
+//         },
+//         count,
+//       ],
+//       data: [
+//         match,
+//         sort,
+//         {
+//           $lookup: {
+//             from: "cltMasterCustomer",
+//             localField: "customerId",
+//             foreignField: "_id",
+//             as: "customers",
+//           },
+//         },
+//         {
+//           $lookup: {
+//             from: "cltOrders",
+//             localField: "_id",
+//             foreignField: "customerStockId",
+//             as: "orders",
+//           },
+//         },
+//         {
+//           $unwind: {
+//             path: "$orders",
+//             preserveNullAndEmptyArrays: true,
+//           },
+//         },
+//         {
+//           $lookup: {
+//             from: "cltMasterBrokers",
+//             localField: "orders.brokerId",
+//             foreignField: "_id",
+//             as: "orders.brokerId",
+//           },
+//         },
+//         {
+//           $unwind: {
+//             path: "$orders.brokerId",
+//             preserveNullAndEmptyArrays: true,
+//           },
+//         },
+//         {
+//           $lookup: {
+//             from: "cltMasterBanks",
+//             localField: "orders.bankRefund",
+//             foreignField: "_id",
+//             as: "orders.bankRefund",
+//           },
+//         },
+//         {
+//           $unwind: {
+//             path: "$orders.bankRefund",
+//             preserveNullAndEmptyArrays: true,
+//           },
+//         },
+//         {
+//           $lookup: {
+//             from: "cltStatus",
+//             localField: "orders.status",
+//             foreignField: "_id",
+//             as: "status",
+//           },
+//         },
+//         {
+//           $unwind: {
+//             path: "$customers",
+//             preserveNullAndEmptyArrays: true,
+//           },
+//         },
+//         {
+//           $addFields: {
+//             keyNationalId: "$customers.nationalId",
+//             keyTaxId: "$customers.taxId",
+//           },
+//         },
+//         {
+//           $match: {
+//             $and: [
+//               key
+//                 ? {
+//                     $or: [
+//                       {
+//                         keyNationalId: new RegExp(key || ""),
+//                       },
+//                       {
+//                         keyTaxId: new RegExp(key || ""),
+//                       },
+//                     ],
+//                   }
+//                 : {},
+//             ],
+//           },
+//         },
+//         skip,
+//         pageSize,
+//       ],
+//     };
+//     break;
+// }
+
+// switch (mode) {
+//   case "order":
+//     toFacet = {
+//       _metadata: [match, count],
+//       data: [
+//         sort,
+//         match,
+//         {
+//           $lookup: {
+//             from: "cltMasterCustomer",
+//             localField: "customerId",
+//             foreignField: "_id",
+//             as: "customerId",
+//           },
+//         },
+//         {
+//           $lookup: {
+//             from: "cltStatus",
+//             localField: "status",
+//             foreignField: "_id",
+//             as: "status",
+//           },
+//         },
+//         {
+//           $lookup: {
+//             from: "cltCustomerStock",
+//             localField: "customerStockId",
+//             foreignField: "_id",
+//             as: "customerStock",
+//           },
+//         },
+//         {
+//           $lookup: {
+//             from: "cltMasterBrokers",
+//             localField: "brokerId",
+//             foreignField: "_id",
+//             as: "brokerId",
+//           },
+//         },
+//         {
+//           $unwind: {
+//             path: "$brokerId",
+//           },
+//         },
+//         {
+//           $unwind: {
+//             path: "$customerId",
+//           },
+//         },
+//         {
+//           $unwind: {
+//             path: "$status",
+//           },
+//         },
+//         {
+//           $unwind: {
+//             path: "$customerStock",
+//           },
+//         },
+//         skip,
+//         pageSize,
+//       ],
+//     };
+//     break;
+//   case "orderSearch":
+//     toFacet = {
+//       _metadata: [
+//         {
+//           $lookup: {
+//             from: "cltMasterCustomer",
+//             localField: "customerId",
+//             foreignField: "_id",
+//             as: "customerId",
+//           },
+//         },
+//         {
+//           $lookup: {
+//             from: "cltStatus",
+//             localField: "status",
+//             foreignField: "_id",
+//             as: "status",
+//           },
+//         },
+//         {
+//           $unwind: {
+//             path: "$customerId",
+//           },
+//         },
+//         {
+//           $unwind: {
+//             path: "$status",
+//           },
+//         },
+//         {
+//           $project: {
+//             name: {
+//               $concat: ["$customerId.name", " ", "$customerId.lastname"],
+//             },
+//             customerId: 1,
+//             rightStockName: 1,
+//             stockVolume: 1,
+//             rightSpacialName: 1,
+//             rightSpacialVolume: 1,
+//             paidRightVolume: 1,
+//             paymentAmount: 1,
+//             returnAmount: 1,
+//             status: 1,
+//             createdOn: 1,
+//             createdBy: 1,
+//             updatedOn: 1,
+//             updatedBy: 1,
+//           },
+//         },
+//         {
+//           $project: {
+//             name: {
+//               $toLower: "$name",
+//             },
+//             tempRightStockName: {
+//               $toLower: "$rightStockName",
+//             },
+//             customerId: 1,
+//             rightStockName: 1,
+//             stockVolume: 1,
+//             rightSpacialName: 1,
+//             rightSpacialVolume: 1,
+//             paidRightVolume: 1,
+//             paymentAmount: 1,
+//             returnAmount: 1,
+//             status: 1,
+//             createdOn: 1,
+//             createdBy: 1,
+//             updatedOn: 1,
+//             updatedBy: 1,
+//           },
+//         },
+//         {
+//           $match: {
+//             $and: [
+//               key
+//                 ? {
+//                     $or: [
+//                       {
+//                         name: new RegExp(key || ""),
+//                       },
+//                       {
+//                         tempRightStockName: new RegExp(key || ""),
+//                       },
+//                       {
+//                         "customerId.nationalId": new RegExp(key || ""),
+//                       },
+//                       {
+//                         "customerId.taxId": new RegExp(key || ""),
+//                       },
+//                     ],
+//                   }
+//                 : {},
+//               startDate && endDate
+//                 ? {
+//                     createdOn: {
+//                       $gte: startDate,
+//                       $lt: endDate,
+//                     },
+//                   }
+//                 : {},
+//             ],
+//           },
+//         },
+//         {
+//           $project: {
+//             customerId: 1,
+//             rightStockName: 1,
+//             stockVolume: 1,
+//             rightSpacialName: 1,
+//             rightSpacialVolume: 1,
+//             paidRightVolume: 1,
+//             paymentAmount: 1,
+//             returnAmount: 1,
+//             status: 1,
+//             createdOn: 1,
+//             createdBy: 1,
+//             updatedOn: 1,
+//             updatedBy: 1,
+//           },
+//         },
+//         count,
+//       ],
+//       data: [
+//         sort,
+//         {
+//           $lookup: {
+//             from: "cltMasterCustomer",
+//             localField: "customerId",
+//             foreignField: "_id",
+//             as: "customerId",
+//           },
+//         },
+//         {
+//           $lookup: {
+//             from: "cltStatus",
+//             localField: "status",
+//             foreignField: "_id",
+//             as: "status",
+//           },
+//         },
+//         {
+//           $lookup: {
+//             from: "cltCustomerStock",
+//             localField: "customerStockId",
+//             foreignField: "_id",
+//             as: "customerStock",
+//           },
+//         },
+//         {
+//           $unwind: {
+//             path: "$customerStock",
+//           },
+//         },
+//         {
+//           $unwind: {
+//             path: "$customerId",
+//           },
+//         },
+//         {
+//           $unwind: {
+//             path: "$status",
+//           },
+//         },
+//         {
+//           $project: {
+//             name: {
+//               $concat: ["$customerId.name", " ", "$customerId.lastname"],
+//             },
+//             customerId: 1,
+//             rightStockName: 1,
+//             stockVolume: 1,
+//             rightSpacialName: 1,
+//             rightSpacialVolume: 1,
+//             paidRightVolume: 1,
+//             paymentAmount: 1,
+//             returnAmount: 1,
+//             status: 1,
+//             createdOn: 1,
+//             createdBy: 1,
+//             updatedOn: 1,
+//             updatedBy: 1,
+//             attachedFile: 1,
+//             attachedOn: 1,
+//             excessAmount: 1,
+//             customerStock: 1,
+//             customerTel: 1,
+//           },
+//         },
+//         {
+//           $project: {
+//             name: {
+//               $toLower: "$name",
+//             },
+//             tempRightStockName: {
+//               $toLower: "$rightStockName",
+//             },
+//             customerId: 1,
+//             rightStockName: 1,
+//             stockVolume: 1,
+//             rightSpacialName: 1,
+//             rightSpacialVolume: 1,
+//             paidRightVolume: 1,
+//             paymentAmount: 1,
+//             returnAmount: 1,
+//             status: 1,
+//             createdOn: 1,
+//             createdBy: 1,
+//             updatedOn: 1,
+//             updatedBy: 1,
+//             attachedFile: 1,
+//             attachedOn: 1,
+//             excessAmount: 1,
+//             customerStock: 1,
+//             customerTel: 1,
+//           },
+//         },
+//         {
+//           $match: {
+//             $and: [
+//               key
+//                 ? {
+//                     $or: [
+//                       {
+//                         name: new RegExp(key || ""),
+//                       },
+//                       {
+//                         tempRightStockName: new RegExp(key || ""),
+//                       },
+//                       {
+//                         "customerId.nationalId": new RegExp(key || ""),
+//                       },
+//                       {
+//                         "customerId.taxId": new RegExp(key || ""),
+//                       },
+//                     ],
+//                   }
+//                 : {},
+//               startDate && endDate
+//                 ? {
+//                     createdOn: {
+//                       $gte: startDate,
+//                       $lt: endDate,
+//                     },
+//                   }
+//                 : {},
+//             ],
+//           },
+//         },
+//         {
+//           $project: {
+//             customerId: 1,
+//             rightStockName: 1,
+//             stockVolume: 1,
+//             rightSpacialName: 1,
+//             rightSpacialVolume: 1,
+//             paidRightVolume: 1,
+//             paymentAmount: 1,
+//             returnAmount: 1,
+//             status: 1,
+//             createdOn: 1,
+//             createdBy: 1,
+//             updatedOn: 1,
+//             updatedBy: 1,
+//             attachedFile: 1,
+//             attachedOn: 1,
+//             excessAmount: 1,
+//             customerStock: 1,
+//             customerTel: 1,
+//           },
+//         },
+
+//         skip,
+//         pageSize,
+//       ],
+//     };
+//     break;
+//   case "customer":
+//     toFacet = {
+//       _metadata: [
+//         {
+//           $match: {
+//             $and: [
+//               key
+//                 ? {
+//                     $or: [
+//                       {
+//                         nationalId: new RegExp(key || ""),
+//                       },
+//                       {
+//                         passportNo: new RegExp(key || ""),
+//                       },
+//                       {
+//                         passportNo: new RegExp(key || ""),
+//                       },
+//                     ],
+//                   }
+//                 : {},
+//             ],
+//           },
+//         },
+//         ,
+//         count,
+//       ],
+//       data: [
+//         sort,
+//         {
+//           $match: {
+//             $and: [
+//               key
+//                 ? {
+//                     $or: [
+//                       {
+//                         nationalId: new RegExp(key || ""),
+//                       },
+//                       {
+//                         passportNo: new RegExp(key || ""),
+//                       },
+//                       {
+//                         taxId: new RegExp(key || ""),
+//                       },
+//                     ],
+//                   }
+//                 : {},
+//             ],
+//           },
+//         },
+//       ],
+//     };
+//     break;
+//   case "customerStockSearch":
+//     toFacet = {
+//       _metadata: [
+//         match,
+//         {
+//           $lookup: {
+//             from: "cltMasterCustomer",
+//             localField: "customerId",
+//             foreignField: "_id",
+//             as: "customers",
+//           },
+//         },
+//         {
+//           $lookup: {
+//             from: "cltOrders",
+//             localField: "_id",
+//             foreignField: "customerStockId",
+//             as: "orders",
+//           },
+//         },
+//         {
+//           $unwind: {
+//             path: "$orders",
+//             preserveNullAndEmptyArrays: true,
+//           },
+//         },
+//         {
+//           $lookup: {
+//             from: "cltMasterBrokers",
+//             localField: "orders.brokerId",
+//             foreignField: "_id",
+//             as: "orders.brokerId",
+//           },
+//         },
+//         {
+//           $unwind: {
+//             path: "$orders.brokerId",
+//             preserveNullAndEmptyArrays: true,
+//           },
+//         },
+//         {
+//           $lookup: {
+//             from: "cltMasterBanks",
+//             localField: "orders.bankRefund",
+//             foreignField: "_id",
+//             as: "orders.bankRefund",
+//           },
+//         },
+//         {
+//           $unwind: {
+//             path: "$orders.bankRefund",
+//             preserveNullAndEmptyArrays: true,
+//           },
+//         },
+//         {
+//           $lookup: {
+//             from: "cltStatus",
+//             localField: "orders.status",
+//             foreignField: "_id",
+//             as: "status",
+//           },
+//         },
+//         {
+//           $unwind: {
+//             path: "$customers",
+//             preserveNullAndEmptyArrays: true,
+//           },
+//         },
+//         {
+//           $addFields: {
+//             keyNationalId: "$customers.nationalId",
+//             keyTaxId: "$customers.taxId",
+//           },
+//         },
+//         {
+//           $match: {
+//             $and: [
+//               key
+//                 ? {
+//                     $or: [
+//                       {
+//                         keyNationalId: new RegExp(key || ""),
+//                       },
+//                       {
+//                         keyTaxId: new RegExp(key || ""),
+//                       },
+//                     ],
+//                   }
+//                 : {},
+//             ],
+//           },
+//         },
+//         count,
+//       ],
+//       data: [
+//         match,
+//         sort,
+//         {
+//           $lookup: {
+//             from: "cltMasterCustomer",
+//             localField: "customerId",
+//             foreignField: "_id",
+//             as: "customers",
+//           },
+//         },
+//         {
+//           $lookup: {
+//             from: "cltOrders",
+//             localField: "_id",
+//             foreignField: "customerStockId",
+//             as: "orders",
+//           },
+//         },
+//         {
+//           $unwind: {
+//             path: "$orders",
+//             preserveNullAndEmptyArrays: true,
+//           },
+//         },
+//         {
+//           $lookup: {
+//             from: "cltMasterBrokers",
+//             localField: "orders.brokerId",
+//             foreignField: "_id",
+//             as: "orders.brokerId",
+//           },
+//         },
+//         {
+//           $unwind: {
+//             path: "$orders.brokerId",
+//             preserveNullAndEmptyArrays: true,
+//           },
+//         },
+//         {
+//           $lookup: {
+//             from: "cltMasterBanks",
+//             localField: "orders.bankRefund",
+//             foreignField: "_id",
+//             as: "orders.bankRefund",
+//           },
+//         },
+//         {
+//           $unwind: {
+//             path: "$orders.bankRefund",
+//             preserveNullAndEmptyArrays: true,
+//           },
+//         },
+//         {
+//           $lookup: {
+//             from: "cltStatus",
+//             localField: "orders.status",
+//             foreignField: "_id",
+//             as: "status",
+//           },
+//         },
+//         {
+//           $unwind: {
+//             path: "$customers",
+//             preserveNullAndEmptyArrays: true,
+//           },
+//         },
+//         {
+//           $addFields: {
+//             keyNationalId: "$customers.nationalId",
+//             keyTaxId: "$customers.taxId",
+//           },
+//         },
+//         {
+//           $match: {
+//             $and: [
+//               key
+//                 ? {
+//                     $or: [
+//                       {
+//                         keyNationalId: new RegExp(key || ""),
+//                       },
+//                       {
+//                         keyTaxId: new RegExp(key || ""),
+//                       },
+//                     ],
+//                   }
+//                 : {},
+//             ],
+//           },
+//         },
+//         skip,
+//         pageSize,
+//       ],
+//     };
+//     break;
+// }

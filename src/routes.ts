@@ -1,4 +1,5 @@
 import express from "express";
+import exportsRouterV1 from "./routes/v1/exports.route"
 import textControlRouterV1 from "./routes/v1/textControl.route"
 import masterIssueRouterV1 from "./routes/v1/master.issue.route";
 import consentHistoryRouterV1 from "./routes/v1/consentHistory.route";
@@ -38,4 +39,5 @@ router.use("/v1/customerService", customerServiceRouterV1);
 router.use("/v1/consentHistory", consentHistoryRouterV1);
 router.use("/v1/masterIssue", masterIssueRouterV1);
 router.use("/v1/textControl", textControlRouterV1);
+router.use("/v1/exports", exportsRouterV1);
 export default router;

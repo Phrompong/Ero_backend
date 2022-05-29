@@ -106,7 +106,9 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
         const account = temp[validateHeaderExcel(22, keys[22])];
         const partiNo = temp[validateHeaderExcel(23, keys[23])];
         const refType = temp[validateHeaderExcel(24, keys[24])];
-        const refNo = temp[validateHeaderExcel(25, keys[25])].trim();
+        const refNo = temp[validateHeaderExcel(25, keys[25])]
+          ? temp[validateHeaderExcel(25, keys[25])].trim()
+          : "";
         const eligibleSecurities = temp[validateHeaderExcel(26, keys[26])];
         const noForCalculation = temp[validateHeaderExcel(27, keys[27])];
         const ratio = temp[validateHeaderExcel(28, keys[28])];

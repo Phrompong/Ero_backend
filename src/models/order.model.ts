@@ -98,6 +98,9 @@ export class Order extends BaseModel {
 
   @prop({ type: String })
   public bankRefundNo!: string;
+
+  @prop({ type: String })
+  public paymentDate!: Date;
 }
 
 export const OrderModel = getModelForClass(Order, {
