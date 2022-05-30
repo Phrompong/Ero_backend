@@ -99,7 +99,7 @@ export class Order extends BaseModel {
   @prop({ type: String })
   public bankRefundNo!: string;
 
-  @prop({ type: String })
+  @prop({ type: Date })
   public paymentDate!: Date;
 }
 
