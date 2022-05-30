@@ -5,7 +5,16 @@ var router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
-    const results = await TextControlModel.find().lean();
+    const { button } = req.query;
+
+    const results = await TextControlModel.findOne(
+      button
+        ? {
+            button: button.toString(),
+            status: true,
+          }
+        : {}
+    ).lean();
 
     return res
       .status(200)
@@ -32,7 +41,7 @@ router.post("/", async (req, res) => {
     const result = await TextControlModel.create({
       button,
       textDescription,
-      status,
+      status: true,
     });
 
     return res
