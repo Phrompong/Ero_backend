@@ -451,6 +451,7 @@ export async function getDataWithPaging(
               bankRefund: 1,
               bankRefundNo: 1,
               address: 1,
+              paymentDate: 1,
             },
           },
           {
@@ -482,6 +483,7 @@ export async function getDataWithPaging(
               bankRefund: 1,
               bankRefundNo: 1,
               address: 1,
+              paymentDate: 1,
             },
           },
           {
@@ -539,6 +541,7 @@ export async function getDataWithPaging(
               bankRefund: 1,
               bankRefundNo: 1,
               address: 1,
+              paymentDate: 1,
             },
           },
 
