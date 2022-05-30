@@ -52,6 +52,7 @@ router.post("/", async (req, res) => {
       bankRefund,
       bankRefundNo,
       registrationNo,
+      paymentDate,
     } = body as any;
 
     // * Process excess amount
@@ -94,6 +95,7 @@ router.post("/", async (req, res) => {
       registrationNo,
       bankRefund: mongoose.Types.ObjectId(bankRefund),
       bankRefundNo,
+      paymentDate,
     });
 
     return res
