@@ -163,6 +163,8 @@ router.get("/", async (req, res) => {
       },
     };
 
+    const test = await OrderModel.find(obj).lean();
+
     const find = await getDataWithPaging(
       obj,
       +pageInput,

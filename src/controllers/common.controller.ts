@@ -251,6 +251,7 @@ export async function getDataWithPaging(
     case "orderSearch":
       toFacet = {
         _metadata: [
+          match ? match : {},
           {
             $lookup: {
               from: "cltMasterCustomer",
@@ -270,11 +271,13 @@ export async function getDataWithPaging(
           {
             $unwind: {
               path: "$customerId",
+              preserveNullAndEmptyArrays: true,
             },
           },
           {
             $unwind: {
               path: "$status",
+              preserveNullAndEmptyArrays: true,
             },
           },
           {
@@ -372,6 +375,7 @@ export async function getDataWithPaging(
           count,
         ],
         data: [
+          match ? match : {},
           sort,
           {
             $lookup: {
@@ -413,16 +417,19 @@ export async function getDataWithPaging(
           {
             $unwind: {
               path: "$customerId",
+              preserveNullAndEmptyArrays: true,
             },
           },
           {
             $unwind: {
               path: "$status",
+              preserveNullAndEmptyArrays: true,
             },
           },
           {
             $unwind: {
               path: "$bankRefund",
+              preserveNullAndEmptyArrays: true,
             },
           },
           {
