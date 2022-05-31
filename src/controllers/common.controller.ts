@@ -561,7 +561,7 @@ export async function getDataWithPaging(
     case "customerStockSearch":
       toFacet = {
         _metadata: [
-          match,
+          match ? match : {},
           {
             $lookup: {
               from: "cltMasterCustomer",
@@ -653,7 +653,7 @@ export async function getDataWithPaging(
           count,
         ],
         data: [
-          match,
+          match ? match : {},
           sort,
           {
             $lookup: {
@@ -721,6 +721,10 @@ export async function getDataWithPaging(
           },
           {
             $addFields: {
+              keyFullname: {
+                $concat: ["$customers.name", " ", "$customers.lastname"],
+              },
+              keyRegistrationNo: "$registrationNo",
               keyNationalId: "$customers.nationalId",
               keyTaxId: "$customers.taxId",
             },
@@ -731,6 +735,12 @@ export async function getDataWithPaging(
                 key
                   ? {
                       $or: [
+                        {
+                          keyFullname: new RegExp(key || ""),
+                        },
+                        {
+                          keyRegistrationNo: new RegExp(key || ""),
+                        },
                         {
                           keyNationalId: new RegExp(key || ""),
                         },
