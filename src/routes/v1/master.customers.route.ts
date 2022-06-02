@@ -3,8 +3,18 @@ import { MasterCustomerModel } from "../../models/master.customer.model";
 
 var router = express.Router();
 
-router.get("/", (req, res) => {
-  res.status(500).respond(99, "Not implemented yet", null);
+router.get("/", async (req, res) => {
+  try {
+    const customer = await MasterCustomerModel.find().limit(10).lean();
+
+    return res
+      .status(200)
+      .send({ code: "ERO-0001", message: "ok", data: customer });
+  } catch (error) {
+    const err = error as Error;
+
+    return res.status(400).send({ code: "ERO-0010", message: err.message });
+  }
 });
 
 router.get("/:id", async (req, res) => {

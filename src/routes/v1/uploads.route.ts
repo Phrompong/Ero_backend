@@ -382,7 +382,7 @@ router.get("/delete", async (req: any, res: any) => {
 
   await OrderModel.deleteMany({});
 
-  return res.status(400).send({ code: "ERO-0010", message: "delete ok" });
+  return res.status(200).send({ code: "ERO-0010", message: "delete ok" });
 });
 
 export default router;
