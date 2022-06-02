@@ -89,6 +89,7 @@ async function connectToDatabase(): Promise<void> {
       dbName,
       user: process.env.DATABASE_USERNAME,
       pass: process.env.DATABASE_PASSWORD,
+      useCreateIndex: true,
     });
 
     state.logger.info(`Database connected`);
