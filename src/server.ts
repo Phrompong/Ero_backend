@@ -128,9 +128,6 @@ async function init() {
         state.logger.info(`Server running on ${process.env.PORT}`);
 
         // * Initial status value
-        await insertStatus();
-        const a = await encrypt("4036182109");
-        const b = await decrypt(a);
 
         app.emit("appStarted", app);
       });
