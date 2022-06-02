@@ -12,11 +12,11 @@ export class CustomerStock extends BaseModel {
   @prop({ type: String })
   public rightSpecialName!: string;
 
-  @prop({ type: Number })
-  public stockVolume!: Number;
+  @prop({ type: String })
+  public stockVolume!: String;
 
-  @prop({ type: Number })
-  public rightStockVolume!: Number;
+  @prop({ type: String })
+  public rightStockVolume!: String;
 
   @prop({ type: Number })
   public rightSpecialVolume!: Number;
@@ -61,8 +61,8 @@ export class CustomerStock extends BaseModel {
   @prop({ type: String })
   public eligibleSecurities!: string;
 
-  @prop({ type: Number })
-  public noForCalculation!: number;
+  @prop({ type: String })
+  public noForCalculation!: String;
 
   @prop({ type: String })
   public noSubAllocate!: string;
@@ -72,6 +72,9 @@ export class CustomerStock extends BaseModel {
 
   @prop({ type: String })
   public partiNo2!: string;
+
+  @prop({ type: String })
+  public rtn!: string;
 }
 
 export const CustomerStockModel = getModelForClass(CustomerStock, {

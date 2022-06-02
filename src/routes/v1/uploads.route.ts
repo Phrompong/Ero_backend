@@ -16,6 +16,8 @@ import { statusData } from "../../controllers/status.controller";
 import { ConsentHistoryModel } from "../../models/consentHistory.model";
 import { validateHeaderExcel } from "../../controllers/validate.controller";
 import { MasterBrokerModel } from "../../models/master.broker.model";
+import { decrypt, encrypt } from "../../controllers/encrypt.controller";
+import md5 from "md5";
 
 const multer = require("multer");
 const reader = require("xlsx");
@@ -83,22 +85,22 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
 
         const no = temp[validateHeaderExcel(0, keys[0])];
         const rightStockName = temp[validateHeaderExcel(1, keys[1])];
-        const registrationNo = temp[validateHeaderExcel(2, keys[2])];
+        const registrationNo = encrypt(temp[validateHeaderExcel(2, keys[2])]); // * encrypt
         const holderType = temp[validateHeaderExcel(3, keys[3])];
-        const stockVolume = temp[validateHeaderExcel(4, keys[4])];
+        const stockVolume = encrypt(temp[validateHeaderExcel(4, keys[4])]); // * encrypt
         const titleCode = temp[validateHeaderExcel(5, keys[5])];
-        const title = temp[validateHeaderExcel(6, keys[6])];
-        const name = temp[validateHeaderExcel(7, keys[7])];
-        const lastname = temp[validateHeaderExcel(8, keys[8])];
-        const address = temp[validateHeaderExcel(9, keys[9])];
-        const zipcode = temp[validateHeaderExcel(10, keys[10])];
-        const home = temp[validateHeaderExcel(11, keys[11])];
-        const office = temp[validateHeaderExcel(12, keys[12])];
-        const telephone = temp[validateHeaderExcel(13, keys[13])];
-        const fax = temp[validateHeaderExcel(14, keys[14])];
-        const email = temp[validateHeaderExcel(15, keys[15])];
+        const title = encrypt(temp[validateHeaderExcel(6, keys[6])]); // * encrypt
+        const name = encrypt(temp[validateHeaderExcel(7, keys[7])]); // * encrypt
+        const lastname = encrypt(temp[validateHeaderExcel(8, keys[8])]); // * encrypt
+        const address = encrypt(temp[validateHeaderExcel(9, keys[9])]); // * encrypt
+        const zipcode = encrypt(temp[validateHeaderExcel(10, keys[10])]); // * encrypt
+        const home = encrypt(temp[validateHeaderExcel(11, keys[11])]); // * encrypt
+        const office = encrypt(temp[validateHeaderExcel(12, keys[12])]); // * encrypt
+        const telephone = encrypt(temp[validateHeaderExcel(13, keys[13])]); // * encrypt
+        const fax = encrypt(temp[validateHeaderExcel(14, keys[14])]); // * encrypt
+        const email = encrypt(temp[validateHeaderExcel(15, keys[15])]); // * encrypt
         const withHoldingTaxType = temp[validateHeaderExcel(16, keys[16])];
-        const taxId = temp[validateHeaderExcel(17, keys[17])];
+        const taxId = encrypt(temp[validateHeaderExcel(17, keys[17])]); // * encrypt
         const taxRate = temp[validateHeaderExcel(18, keys[18])];
         const nationalityCode = temp[validateHeaderExcel(19, keys[19])];
         const occupationCode = temp[validateHeaderExcel(20, keys[20])];
@@ -107,12 +109,16 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
         const partiNo = temp[validateHeaderExcel(23, keys[23])];
         const refType = temp[validateHeaderExcel(24, keys[24])];
         const refNo = temp[validateHeaderExcel(25, keys[25])]
-          ? temp[validateHeaderExcel(25, keys[25])].trim()
-          : "";
+          ? encrypt(temp[validateHeaderExcel(25, keys[25])].trim())
+          : ""; // * encrypt
         const eligibleSecurities = temp[validateHeaderExcel(26, keys[26])];
-        const noForCalculation = temp[validateHeaderExcel(27, keys[27])];
+        const noForCalculation = encrypt(
+          temp[validateHeaderExcel(27, keys[27])]
+        ); // * encrypt
         const ratio = temp[validateHeaderExcel(28, keys[28])];
-        const rightStockVolume = temp[validateHeaderExcel(29, keys[29])];
+        const rightStockVolume = encrypt(
+          temp[validateHeaderExcel(29, keys[29])]
+        ); // * encrypt
         const noSubAllocate = temp[validateHeaderExcel(30, keys[30])];
         const partiNo2 = temp[validateHeaderExcel(31, keys[31])];
         const brokerateAccount = temp[validateHeaderExcel(32, keys[32])];
@@ -121,6 +127,9 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
         const company = temp[validateHeaderExcel(35, keys[35])];
         const detailShort = temp[validateHeaderExcel(36, keys[36])];
         const detailFull = temp[validateHeaderExcel(37, keys[37])];
+        const t = md5(temp[validateHeaderExcel(17, keys[17])]);
+        const r = md5(temp[validateHeaderExcel(25, keys[25])]);
+        const rtn = encrypt(temp[validateHeaderExcel(2, keys[2])]);
 
         // * Insert master customer
         const masterCustome: MasterCustomer = {
@@ -148,21 +157,22 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
           atsBank: "",
           atsBankNo: "",
           refNo,
+          r,
         };
 
-        const insertMasterCustomer = await MasterCustomerModel.updateOne(
-          { taxId, refNo },
+        const insertMasterCustomer = await MasterCustomerModel.findOneAndUpdate(
+          { r },
           {
             $set: {
               ...masterCustome,
             },
           },
           { upsert: true, new: true }
-        );
+        ).lean();
 
+        let customerId;
         const masterCustomer = await MasterCustomerModel.findOne({
-          taxId,
-          refNo,
+          r,
         }).lean();
 
         if (!masterCustomer) {
@@ -170,6 +180,8 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
             .status(400)
             .send({ code: "ERO-0012", message: "Unable to create customer" });
         }
+
+        customerId = masterCustomer._id;
 
         const splitRatio = ratio.split("@");
         const offerPrice = splitRatio[1].trim();
@@ -181,7 +193,7 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
 
         // * Insert customer stock
         const customerStock: CustomerStock = {
-          customerId: masterCustomer._id,
+          customerId: customerId,
           rightStockName,
           registrationNo,
           stockVolume,
@@ -206,12 +218,13 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
           taxRate,
           createdOn: new Date(),
           createdBy: "Import excel",
+          rtn,
         };
 
         const insertCustomerStock = await CustomerStockModel.updateOne(
           {
-            customerId: mongoose.Types.ObjectId(masterCustomer._id),
-            registrationNo,
+            customerId: mongoose.Types.ObjectId(customerId),
+            rtn,
           },
           {
             $set: { ...customerStock },

@@ -75,6 +75,9 @@ export class MasterCustomer extends BaseModel {
 
   @prop({ type: String })
   public refNo!: string;
+
+  @prop({ type: String })
+  public r!: string;
 }
 
 export const MasterCustomerModel = getModelForClass(MasterCustomer, {

@@ -3,6 +3,7 @@ import ld, { filter, isEmpty as _isEmpty } from "lodash";
 import { OrderModel } from "../models/order.model";
 import { SchemaType } from "mongoose";
 import { CustomerStockModel } from "../models/customer.stock.model";
+import zlib from "zlib";
 
 function getDatabaseModelFields(schemaModel: unknown): Record<string, string> {
   if (!(typeof schemaModel === "function" && schemaModel.name === "model")) {
@@ -224,7 +225,7 @@ export function mutateQueryFilters(
 }
 
 export async function getDataWithPaging(
-  filter: unknown,
+  filter: any,
   pageInput: number,
   limitInput: number,
   sort: unknown,
@@ -236,7 +237,7 @@ export async function getDataWithPaging(
 ): Promise<any> {
   let match = { $match: {} };
 
-  if (filter) {
+  if (Object.keys(filter).length > 0) {
     match = { $match: mutateQueryFilters(Model, filter) };
   }
 
@@ -561,7 +562,7 @@ export async function getDataWithPaging(
     case "customerStockSearch":
       toFacet = {
         _metadata: [
-          match ? match : {},
+          filter ? match : {},
           {
             $lookup: {
               from: "cltMasterCustomer",
@@ -653,7 +654,7 @@ export async function getDataWithPaging(
           count,
         ],
         data: [
-          match ? match : {},
+          filter ? match : {},
           sort,
           {
             $lookup: {
@@ -1157,6 +1158,11 @@ interface RemoveEmptyOptions {
    * Remove zeros. Default: false
    */
   removeZeros?: boolean;
+}
+
+export function decompress(data: string): string {
+  const unzipped = zlib.unzipSync(Buffer.from(data, "base64"));
+  return unzipped.toString();
 }
 
 // switch (mode) {

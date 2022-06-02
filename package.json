@@ -12,9 +12,11 @@
   "dependencies": {
     "@typegoose/typegoose": "8.1.1",
     "@types/lodash": "4.14.171",
+    "aes256": "^1.1.0",
     "axios": "0.21.1",
     "body-parser": "1.19.0",
     "cors": "2.8.5",
+    "crypto-js": "^4.1.1",
     "date-fns": "^2.28.0",
     "dotenv-safe": "8.2.0",
     "exceljs": "^4.3.0",
@@ -37,11 +39,13 @@
     "winston": "3.3.3",
     "winston-daily-rotate-file": "4.5.0",
     "winston-elasticsearch": "0.15.8",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "zlib": "^1.0.5"
   },
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "1.0.1",
     "@types/cors": "2.8.8",
+    "@types/crypto-js": "^4.1.1",
     "@types/express": "4.17.9",
     "@types/jsonwebtoken": "^8.5.8",
     "@types/md5": "^2.3.2",

@@ -16,6 +16,7 @@ import { serverStoppingHelper, stoppingFunction } from "./gracefulShutdown";
 import { Server } from "http";
 import bodyParser from "body-parser";
 import { insertStatus } from "./controllers/status.controller";
+import { decrypt, encrypt } from "./controllers/encrypt.controller";
 
 const appEnv = process.env.NODE_ENV || /* istanbul ignore next */ "development";
 
@@ -128,6 +129,9 @@ async function init() {
 
         // * Initial status value
         await insertStatus();
+        const a = await encrypt("4036182109");
+        const b = await decrypt(a);
+
         app.emit("appStarted", app);
       });
 

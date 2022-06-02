@@ -4,6 +4,7 @@ import { MasterCustomerModel } from "../models/master.customer.model";
 import jwt_decode from "jwt-decode";
 import md5 from "md5";
 import { UserModel } from "../models/users.model";
+import { decrypt } from "../controllers/encrypt.controller";
 
 export async function adminSignIn(username: string, password: string) {
   const users = await UserModel.find({
@@ -20,7 +21,7 @@ export async function adminSignIn(username: string, password: string) {
 
 export async function customerSignIn(key: string): Promise<any> {
   const masterCustomer = await MasterCustomerModel.aggregate([
-    { $match: { $or: [{ nationalId: key }, { refNo: key }] } },
+    { $match: { r: md5(key.trim()) } },
     {
       $lookup: {
         from: "cltConsentHistories",
@@ -35,14 +36,24 @@ export async function customerSignIn(key: string): Promise<any> {
     return "";
   }
 
-  const { _id, consentHistories } = masterCustomer[0];
+  for (const obj of masterCustomer) {
+    const { refNo } = obj;
 
-  return {
-    token: createJwtToken(key, masterCustomer[0]._id),
-    customerId: _id,
-    isAccept:
-      consentHistories.length > 0 ? consentHistories[0].isAccept : false,
-  };
+    const decryptRefNo = decrypt(refNo);
+
+    if (decryptRefNo === key) {
+      const { _id, consentHistories } = masterCustomer[0];
+
+      return {
+        token: createJwtToken(key, masterCustomer[0]._id),
+        customerId: _id,
+        isAccept:
+          consentHistories.length > 0 ? consentHistories[0].isAccept : false,
+      };
+    }
+  }
+
+  return "";
 }
 
 export async function getToken(key: string): Promise<string> {
