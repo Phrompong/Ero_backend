@@ -87,8 +87,9 @@ async function connectToDatabase(): Promise<void> {
 
     await connect(constr, {
       dbName,
-      user: process.env.DATABASE_USERNAME,
-      pass: process.env.DATABASE_PASSWORD,
+      useUnifiedTopology: true,
+      useNewUrlParser: true,
+      useFindAndModify: false,
       useCreateIndex: true,
     });
 
