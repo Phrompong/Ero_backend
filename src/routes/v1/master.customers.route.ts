@@ -1,11 +1,22 @@
 import express from "express";
 import { MasterCustomerModel } from "../../models/master.customer.model";
+import md5 from "md5";
 
 var router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
-    const customer = await MasterCustomerModel.find().limit(10).lean();
+    const { refNo } = req.query;
+    let obj: any = {};
+
+    if (refNo) {
+      obj.r = md5(refNo.toString());
+    }
+
+    const customer = await MasterCustomerModel.find()
+      .populate("customerStock")
+      .limit(10)
+      .lean();
 
     return res
       .status(200)
