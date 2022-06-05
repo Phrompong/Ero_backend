@@ -370,16 +370,16 @@ router.get("/", async (req: any, res: any) => {
   }
 });
 
-// router.get("/delete", async (req: any, res: any) => {
-//   await ConsentHistoryModel.deleteMany({});
+router.delete("/delete", async (req: any, res: any) => {
+  await ConsentHistoryModel.deleteMany({});
 
-//   await CustomerStockModel.deleteMany({});
+  // await CustomerStockModel.deleteMany({});
 
-//   await MasterCustomerModel.deleteMany({});
+  // await MasterCustomerModel.deleteMany({});
 
-//   await OrderModel.deleteMany({});
+  await OrderModel.deleteMany({});
 
-//   return res.status(200).send({ code: "ERO-0010", message: "delete ok" });
-// });
+  return res.status(200).send({ code: "ERO-0010", message: "delete ok" });
+});
 
 export default router;
