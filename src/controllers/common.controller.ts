@@ -246,522 +246,307 @@ export async function getDataWithPaging(
   const count = { $count: "total" };
 
   let toFacet;
+  let request: any[] = [];
 
   switch (mode) {
     case "order":
     case "orderSearch":
-      toFacet = {
-        _metadata: [
-          match ? match : {},
-          {
-            $lookup: {
-              from: "cltMasterCustomer",
-              localField: "customerId",
-              foreignField: "_id",
-              as: "customerId",
-            },
+      request = [
+        match ? match : {},
+        sort,
+        {
+          $lookup: {
+            from: "cltMasterCustomer",
+            localField: "customerId",
+            foreignField: "_id",
+            as: "customerId",
           },
-          {
-            $lookup: {
-              from: "cltStatus",
-              localField: "status",
-              foreignField: "_id",
-              as: "status",
-            },
+        },
+        {
+          $lookup: {
+            from: "cltStatus",
+            localField: "status",
+            foreignField: "_id",
+            as: "status",
           },
-          {
-            $unwind: {
-              path: "$customerId",
-              preserveNullAndEmptyArrays: true,
-            },
+        },
+        {
+          $lookup: {
+            from: "cltCustomerStock",
+            localField: "customerStockId",
+            foreignField: "_id",
+            as: "customerStock",
           },
-          {
-            $unwind: {
-              path: "$status",
-              preserveNullAndEmptyArrays: true,
-            },
+        },
+        {
+          $lookup: {
+            from: "cltMasterBanks",
+            localField: "bankRefund",
+            foreignField: "_id",
+            as: "bankRefund",
           },
-          {
-            $project: {
-              name: {
-                $concat: ["$customerId.name", " ", "$customerId.lastname"],
-              },
-              customerId: 1,
-              rightStockName: 1,
-              stockVolume: 1,
-              rightSpacialName: 1,
-              rightSpacialVolume: 1,
-              paidRightVolume: 1,
-              paymentAmount: 1,
-              returnAmount: 1,
-              status: 1,
-              createdOn: 1,
-              createdBy: 1,
-              updatedOn: 1,
-              updatedBy: 1,
-            },
+        },
+        {
+          $unwind: {
+            path: "$customerStock",
           },
-          {
-            $project: {
-              name: {
-                $toLower: "$name",
-              },
-              tempRightStockName: {
-                $toLower: "$rightStockName",
-              },
-              customerId: 1,
-              rightStockName: 1,
-              stockVolume: 1,
-              rightSpacialName: 1,
-              rightSpacialVolume: 1,
-              paidRightVolume: 1,
-              paymentAmount: 1,
-              returnAmount: 1,
-              status: 1,
-              createdOn: 1,
-              createdBy: 1,
-              updatedOn: 1,
-              updatedBy: 1,
-            },
+        },
+        {
+          $unwind: {
+            path: "$customerId",
+            preserveNullAndEmptyArrays: true,
           },
-          {
-            $match: {
-              $and: [
-                key
-                  ? {
-                      $or: [
-                        {
-                          name: new RegExp(key || ""),
-                        },
-                        {
-                          tempRightStockName: new RegExp(key || ""),
-                        },
-                        {
-                          "customerId.nationalId": new RegExp(key || ""),
-                        },
-                        {
-                          "customerId.taxId": new RegExp(key || ""),
-                        },
-                      ],
-                    }
-                  : {},
-                startDate && endDate
-                  ? {
-                      createdOn: {
-                        $gte: startDate,
-                        $lt: endDate,
+        },
+        {
+          $unwind: {
+            path: "$status",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $unwind: {
+            path: "$bankRefund",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $project: {
+            name: {
+              $concat: ["$customerId.name", " ", "$customerId.lastname"],
+            },
+            customerId: 1,
+            rightStockName: 1,
+            stockVolume: 1,
+            rightSpacialName: 1,
+            rightSpacialVolume: 1,
+            paidRightVolume: 1,
+            paymentAmount: 1,
+            returnAmount: 1,
+            status: 1,
+            createdOn: 1,
+            createdBy: 1,
+            updatedOn: 1,
+            updatedBy: 1,
+            attachedFile: 1,
+            attachedOn: 1,
+            excessAmount: 1,
+            customerStock: 1,
+            customerTel: 1,
+            bankRefund: 1,
+            bankRefundNo: 1,
+            address: 1,
+            paymentDate: 1,
+          },
+        },
+        {
+          $project: {
+            name: {
+              $toLower: "$name",
+            },
+            tempRightStockName: {
+              $toLower: "$rightStockName",
+            },
+            customerId: 1,
+            rightStockName: 1,
+            stockVolume: 1,
+            rightSpacialName: 1,
+            rightSpacialVolume: 1,
+            paidRightVolume: 1,
+            paymentAmount: 1,
+            returnAmount: 1,
+            status: 1,
+            createdOn: 1,
+            createdBy: 1,
+            updatedOn: 1,
+            updatedBy: 1,
+            attachedFile: 1,
+            attachedOn: 1,
+            excessAmount: 1,
+            customerStock: 1,
+            customerTel: 1,
+            bankRefund: 1,
+            bankRefundNo: 1,
+            address: 1,
+            paymentDate: 1,
+          },
+        },
+        {
+          $match: {
+            $and: [
+              key
+                ? {
+                    $or: [
+                      {
+                        name: new RegExp(key || ""),
                       },
-                    }
-                  : {},
-              ],
-            },
-          },
-          {
-            $project: {
-              customerId: 1,
-              rightStockName: 1,
-              stockVolume: 1,
-              rightSpacialName: 1,
-              rightSpacialVolume: 1,
-              paidRightVolume: 1,
-              paymentAmount: 1,
-              returnAmount: 1,
-              status: 1,
-              createdOn: 1,
-              createdBy: 1,
-              updatedOn: 1,
-              updatedBy: 1,
-            },
-          },
-          count,
-        ],
-        data: [
-          match ? match : {},
-          sort,
-          {
-            $lookup: {
-              from: "cltMasterCustomer",
-              localField: "customerId",
-              foreignField: "_id",
-              as: "customerId",
-            },
-          },
-          {
-            $lookup: {
-              from: "cltStatus",
-              localField: "status",
-              foreignField: "_id",
-              as: "status",
-            },
-          },
-          {
-            $lookup: {
-              from: "cltCustomerStock",
-              localField: "customerStockId",
-              foreignField: "_id",
-              as: "customerStock",
-            },
-          },
-          {
-            $lookup: {
-              from: "cltMasterBanks",
-              localField: "bankRefund",
-              foreignField: "_id",
-              as: "bankRefund",
-            },
-          },
-          {
-            $unwind: {
-              path: "$customerStock",
-            },
-          },
-          {
-            $unwind: {
-              path: "$customerId",
-              preserveNullAndEmptyArrays: true,
-            },
-          },
-          {
-            $unwind: {
-              path: "$status",
-              preserveNullAndEmptyArrays: true,
-            },
-          },
-          {
-            $unwind: {
-              path: "$bankRefund",
-              preserveNullAndEmptyArrays: true,
-            },
-          },
-          {
-            $project: {
-              name: {
-                $concat: ["$customerId.name", " ", "$customerId.lastname"],
-              },
-              customerId: 1,
-              rightStockName: 1,
-              stockVolume: 1,
-              rightSpacialName: 1,
-              rightSpacialVolume: 1,
-              paidRightVolume: 1,
-              paymentAmount: 1,
-              returnAmount: 1,
-              status: 1,
-              createdOn: 1,
-              createdBy: 1,
-              updatedOn: 1,
-              updatedBy: 1,
-              attachedFile: 1,
-              attachedOn: 1,
-              excessAmount: 1,
-              customerStock: 1,
-              customerTel: 1,
-              bankRefund: 1,
-              bankRefundNo: 1,
-              address: 1,
-              paymentDate: 1,
-            },
-          },
-          {
-            $project: {
-              name: {
-                $toLower: "$name",
-              },
-              tempRightStockName: {
-                $toLower: "$rightStockName",
-              },
-              customerId: 1,
-              rightStockName: 1,
-              stockVolume: 1,
-              rightSpacialName: 1,
-              rightSpacialVolume: 1,
-              paidRightVolume: 1,
-              paymentAmount: 1,
-              returnAmount: 1,
-              status: 1,
-              createdOn: 1,
-              createdBy: 1,
-              updatedOn: 1,
-              updatedBy: 1,
-              attachedFile: 1,
-              attachedOn: 1,
-              excessAmount: 1,
-              customerStock: 1,
-              customerTel: 1,
-              bankRefund: 1,
-              bankRefundNo: 1,
-              address: 1,
-              paymentDate: 1,
-            },
-          },
-          {
-            $match: {
-              $and: [
-                key
-                  ? {
-                      $or: [
-                        {
-                          name: new RegExp(key || ""),
-                        },
-                        {
-                          tempRightStockName: new RegExp(key || ""),
-                        },
-                        {
-                          "customerId.nationalId": new RegExp(key || ""),
-                        },
-                        {
-                          "customerId.taxId": new RegExp(key || ""),
-                        },
-                      ],
-                    }
-                  : {},
-                startDate && endDate
-                  ? {
-                      createdOn: {
-                        $gte: startDate,
-                        $lt: endDate,
+                      {
+                        tempRightStockName: new RegExp(key || ""),
                       },
-                    }
-                  : {},
-              ],
-            },
+                      {
+                        "customerId.nationalId": new RegExp(key || ""),
+                      },
+                      {
+                        "customerId.taxId": new RegExp(key || ""),
+                      },
+                    ],
+                  }
+                : {},
+              startDate && endDate
+                ? {
+                    createdOn: {
+                      $gte: startDate,
+                      $lt: endDate,
+                    },
+                  }
+                : {},
+            ],
           },
-          {
-            $project: {
-              customerId: 1,
-              rightStockName: 1,
-              stockVolume: 1,
-              rightSpacialName: 1,
-              rightSpacialVolume: 1,
-              paidRightVolume: 1,
-              paymentAmount: 1,
-              returnAmount: 1,
-              status: 1,
-              createdOn: 1,
-              createdBy: 1,
-              updatedOn: 1,
-              updatedBy: 1,
-              attachedFile: 1,
-              attachedOn: 1,
-              excessAmount: 1,
-              customerStock: 1,
-              customerTel: 1,
-              bankRefund: 1,
-              bankRefundNo: 1,
-              address: 1,
-              paymentDate: 1,
-            },
+        },
+        {
+          $project: {
+            customerId: 1,
+            rightStockName: 1,
+            stockVolume: 1,
+            rightSpacialName: 1,
+            rightSpacialVolume: 1,
+            paidRightVolume: 1,
+            paymentAmount: 1,
+            returnAmount: 1,
+            status: 1,
+            createdOn: 1,
+            createdBy: 1,
+            updatedOn: 1,
+            updatedBy: 1,
+            attachedFile: 1,
+            attachedOn: 1,
+            excessAmount: 1,
+            customerStock: 1,
+            customerTel: 1,
+            bankRefund: 1,
+            bankRefundNo: 1,
+            address: 1,
+            paymentDate: 1,
           },
+        },
 
-          skip,
-          pageSize,
-        ],
-      };
+        skip,
+        pageSize,
+      ];
+
       break;
     case "customer":
     case "customerStockSearch":
-      toFacet = {
-        _metadata: [
-          filter ? match : {},
-          {
-            $lookup: {
-              from: "cltMasterCustomer",
-              localField: "customerId",
-              foreignField: "_id",
-              as: "customers",
-            },
+      request = [
+        filter ? match : {},
+        sort,
+        {
+          $lookup: {
+            from: "cltMasterCustomer",
+            localField: "customerId",
+            foreignField: "_id",
+            as: "customers",
           },
-          {
-            $lookup: {
-              from: "cltOrders",
-              localField: "_id",
-              foreignField: "customerStockId",
-              as: "orders",
-            },
+        },
+        {
+          $lookup: {
+            from: "cltOrders",
+            localField: "_id",
+            foreignField: "customerStockId",
+            as: "orders",
           },
-          {
-            $unwind: {
-              path: "$orders",
-              preserveNullAndEmptyArrays: true,
-            },
+        },
+        {
+          $unwind: {
+            path: "$orders",
+            preserveNullAndEmptyArrays: true,
           },
-          {
-            $lookup: {
-              from: "cltMasterBrokers",
-              localField: "orders.brokerId",
-              foreignField: "_id",
-              as: "orders.brokerId",
-            },
+        },
+        {
+          $lookup: {
+            from: "cltMasterBrokers",
+            localField: "orders.brokerId",
+            foreignField: "_id",
+            as: "orders.brokerId",
           },
-          {
-            $unwind: {
-              path: "$orders.brokerId",
-              preserveNullAndEmptyArrays: true,
-            },
+        },
+        {
+          $unwind: {
+            path: "$orders.brokerId",
+            preserveNullAndEmptyArrays: true,
           },
-          {
-            $lookup: {
-              from: "cltMasterBanks",
-              localField: "orders.bankRefund",
-              foreignField: "_id",
-              as: "orders.bankRefund",
-            },
+        },
+        {
+          $lookup: {
+            from: "cltMasterBanks",
+            localField: "orders.bankRefund",
+            foreignField: "_id",
+            as: "orders.bankRefund",
           },
-          {
-            $unwind: {
-              path: "$orders.bankRefund",
-              preserveNullAndEmptyArrays: true,
-            },
+        },
+        {
+          $unwind: {
+            path: "$orders.bankRefund",
+            preserveNullAndEmptyArrays: true,
           },
-          {
-            $lookup: {
-              from: "cltStatus",
-              localField: "orders.status",
-              foreignField: "_id",
-              as: "status",
-            },
+        },
+        {
+          $lookup: {
+            from: "cltStatus",
+            localField: "orders.status",
+            foreignField: "_id",
+            as: "status",
           },
-          {
-            $unwind: {
-              path: "$customers",
-              preserveNullAndEmptyArrays: true,
-            },
+        },
+        {
+          $unwind: {
+            path: "$customers",
+            preserveNullAndEmptyArrays: true,
           },
-          {
-            $addFields: {
-              keyNationalId: "$customers.nationalId",
-              keyTaxId: "$customers.taxId",
+        },
+        {
+          $addFields: {
+            keyFullname: {
+              $concat: ["$customers.name", " ", "$customers.lastname"],
             },
+            keyRegistrationNo: "$registrationNo",
+            keyNationalId: "$customers.nationalId",
+            keyTaxId: "$customers.taxId",
           },
-          {
-            $match: {
-              $and: [
-                key
-                  ? {
-                      $or: [
-                        {
-                          keyNationalId: new RegExp(key || ""),
-                        },
-                        {
-                          keyTaxId: new RegExp(key || ""),
-                        },
-                      ],
-                    }
-                  : {},
-              ],
-            },
+        },
+        {
+          $match: {
+            $and: [
+              key
+                ? {
+                    $or: [
+                      {
+                        keyFullname: new RegExp(key || ""),
+                      },
+                      {
+                        keyRegistrationNo: new RegExp(key || ""),
+                      },
+                      {
+                        keyNationalId: new RegExp(key || ""),
+                      },
+                      {
+                        keyTaxId: new RegExp(key || ""),
+                      },
+                    ],
+                  }
+                : {},
+            ],
           },
-          count,
-        ],
-        data: [
-          filter ? match : {},
-          sort,
-          {
-            $lookup: {
-              from: "cltMasterCustomer",
-              localField: "customerId",
-              foreignField: "_id",
-              as: "customers",
-            },
-          },
-          {
-            $lookup: {
-              from: "cltOrders",
-              localField: "_id",
-              foreignField: "customerStockId",
-              as: "orders",
-            },
-          },
-          {
-            $unwind: {
-              path: "$orders",
-              preserveNullAndEmptyArrays: true,
-            },
-          },
-          {
-            $lookup: {
-              from: "cltMasterBrokers",
-              localField: "orders.brokerId",
-              foreignField: "_id",
-              as: "orders.brokerId",
-            },
-          },
-          {
-            $unwind: {
-              path: "$orders.brokerId",
-              preserveNullAndEmptyArrays: true,
-            },
-          },
-          {
-            $lookup: {
-              from: "cltMasterBanks",
-              localField: "orders.bankRefund",
-              foreignField: "_id",
-              as: "orders.bankRefund",
-            },
-          },
-          {
-            $unwind: {
-              path: "$orders.bankRefund",
-              preserveNullAndEmptyArrays: true,
-            },
-          },
-          {
-            $lookup: {
-              from: "cltStatus",
-              localField: "orders.status",
-              foreignField: "_id",
-              as: "status",
-            },
-          },
-          {
-            $unwind: {
-              path: "$customers",
-              preserveNullAndEmptyArrays: true,
-            },
-          },
-          {
-            $addFields: {
-              keyFullname: {
-                $concat: ["$customers.name", " ", "$customers.lastname"],
-              },
-              keyRegistrationNo: "$registrationNo",
-              keyNationalId: "$customers.nationalId",
-              keyTaxId: "$customers.taxId",
-            },
-          },
-          {
-            $match: {
-              $and: [
-                key
-                  ? {
-                      $or: [
-                        {
-                          keyFullname: new RegExp(key || ""),
-                        },
-                        {
-                          keyRegistrationNo: new RegExp(key || ""),
-                        },
-                        {
-                          keyNationalId: new RegExp(key || ""),
-                        },
-                        {
-                          keyTaxId: new RegExp(key || ""),
-                        },
-                      ],
-                    }
-                  : {},
-              ],
-            },
-          },
-          skip,
-          pageSize,
-        ],
-      };
+        },
+        skip,
+        pageSize,
+      ];
+
       break;
   }
 
-  const toSearchBody = { $facet: toFacet };
+  const toSearchBody = {
+    $facet: { _metadata: [...request, { $count: "total" }], data: request },
+  };
 
   const find = await Model.aggregate([toSearchBody]);
 

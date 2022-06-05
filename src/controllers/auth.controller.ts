@@ -21,7 +21,7 @@ export async function adminSignIn(username: string, password: string) {
 
 export async function customerSignIn(key: string): Promise<any> {
   const masterCustomer = await MasterCustomerModel.aggregate([
-    { $match: { r: md5(key.trim()) } },
+    { $match: { refNo: key.trim() } },
     {
       $lookup: {
         from: "cltConsentHistories",
@@ -39,18 +39,14 @@ export async function customerSignIn(key: string): Promise<any> {
   for (const obj of masterCustomer) {
     const { refNo } = obj;
 
-    const decryptRefNo = decrypt(refNo);
+    const { _id, consentHistories } = masterCustomer[0];
 
-    if (decryptRefNo === key) {
-      const { _id, consentHistories } = masterCustomer[0];
-
-      return {
-        token: createJwtToken(key, masterCustomer[0]._id),
-        customerId: _id,
-        isAccept:
-          consentHistories.length > 0 ? consentHistories[0].isAccept : false,
-      };
-    }
+    return {
+      token: createJwtToken(key, masterCustomer[0]._id),
+      customerId: _id,
+      isAccept:
+        consentHistories.length > 0 ? consentHistories[0].isAccept : false,
+    };
   }
 
   return "";

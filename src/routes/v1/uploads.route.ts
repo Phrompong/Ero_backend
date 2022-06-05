@@ -85,22 +85,22 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
 
         const no = temp[validateHeaderExcel(0, keys[0])];
         const rightStockName = temp[validateHeaderExcel(1, keys[1])];
-        const registrationNo = encrypt(temp[validateHeaderExcel(2, keys[2])]); // * encrypt
+        const registrationNo = temp[validateHeaderExcel(2, keys[2])]; // * encrypt
         const holderType = temp[validateHeaderExcel(3, keys[3])];
-        const stockVolume = encrypt(temp[validateHeaderExcel(4, keys[4])]); // * encrypt
+        const stockVolume = temp[validateHeaderExcel(4, keys[4])]; // * encrypt
         const titleCode = temp[validateHeaderExcel(5, keys[5])];
-        const title = encrypt(temp[validateHeaderExcel(6, keys[6])]); // * encrypt
-        const name = encrypt(temp[validateHeaderExcel(7, keys[7])]); // * encrypt
-        const lastname = encrypt(temp[validateHeaderExcel(8, keys[8])]); // * encrypt
-        const address = encrypt(temp[validateHeaderExcel(9, keys[9])]); // * encrypt
-        const zipcode = encrypt(temp[validateHeaderExcel(10, keys[10])]); // * encrypt
-        const home = encrypt(temp[validateHeaderExcel(11, keys[11])]); // * encrypt
-        const office = encrypt(temp[validateHeaderExcel(12, keys[12])]); // * encrypt
-        const telephone = encrypt(temp[validateHeaderExcel(13, keys[13])]); // * encrypt
-        const fax = encrypt(temp[validateHeaderExcel(14, keys[14])]); // * encrypt
-        const email = encrypt(temp[validateHeaderExcel(15, keys[15])]); // * encrypt
+        const title = temp[validateHeaderExcel(6, keys[6])]; // * encrypt
+        const name = temp[validateHeaderExcel(7, keys[7])]; // * encrypt
+        const lastname = temp[validateHeaderExcel(8, keys[8])]; // * encrypt
+        const address = temp[validateHeaderExcel(9, keys[9])]; // * encrypt
+        const zipcode = temp[validateHeaderExcel(10, keys[10])]; // * encrypt
+        const home = temp[validateHeaderExcel(11, keys[11])]; // * encrypt
+        const office = temp[validateHeaderExcel(12, keys[12])]; // * encrypt
+        const telephone = temp[validateHeaderExcel(13, keys[13])]; // * encrypt
+        const fax = temp[validateHeaderExcel(14, keys[14])]; // * encrypt
+        const email = temp[validateHeaderExcel(15, keys[15])]; // * encrypt
         const withHoldingTaxType = temp[validateHeaderExcel(16, keys[16])];
-        const taxId = encrypt(temp[validateHeaderExcel(17, keys[17])]); // * encrypt
+        const taxId = temp[validateHeaderExcel(17, keys[17])]; // * encrypt
         const taxRate = temp[validateHeaderExcel(18, keys[18])];
         const nationalityCode = temp[validateHeaderExcel(19, keys[19])];
         const occupationCode = temp[validateHeaderExcel(20, keys[20])];
@@ -109,16 +109,13 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
         const partiNo = temp[validateHeaderExcel(23, keys[23])];
         const refType = temp[validateHeaderExcel(24, keys[24])];
         const refNo = temp[validateHeaderExcel(25, keys[25])]
-          ? encrypt(temp[validateHeaderExcel(25, keys[25])].trim())
+          ? temp[validateHeaderExcel(25, keys[25])].trim()
           : ""; // * encrypt
         const eligibleSecurities = temp[validateHeaderExcel(26, keys[26])];
-        const noForCalculation = encrypt(
-          temp[validateHeaderExcel(27, keys[27])]
-        ); // * encrypt
+        const noForCalculation = temp[validateHeaderExcel(27, keys[27])];
+        // * encrypt
         const ratio = temp[validateHeaderExcel(28, keys[28])];
-        const rightStockVolume = encrypt(
-          temp[validateHeaderExcel(29, keys[29])]
-        ); // * encrypt
+        const rightStockVolume = temp[validateHeaderExcel(29, keys[29])]; // * encrypt
         const noSubAllocate = temp[validateHeaderExcel(30, keys[30])];
         const partiNo2 = temp[validateHeaderExcel(31, keys[31])];
         const brokerateAccount = temp[validateHeaderExcel(32, keys[32])];
@@ -129,7 +126,7 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
         const detailFull = temp[validateHeaderExcel(37, keys[37])];
         const t = md5(temp[validateHeaderExcel(17, keys[17])]);
         const r = md5(temp[validateHeaderExcel(25, keys[25])]);
-        const rtn = encrypt(temp[validateHeaderExcel(2, keys[2])]);
+        const rtn = temp[validateHeaderExcel(2, keys[2])];
 
         // * Insert master customer
         const masterCustome: MasterCustomer = {
@@ -161,7 +158,7 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
         };
 
         const insertMasterCustomer = await MasterCustomerModel.findOneAndUpdate(
-          { r },
+          { refNo },
           {
             $set: {
               ...masterCustome,
@@ -172,7 +169,7 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
 
         let customerId;
         const masterCustomer = await MasterCustomerModel.findOne({
-          r,
+          refNo,
         }).lean();
 
         if (!masterCustomer) {
@@ -224,7 +221,7 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
         const insertCustomerStock = await CustomerStockModel.updateOne(
           {
             customerId: mongoose.Types.ObjectId(customerId),
-            rtn,
+            registrationNo,
           },
           {
             $set: { ...customerStock },
@@ -373,16 +370,16 @@ router.get("/", async (req: any, res: any) => {
   }
 });
 
-router.get("/delete", async (req: any, res: any) => {
-  await ConsentHistoryModel.deleteMany({});
+// router.get("/delete", async (req: any, res: any) => {
+//   await ConsentHistoryModel.deleteMany({});
 
-  await CustomerStockModel.deleteMany({});
+//   await CustomerStockModel.deleteMany({});
 
-  await MasterCustomerModel.deleteMany({});
+//   await MasterCustomerModel.deleteMany({});
 
-  await OrderModel.deleteMany({});
+//   await OrderModel.deleteMany({});
 
-  return res.status(200).send({ code: "ERO-0010", message: "delete ok" });
-});
+//   return res.status(200).send({ code: "ERO-0010", message: "delete ok" });
+// });
 
 export default router;
