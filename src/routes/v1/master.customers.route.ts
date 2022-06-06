@@ -13,14 +13,9 @@ router.get("/", async (req, res) => {
       obj.r = md5(refNo.toString());
     }
 
-    const customer = await MasterCustomerModel.find()
-      .populate("customerStock")
-      .limit(10)
-      .lean();
+    const count = await MasterCustomerModel.aggregate([{ $count: "total" }]);
 
-    return res
-      .status(200)
-      .send({ code: "ERO-0001", message: "ok", data: customer });
+    return res.status(200).send({ code: "ERO-0001", message: "ok", count });
   } catch (error) {
     const err = error as Error;
 
