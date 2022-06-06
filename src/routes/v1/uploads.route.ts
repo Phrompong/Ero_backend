@@ -18,6 +18,7 @@ import { validateHeaderExcel } from "../../controllers/validate.controller";
 import { MasterBrokerModel } from "../../models/master.broker.model";
 import { decrypt, encrypt } from "../../controllers/encrypt.controller";
 import md5 from "md5";
+import { MasterBankModel } from "../../models/master.bank.model";
 
 const multer = require("multer");
 const reader = require("xlsx");
@@ -375,6 +376,8 @@ router.delete("/delete", async (req: any, res: any) => {
   await CustomerStockModel.deleteMany({});
 
   await MasterCustomerModel.deleteMany({});
+
+  await MasterBankModel.deleteMany({});
 
   await OrderModel.deleteMany({});
 
