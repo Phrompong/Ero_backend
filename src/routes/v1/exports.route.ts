@@ -21,7 +21,9 @@ router.get("/", async (req, res) => {
   } catch (error) {
     const err = error as Error;
 
-    return res.status(400).send({ code: "ERO-0010", message: err.message });
+    return res
+      .status(400)
+      .send({ code: "ERO-0010", message: err.message, description: err });
   }
 });
 
