@@ -437,7 +437,7 @@ export async function getOrderExport() {
     } = customerStock;
 
     // * collection master bank
-    const { nameTH } = bankRefund;
+    const { nameTH } = bankRefund || {};
 
     // * collection status
 
