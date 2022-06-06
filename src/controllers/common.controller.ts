@@ -252,7 +252,7 @@ export async function getDataWithPaging(
     case "order":
     case "orderSearch":
       request = [
-        match ? match : {},
+        filter ? match : {},
         sort,
         {
           $lookup: {
