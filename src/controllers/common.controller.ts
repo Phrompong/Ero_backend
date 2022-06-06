@@ -451,7 +451,7 @@ export async function getDataWithPaging(
           $lookup: {
             from: "cltOrders",
             localField: "_id",
-            foreignField: "customerId",
+            foreignField: "customerStockId",
             as: "orders",
           },
         },
