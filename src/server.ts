@@ -127,6 +127,7 @@ async function init() {
         state.logger.info(`Server running on ${process.env.PORT}`);
 
         // * Initial status value
+        await insertStatus();
 
         app.emit("appStarted", app);
       });
