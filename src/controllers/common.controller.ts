@@ -237,7 +237,7 @@ export async function getDataWithPaging(
 ): Promise<any> {
   let match = { $match: {} };
 
-  if (Object.keys(filter).length > 0) {
+  if (filter) {
     match = { $match: mutateQueryFilters(Model, filter) };
   }
 
