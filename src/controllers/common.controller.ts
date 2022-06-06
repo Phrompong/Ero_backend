@@ -252,7 +252,7 @@ export async function getDataWithPaging(
     case "order":
     case "orderSearch":
       request = [
-        filter ? match : {},
+        match,
         sort,
         {
           $lookup: {
@@ -437,7 +437,7 @@ export async function getDataWithPaging(
     case "customer":
     case "customerStockSearch":
       request = [
-        filter ? match : {},
+        match,
         sort,
         {
           $lookup: {
