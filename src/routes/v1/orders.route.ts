@@ -408,4 +408,28 @@ router.get("/export/excel", async (req, res) => {
   }
 });
 
+router.patch("/:id", async (req, res) => {
+  const { id } = req.params;
+  const { isCheck } = req.body;
+
+  if (Object.keys(req.body).length === 0) {
+    return res
+      .status(400)
+      .send({ code: "ERO-0011", message: "Body is missing" });
+  }
+
+  if (!id) {
+    return res.status(400).send({ code: "ERO-0012", message: "id is missing" });
+  }
+
+  const { status } = req.body;
+
+  const result = await OrderModel.updateOne(
+    { _id:  mongoose.Types.ObjectId(id) },
+    { $set: { isCheck } }
+  );
+
+  return res.status(200).send({ code: "ERO-0001", message: "ok" });
+});
+
 export default router;

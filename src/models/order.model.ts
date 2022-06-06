@@ -101,6 +101,9 @@ export class Order extends BaseModel {
 
   @prop({ type: Date })
   public paymentDate!: Date;
+
+  @prop({ type: Boolean })
+  public isCheck?: boolean;
 }
 
 export const OrderModel = getModelForClass(Order, {
