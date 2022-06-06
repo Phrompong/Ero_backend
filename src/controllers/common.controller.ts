@@ -537,18 +537,26 @@ export async function getDataWithPaging(
             ],
           },
         },
-        skip,
-        pageSize,
       ];
 
       break;
   }
 
-  const toSearchBody = {
-    $facet: { _metadata: [...request, { $count: "total" }], data: request },
-  };
+  const dataPipeline = request;
 
-  const find = await Model.aggregate([toSearchBody]);
+  const _metadataPipeline = [...request, { $count: "total" }];
+
+  dataPipeline.push(skip);
+  dataPipeline.push(pageSize);
+
+  const find = await Model.aggregate([
+    {
+      $facet: {
+        _metadata: _metadataPipeline,
+        data: dataPipeline,
+      },
+    },
+  ]);
 
   if (find[0].data.length === 0) {
     if (pageInput > 1) {
