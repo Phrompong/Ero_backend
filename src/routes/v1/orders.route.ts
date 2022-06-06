@@ -72,31 +72,38 @@ router.post("/", async (req, res) => {
 
     const { name, houseNo, district, province, zipcode, tel } = address;
 
-    const result = await OrderModel.create({
-      customerId: mongoose.Types.ObjectId(body.customerId),
-      rightStockName,
-      stockVolume,
-      rightSpecialName,
-      rightSpecialVolume,
-      paidRightVolume,
-      paidSpecialVolume,
-      paymentAmount,
-      returnAmount,
-      excessAmount,
-      status: statusData.filter((o) => o.status === "รอหลักฐานการโอนเงิน")[0]
-        ._id,
-      createdOn: new Date(),
-      customerName,
-      customerTel,
-      brokerId: mongoose.Types.ObjectId(brokerId),
-      accountNo,
-      customerStockId: mongoose.Types.ObjectId(customerStockId),
-      address,
-      registrationNo,
-      bankRefund: mongoose.Types.ObjectId(bankRefund),
-      bankRefundNo,
-      paymentDate,
-    });
+    const result = await OrderModel.updateOne(
+      {
+        registrationNo,
+        rightStockName,
+      },
+      {
+        customerId: mongoose.Types.ObjectId(body.customerId),
+        rightStockName,
+        stockVolume,
+        rightSpecialName,
+        rightSpecialVolume,
+        paidRightVolume,
+        paidSpecialVolume,
+        paymentAmount,
+        returnAmount,
+        excessAmount,
+        status: statusData.filter((o) => o.status === "รอหลักฐานการโอนเงิน")[0]
+          ._id,
+        createdOn: new Date(),
+        customerName,
+        customerTel,
+        brokerId: mongoose.Types.ObjectId(brokerId),
+        accountNo,
+        customerStockId: mongoose.Types.ObjectId(customerStockId),
+        address,
+        registrationNo,
+        bankRefund: mongoose.Types.ObjectId(bankRefund),
+        bankRefundNo,
+        paymentDate,
+      },
+      { upsert: true }
+    );
 
     return res
       .status(200)
@@ -422,10 +429,8 @@ router.patch("/:id", async (req, res) => {
     return res.status(400).send({ code: "ERO-0012", message: "id is missing" });
   }
 
-  const { status } = req.body;
-
   const result = await OrderModel.updateOne(
-    { _id:  mongoose.Types.ObjectId(id) },
+    { _id: mongoose.Types.ObjectId(id) },
     { $set: { isCheck } }
   );
 
