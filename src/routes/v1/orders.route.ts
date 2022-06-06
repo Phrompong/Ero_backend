@@ -105,9 +105,12 @@ router.post("/", async (req, res) => {
       { upsert: true }
     );
 
-    return res
-      .status(200)
-      .send({ code: "ERO-0001", message: "ok", data: result });
+    const data = await OrderModel.findOne({
+      registrationNo,
+      rightStockName,
+    });
+
+    return res.status(200).send({ code: "ERO-0001", message: "ok", data });
   } catch (error) {
     const err = error as Error;
 
