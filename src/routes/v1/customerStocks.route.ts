@@ -15,13 +15,22 @@ router.get("/", async (req, res) => {
     if (customerId) {
       obj.customerId = mongoose.Types.ObjectId(customerId.toString());
 
-      result = await CustomerStockModel.find({
-        customerId: mongoose.Types.ObjectId(customerId.toString()),
-        isActive: true,
-      })
-        .populate("customerId")
-        .sort({ createdOn: -1 })
-        .lean();
+      result = await CustomerStockModel.aggregate([
+        {
+          $match: {
+            customerId: mongoose.Types.ObjectId(customerId.toString()),
+            isActive: true,
+          },
+        },
+        {
+          $lookup: {
+            from: "cltOrders",
+            localField: "_id",
+            foreignField: "customerStockId",
+            as: "orders",
+          },
+        },
+      ]);
     }
 
     if (customerId && registrationNo) {
