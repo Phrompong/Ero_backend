@@ -428,9 +428,6 @@ export async function getDataWithPaging(
             paymentDate: 1,
           },
         },
-
-        skip,
-        pageSize,
       ];
 
       break;
