@@ -371,9 +371,9 @@ router.get("/", async (req: any, res: any) => {
 });
 
 router.delete("/delete", async (req: any, res: any) => {
-  await ConsentHistoryModel.deleteMany({});
+  // await ConsentHistoryModel.deleteMany({});
 
-  await OrderModel.deleteMany({});
+  // await OrderModel.deleteMany({});
 
   // await CustomerStockModel.deleteMany({});
 

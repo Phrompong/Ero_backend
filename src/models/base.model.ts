@@ -5,7 +5,7 @@ export class BaseModel {
   public createdOn!: Date;
 
   @prop({ type: String })
-  public createdBy!: string;
+  public createdBy?: string;
 
   @prop({ type: Date })
   public updatedOn?: Date;

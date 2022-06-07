@@ -4,6 +4,56 @@ import md5 from "md5";
 
 var router = express.Router();
 
+router.get("/", async (req, res) => {
+  try {
+    const data = await UserModel.find().lean();
+
+    return res.status(200).send({ code: "ERO-0001", message: "ok", data });
+  } catch (error) {
+    const err = error as Error;
+
+    return res.status(400).send({ code: "ERO-0010", message: err.message });
+  }
+});
+
+router.get("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(200).send({ code: "ERO-0001", message: "missing id" });
+    }
+
+    const data = await UserModel.findById(id).lean();
+
+    return res.status(200).send({ code: "ERO-0001", message: "ok", data });
+  } catch (error) {
+    const err = error as Error;
+
+    return res.status(400).send({ code: "ERO-0010", message: err.message });
+  }
+});
+
+router.patch("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const { username } = req.body;
+
+    if (!id) {
+      return res.status(200).send({ code: "ERO-0001", message: "missing id" });
+    }
+
+    const data = await UserModel.findByIdAndUpdate(id, { username });
+
+    return res.status(200).send({ code: "ERO-0001", message: "ok", data });
+  } catch (error) {
+    const err = error as Error;
+
+    return res.status(400).send({ code: "ERO-0010", message: err.message });
+  }
+});
+
 router.post("/", async (req, res) => {
   try {
     const body = req.body as User;

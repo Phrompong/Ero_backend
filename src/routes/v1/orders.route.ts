@@ -20,6 +20,7 @@ import {
   getOrderExport,
   exportExcel,
 } from "../../controllers/order.controller";
+import { create } from "../../controllers/orderHistory.controller";
 
 var router = express.Router();
 
@@ -72,38 +73,43 @@ router.post("/", async (req, res) => {
 
     const { name, houseNo, district, province, zipcode, tel } = address;
 
+    const order = {
+      customerId: mongoose.Types.ObjectId(body.customerId),
+      rightStockName,
+      stockVolume,
+      rightSpecialName,
+      rightSpecialVolume,
+      paidRightVolume,
+      paidSpecialVolume,
+      paymentAmount,
+      returnAmount,
+      excessAmount,
+      status: statusData.filter((o) => o.status === "รอหลักฐานการโอนเงิน")[0]
+        ._id,
+      createdOn: new Date(),
+      customerName,
+      customerTel,
+      brokerId: mongoose.Types.ObjectId(brokerId),
+      accountNo,
+      customerStockId: mongoose.Types.ObjectId(customerStockId),
+      address,
+      registrationNo,
+      bankRefund: mongoose.Types.ObjectId(bankRefund),
+      bankRefundNo,
+      paymentDate,
+    };
+
     const result = await OrderModel.updateOne(
       {
         registrationNo,
         rightStockName,
       },
-      {
-        customerId: mongoose.Types.ObjectId(body.customerId),
-        rightStockName,
-        stockVolume,
-        rightSpecialName,
-        rightSpecialVolume,
-        paidRightVolume,
-        paidSpecialVolume,
-        paymentAmount,
-        returnAmount,
-        excessAmount,
-        status: statusData.filter((o) => o.status === "รอหลักฐานการโอนเงิน")[0]
-          ._id,
-        createdOn: new Date(),
-        customerName,
-        customerTel,
-        brokerId: mongoose.Types.ObjectId(brokerId),
-        accountNo,
-        customerStockId: mongoose.Types.ObjectId(customerStockId),
-        address,
-        registrationNo,
-        bankRefund: mongoose.Types.ObjectId(bankRefund),
-        bankRefundNo,
-        paymentDate,
-      },
+      order,
       { upsert: true }
     );
+
+    // * Create order history
+    await create(order);
 
     const data = await OrderModel.findOne({
       registrationNo,

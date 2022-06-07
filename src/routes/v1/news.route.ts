@@ -9,7 +9,7 @@ router.get("/", async (req, res) => {
 
     return res
       .status(200)
-      .send({ code: "ERO-0001", message: "ok", data: results });
+      .send({ code: "ERO-0001", message: "Body is missing" });
   } catch (error) {
     const err = error as Error;
 
