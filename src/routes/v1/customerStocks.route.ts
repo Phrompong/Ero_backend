@@ -30,7 +30,23 @@ router.get("/", async (req, res) => {
             as: "orders",
           },
         },
+        {
+          $lookup: {
+            from: "cltMasterCustomer",
+            localField: "customerId",
+            foreignField: "_id",
+            as: "customerId",
+          },
+        },
       ]);
+
+      // result = await CustomerStockModel.find({
+      //   customerId: mongoose.Types.ObjectId(customerId.toString()),
+      //   isActive: true,
+      // })
+      //   .populate("customerId")
+      //   .sort({ createdOn: -1 })
+      //   .lean();
     }
 
     if (customerId && registrationNo) {
