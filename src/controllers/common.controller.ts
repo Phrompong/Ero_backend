@@ -388,6 +388,9 @@ export async function getDataWithPaging(
                       {
                         "customerId.taxId": new RegExp(key || ""),
                       },
+                      {
+                        "customerId.refNo": new RegExp(key || ""),
+                      },
                     ],
                   }
                 : {},
@@ -508,6 +511,7 @@ export async function getDataWithPaging(
             keyRegistrationNo: "$registrationNo",
             keyNationalId: "$customers.nationalId",
             keyTaxId: "$customers.taxId",
+            keyRefNo: "$customers.refNo",
           },
         },
         {
@@ -527,6 +531,9 @@ export async function getDataWithPaging(
                       },
                       {
                         keyTaxId: new RegExp(key || ""),
+                      },
+                      {
+                        keyRefNo: new RegExp(key || ""),
                       },
                     ],
                   }
@@ -670,6 +677,9 @@ export async function getCurrentOrderAmount(
                   },
                   {
                     tempRightStockName: new RegExp(key || ""),
+                  },
+                  {
+                    "customerId.refNo": new RegExp(key || ""),
                   },
                 ],
               }
@@ -850,6 +860,9 @@ export async function getOrderCompareSales(
                   },
                   {
                     tempRightStockName: new RegExp(key || ""),
+                  },
+                  {
+                    "customerId.refNo": new RegExp(key || ""),
                   },
                 ],
               }
