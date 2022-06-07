@@ -38,6 +38,18 @@ router.get("/", async (req, res) => {
             as: "customerId",
           },
         },
+        {
+          $unwind: {
+            path: "$customerId",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $unwind: {
+            path: "$orders",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
       ]);
 
       // result = await CustomerStockModel.find({
