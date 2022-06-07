@@ -1,3 +1,4 @@
+import { mongoose } from "@typegoose/typegoose";
 import express from "express";
 import { MasterBrokerModel } from "../../models/master.broker.model";
 
@@ -53,6 +54,27 @@ router.get("/", async (req, res) => {
     return res
       .status(200)
       .send({ code: "ERO-0001", message: "ok", data: results });
+  } catch (error) {
+    const err = error as Error;
+
+    return res.status(400).send({ code: "ERO-0010", message: err.message });
+  }
+});
+
+router.patch("/:id", async (req, res) => {
+  try {
+    const _id = req.params.id;
+    const { name, nameEN } = req.body;
+    if (!_id) {
+      return res.status(400).send({ code: "ERO-0001", message: "missing id" });
+    }
+
+    await MasterBrokerModel.findByIdAndUpdate(_id, {
+      name,
+      nameEN,
+    });
+
+    return res.status(200).send({ code: "ERO-0001", message: "ok" });
   } catch (error) {
     const err = error as Error;
 
