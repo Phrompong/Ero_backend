@@ -1,4 +1,4 @@
-import { prop, getModelForClass, Ref } from "@typegoose/typegoose";
+import { prop, getModelForClass, Ref, mongoose } from "@typegoose/typegoose";
 import { BaseModel } from "./base.model";
 import { CustomerStock } from "./customer.stock.model";
 import { MasterBank } from "./master.bank.model";
@@ -93,8 +93,8 @@ export class OrderHistory extends BaseModel {
   @prop({ type: String })
   public registrationNo!: string;
 
-  @prop({ ref: () => MasterBank })
-  public bankRefund!: Ref<MasterBank>;
+  @prop({ type: mongoose.Types.ObjectId })
+  public bankRefund?: mongoose.Types.ObjectId;
 
   @prop({ type: String })
   public bankRefundNo!: string;

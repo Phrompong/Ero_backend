@@ -94,7 +94,7 @@ router.post("/", async (req, res) => {
       customerStockId: mongoose.Types.ObjectId(customerStockId),
       address,
       registrationNo,
-      bankRefund: mongoose.Types.ObjectId(bankRefund),
+      bankRefund: bankRefund ? mongoose.Types.ObjectId(bankRefund) : undefined,
       bankRefundNo,
       paymentDate,
     };
