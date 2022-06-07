@@ -243,7 +243,7 @@ router.get("/search/value", async (req, res) => {
     const pageInput = req.query.page?.toString() || "1";
     const sort = {
       $sort: {
-        createdOn: -1,
+        createdOn: 1,
       },
     };
 
