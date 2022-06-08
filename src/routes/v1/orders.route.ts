@@ -56,6 +56,12 @@ router.post("/", async (req, res) => {
       paymentDate,
     } = body as any;
 
+    if (!paymentDate) {
+      return res
+        .status(400)
+        .send({ code: "ERO-0012", message: "paymentDate is missing" });
+    }
+
     // * Process excess amount
     let excessAmount = 0;
     const customer = await CustomerStockModel.findOne({
