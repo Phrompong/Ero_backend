@@ -484,7 +484,7 @@ export async function getOrderExport() {
       offerPrice,
       ratio: `${getRight} : ${ratio}`,
       holderType,
-      createdOn: format(createdOn, "dd/MM/yyyy"),
+      createdOn: format(createdOn, "dd/MM/yyyy HH:mm:ss"),
     });
   }
 
