@@ -65,6 +65,7 @@ export async function exportExcel(obj: any) {
           width: 20,
         },
         { header: "ที่อยู่", key: "address", width: 20 },
+        { header: "วันที่จองซื้อ", key: "createdOn", width: 20 },
       ],
     },
     atsSba: {
@@ -145,6 +146,7 @@ export async function exportExcel(obj: any) {
           key: "exportDate",
           width,
         },
+        { header: "วันที่จองซื้อ", key: "createdOn", width: 20 },
       ],
     },
     dss: {
@@ -265,6 +267,7 @@ export async function exportExcel(obj: any) {
           key: "ratio",
           width,
         },
+        { header: "วันที่จองซื้อ", key: "createdOn", width: 20 },
       ],
     },
   };
