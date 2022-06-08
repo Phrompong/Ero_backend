@@ -408,6 +408,7 @@ export async function getOrderExport() {
       bankRefundNo,
       address,
       status,
+      createdOn,
     } = obj;
 
     // * collection master customer
@@ -480,6 +481,7 @@ export async function getOrderExport() {
       offerPrice,
       ratio: `${getRight} : ${ratio}`,
       holderType,
+      createdOn: format(createdOn, "dd/MM/yyyy"),
     });
   }
 
