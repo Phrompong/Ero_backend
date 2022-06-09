@@ -2,6 +2,12 @@ import { CustomerStock } from "../models/customer.stock.model";
 import { MasterCustomer } from "../models/master.customer.model";
 import { OrderModel } from "../models/order.model";
 
+async function getOverPaymet() {
+  const resultUerRight = await userRight();
+
+  const resultRatio = await findRatio(resultUerRight);
+}
+
 // * Step 1 process userRight
 export async function userRight() {
   // * Sum value total stock volume
@@ -44,7 +50,7 @@ export async function userRight() {
   for (const order of orders) {
     const { customerId, customerStockId, paidRightVolume } = order;
     const { stockVolume, ratio, getRight } = customerStockId as CustomerStock;
-    const { name, lastname } = customerId as MasterCustomer;
+    const { name, lastname, nationalityCode } = customerId as MasterCustomer;
 
     const proportion = (+stockVolume / totalStockVolumes) * 100;
     const rightVolume = (+stockVolume * ratio) / getRight;
@@ -65,8 +71,9 @@ export async function userRight() {
       orderId: order._id,
       customerId: customerId._id,
       name: `${name} ${lastname}`, // * รายชื่อผู้ถือหุ้น
-      stockVolume, // * สัญชาติ
-      proportion, // * จำนวน
+      nationalityCode, // * สัญชาติ
+      stockVolume, // * จำนวน
+      proportion, // * สัดส่วน
       rightVolume, // * สิทธิที่จองได้
       reserve: {
         paidRightVolume, // * จำนวนที่จอง
@@ -80,6 +87,25 @@ export async function userRight() {
   }
 
   return response;
+}
+
+// * Step 2 find ratio
+export async function findRatio(userRights: any[]) {
+  let response: any[] = [];
+
+  for (const userRight of userRights) {
+    const { proportion, reserve } = userRight;
+
+    const {
+      lessThanRight, // * น้อยกว่า
+      equalRight, // * ตามสิทธิ์
+      moreThanRight, // * เกินสิทธิ์,
+    } = reserve;
+
+    const ratio = moreThanRight === 0 ? lessThanRight : proportion;
+
+    response.push({ ...userRight, ratio });
+  }
 }
 
 async function getTotalStockVolume(): Promise<number> {
