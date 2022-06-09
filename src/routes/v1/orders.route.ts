@@ -151,6 +151,7 @@ router.put("/:id", async (req, res) => {
 
     const result = await OrderModel.findByIdAndUpdate(id, {
       status: mongoose.Types.ObjectId(status.toString()),
+      approvedOn: new Date(),
     });
 
     return res.status(200).send({ code: "ERO-0001", message: "ok" });

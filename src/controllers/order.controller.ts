@@ -28,7 +28,7 @@ export async function exportExcel(obj: any) {
       columns: [
         {
           header: "Customer ID (เลขทะเบียนผู้ถือหุ้น)",
-          key: "customerId",
+          key: "registrationNo",
           width: 20,
         },
         { header: "Customer Name", key: "customerName", width: 20 },
@@ -66,6 +66,7 @@ export async function exportExcel(obj: any) {
         },
         { header: "ที่อยู่", key: "address", width: 20 },
         { header: "วันที่จองซื้อ", key: "createdOn", width: 20 },
+        { header: "เวลาที่อนุมัติ", key: "approvedOn", width: 20 },
       ],
     },
     atsSba: {
@@ -147,6 +148,7 @@ export async function exportExcel(obj: any) {
           width,
         },
         { header: "วันที่จองซื้อ", key: "createdOn", width: 20 },
+        { header: "เวลาที่อนุมัติ", key: "approvedOn", width: 20 },
       ],
     },
     dss: {
@@ -268,6 +270,7 @@ export async function exportExcel(obj: any) {
           width,
         },
         { header: "วันที่จองซื้อ", key: "createdOn", width: 20 },
+        { header: "เวลาที่อนุมัติ", key: "approvedOn", width: 20 },
       ],
     },
   };
