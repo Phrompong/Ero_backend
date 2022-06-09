@@ -6,10 +6,10 @@ export class MasterCustomer extends BaseModel {
   @prop()
   public _id?: mongoose.Types.ObjectId;
 
-  @prop({ type: String })
+  @prop({ type: String, index: true })
   public name!: string;
 
-  @prop({ type: String })
+  @prop({ type: String, index: true })
   public lastname!: string;
 
   @prop({ type: String, index: true })
@@ -73,7 +73,7 @@ export class MasterCustomer extends BaseModel {
   @prop({ type: String })
   public fax!: string;
 
-  @prop({ type: String })
+  @prop({ type: String, index: true })
   public refNo!: string;
 
   @prop({ type: String })

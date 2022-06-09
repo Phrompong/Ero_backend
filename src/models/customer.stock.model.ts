@@ -24,7 +24,7 @@ export class CustomerStock extends BaseModel {
   @prop({ type: Boolean })
   public isActive!: boolean;
 
-  @prop({ type: String })
+  @prop({ type: String, index: true })
   public registrationNo!: string; // * Holder ID
 
   @prop({ ref: () => MasterCustomer })
