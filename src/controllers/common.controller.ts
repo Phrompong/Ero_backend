@@ -459,11 +459,23 @@ export async function getDataWithPaging(
           },
         },
         {
+          $unwind: {
+            path: "$orders",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
           $lookup: {
             from: "cltMasterBrokers",
             localField: "orders.brokerId",
             foreignField: "_id",
             as: "orders.brokerId",
+          },
+        },
+        {
+          $unwind: {
+            path: "$orders.brokerId",
+            preserveNullAndEmptyArrays: true,
           },
         },
         {
@@ -475,29 +487,17 @@ export async function getDataWithPaging(
           },
         },
         {
-          $lookup: {
-            from: "cltStatus",
-            localField: "orders.status",
-            foreignField: "_id",
-            as: "status",
-          },
-        },
-        {
           $unwind: {
             path: "$orders.bankRefund",
             preserveNullAndEmptyArrays: true,
           },
         },
         {
-          $unwind: {
-            path: "$orders.brokerId",
-            preserveNullAndEmptyArrays: true,
-          },
-        },
-        {
-          $unwind: {
-            path: "$orders",
-            preserveNullAndEmptyArrays: true,
+          $lookup: {
+            from: "cltStatus",
+            localField: "orders.status",
+            foreignField: "_id",
+            as: "status",
           },
         },
         {
