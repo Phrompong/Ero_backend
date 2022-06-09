@@ -556,17 +556,14 @@ export async function getDataWithPaging(
   dataPipeline.push(skip);
   dataPipeline.push(pageSize);
 
-  const find = await Model.aggregate(
-    [
-      {
-        $facet: {
-          _metadata: _metadataPipeline,
-          data: dataPipeline,
-        },
+  const find = await Model.aggregate([
+    {
+      $facet: {
+        _metadata: _metadataPipeline,
+        data: dataPipeline,
       },
-    ],
-    { allowDiskUse: true }
-  );
+    },
+  ]);
 
   if (find[0].data.length === 0) {
     if (pageInput > 1) {
