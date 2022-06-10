@@ -67,6 +67,9 @@ export async function exportExcel(obj: any) {
         { header: "ที่อยู่", key: "address", width: 20 },
         { header: "วันที่จองซื้อ", key: "createdOn", width: 20 },
         { header: "วันที่อนุมัติ", key: "approvedOn", width: 20 },
+        { header: "หมายเลขโบรกเกอร์", key: "brokerCode", width: 20 },
+        { header: "โบรกเกอร์", key: "brokerName", width: 20 },
+        { header: "เลขที่บัญชีซื้อขาย", key: "bankRefundNo", width: 20 },
       ],
     },
     atsSba: {
@@ -416,6 +419,7 @@ export async function getOrderExport() {
       status,
       createdOn,
       approvedOn,
+      brokerId,
     } = obj;
 
     // * collection master customer
@@ -443,6 +447,8 @@ export async function getOrderExport() {
       getRight,
       ratio,
     } = customerStock;
+
+    const { code } = brokerId;
 
     // * collection master bank
     const { nameTH } = bankRefund || {};
@@ -490,6 +496,8 @@ export async function getOrderExport() {
       holderType,
       createdOn: format(createdOn, "dd/MM/yyyy HH:mm:ss"),
       approvedOn: approvedOn ? format(approvedOn, "dd/MM/yyyy HH:mm:ss") : "",
+      brokerCode: code,
+      brokerName: brokerId.name,
     });
   }
 

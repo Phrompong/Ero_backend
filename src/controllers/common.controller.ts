@@ -287,6 +287,20 @@ export async function getDataWithPaging(
           },
         },
         {
+          $lookup: {
+            from: "cltMasterBrokers",
+            localField: "brokerId",
+            foreignField: "_id",
+            as: "brokerId",
+          },
+        },
+        {
+          $unwind: {
+            path: "$brokerId",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
           $unwind: {
             path: "$customerStock",
           },
@@ -337,6 +351,7 @@ export async function getDataWithPaging(
             address: 1,
             paymentDate: 1,
             approvedOn: 1,
+            brokerId: 1,
           },
         },
         {
@@ -370,6 +385,7 @@ export async function getDataWithPaging(
             address: 1,
             paymentDate: 1,
             approvedOn: 1,
+            brokerId: 1,
           },
         },
         {
@@ -432,6 +448,7 @@ export async function getDataWithPaging(
             address: 1,
             paymentDate: 1,
             approvedOn: 1,
+            brokerId: 1,
           },
         },
       ];

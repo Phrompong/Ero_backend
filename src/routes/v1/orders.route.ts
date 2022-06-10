@@ -54,6 +54,7 @@ router.post("/", async (req, res) => {
       bankRefundNo,
       registrationNo,
       paymentDate,
+      isCert,
     } = body as any;
 
     if (!paymentDate) {
@@ -103,6 +104,7 @@ router.post("/", async (req, res) => {
       bankRefund: bankRefund ? mongoose.Types.ObjectId(bankRefund) : undefined,
       bankRefundNo,
       paymentDate,
+      isCert,
     };
 
     const result = await OrderModel.updateOne(
