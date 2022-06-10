@@ -108,6 +108,17 @@ export async function findRatio(userRights: any[]) {
   }
 }
 
+// * Step 3
+export async function calculate(userRights: any[]) {
+  const sumAllowcateRight = userRights.reduce(
+    (a, b) => a.allocateRight + b.allocateRight,
+    0
+  ); // * จำนวนหุ้นจัดสรรจองเกินสิทธิ์
+
+  for (const userRight of userRights) {
+  }
+}
+
 async function getTotalStockVolume(): Promise<number> {
   const response = await OrderModel.aggregate([
     {
