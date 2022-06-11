@@ -118,6 +118,7 @@ async function userRight() {
       bookRight: excessAmount / offerPrice - paidRightVolume,
       registrationNo,
       excessAmount,
+      allocateRight: lessThanRight || equalRight, // * จัดสรรตามสิทธิที่ได้
     });
   }
 
