@@ -336,11 +336,6 @@ export async function exportExcel(obj: any) {
           width: 20,
         },
         {
-          header: "จำนวน (test)",
-          key: "rightVolume",
-          width: 20,
-        },
-        {
           header: "น้อยกว่า (test)",
           key: "lessThanRight",
           width: 20,
