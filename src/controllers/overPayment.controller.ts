@@ -206,13 +206,13 @@ async function calculate(userRights: any[]) {
 
           userRights[findindex] = { ...userRight, volume, status };
 
-          response.push({ ...userRight, volume, status });
+          //response.push({ ...userRight, volume, status });
         }
       }
     }
   }
 
-  response.map((o) => {
+  userRights.map((o) => {
     const { volume, reserve, offerPrice } = o;
     const {
       moreThanRight, // * เกินสิทธิ์,
@@ -228,7 +228,7 @@ async function calculate(userRights: any[]) {
     return o;
   });
 
-  return response;
+  return userRights;
 }
 
 async function getTotalStockVolume(): Promise<number> {
