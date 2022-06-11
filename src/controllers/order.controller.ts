@@ -341,6 +341,21 @@ export async function exportExcel(obj: any) {
           width: 20,
         },
         {
+          header: "น้อยกว่า (test)",
+          key: "lessThanRight",
+          width: 20,
+        },
+        {
+          header: "ตามสิทธิ์ (test)",
+          key: "equalRight",
+          width: 20,
+        },
+        {
+          header: "เกินสิทธิ์ (test)",
+          key: "moreThanRight",
+          width: 20,
+        },
+        {
           header: "จัดสรรตามสิทธิ์ที่ได้ (test)",
           key: "allocateRight",
           width: 20,

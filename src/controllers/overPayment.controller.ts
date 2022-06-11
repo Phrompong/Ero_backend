@@ -109,7 +109,7 @@ async function userRight() {
         lessThanRight, // * น้อยกว่า
         equalRight, // * ตามสิทธิ์
         moreThanRight, // * เกินสิทธิ์
-        sum: paidRightVolume ? paidRightVolume : equalRight + moreThanRight, // * รวม
+        //sum: paidRightVolume ? paidRightVolume : equalRight + moreThanRight, // * รวม
         allocateRight: lessThanRight || equalRight, // * จัดสรรตามสิทธิที่ได้
       },
       bankRefund: nameTH,
@@ -119,6 +119,9 @@ async function userRight() {
       registrationNo,
       excessAmount,
       allocateRight: lessThanRight || equalRight, // * จัดสรรตามสิทธิที่ได้
+      lessThanRight, // * น้อยกว่า
+      equalRight, // * ตามสิทธิ์
+      moreThanRight, // * เกินสิทธิ์
     });
   }
 
