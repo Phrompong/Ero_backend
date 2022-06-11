@@ -115,7 +115,7 @@ async function userRight() {
       bankRefund: nameTH,
       bankRefundNo,
       offerPrice,
-      paidRightVolume,
+      bookRight: excessAmount / offerPrice - paidRightVolume,
       registrationNo,
       excessAmount,
     });
