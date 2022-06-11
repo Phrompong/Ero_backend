@@ -214,7 +214,7 @@ async function calculate(userRights: any[]) {
       moreThanRight, // * เกินสิทธิ์,
     } = reserve;
 
-    const notAllocate = moreThanRight - volume; // * จำนวนหุ้นที่ไม่ได้รับการจัดสรร
+    const notAllocate = Math.floor(moreThanRight - volume); // * จำนวนหุ้นที่ไม่ได้รับการจัดสรร
 
     o.volume = Math.floor(o.volume);
     o.notAllocate = Math.floor(notAllocate);
