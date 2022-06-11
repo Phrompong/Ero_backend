@@ -92,7 +92,7 @@ async function userRight() {
     let moreThanRight = 0;
     if (paidRightVolume >= rightVolume) {
       equalRight = rightVolume;
-      moreThanRight = paidRightVolume - rightVolume;
+      moreThanRight = Math.floor(paidRightVolume - rightVolume);
     }
 
     response.push({
@@ -216,6 +216,7 @@ async function calculate(userRights: any[]) {
 
     const notAllocate = moreThanRight - volume; // * จำนวนหุ้นที่ไม่ได้รับการจัดสรร
 
+    o.volume = Math.floor(o.volume);
     o.notAllocate = notAllocate;
     o.refundAmount = notAllocate * offerPrice;
     o.moreThanRight = moreThanRight;
