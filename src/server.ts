@@ -126,9 +126,6 @@ async function init() {
         serverStoppingHelper(server);
         state.logger.info(`Server running on ${process.env.PORT}`);
 
-        // * Initial status value
-        await insertStatus();
-
         app.emit("appStarted", app);
       });
 

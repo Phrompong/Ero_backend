@@ -1,15 +1,20 @@
+import { MasterBank } from "models/master.bank.model";
 import { CustomerStock } from "../models/customer.stock.model";
 import { MasterCustomer } from "../models/master.customer.model";
 import { OrderModel } from "../models/order.model";
 
-async function getOverPaymet() {
+export async function getOverPaymet() {
   const resultUerRight = await userRight();
 
   const resultRatio = await findRatio(resultUerRight);
+
+  const resultCalculate = await calculate(resultRatio);
+
+  return resultCalculate;
 }
 
 // * Step 1 process userRight
-export async function userRight() {
+async function userRight() {
   // * Sum value total stock volume
   const totalStockVolumes: number = await getTotalStockVolume();
 
@@ -43,20 +48,43 @@ export async function userRight() {
         preserveNullAndEmptyArrays: true,
       },
     },
+    {
+      $lookup: {
+        from: "cltMasterBanks",
+        localField: "bankRefund",
+        foreignField: "_id",
+        as: "bankRefund",
+      },
+    },
+    {
+      $unwind: {
+        path: "$bankRefund",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
   ]);
 
   let response: any[] = [];
 
   for (const order of orders) {
-    const { customerId, customerStockId, paidRightVolume } = order;
-    const { stockVolume, ratio, getRight } = customerStockId as CustomerStock;
+    const {
+      customerId,
+      customerStockId,
+      paidRightVolume,
+      bankRefund,
+      bankRefundNo,
+      excessAmount,
+    } = order;
+    const { stockVolume, ratio, getRight, offerPrice, registrationNo } =
+      customerStockId as CustomerStock;
     const { name, lastname, nationalityCode } = customerId as MasterCustomer;
+    const { nameTH } = bankRefund as MasterBank;
 
     const proportion = (+stockVolume / totalStockVolumes) * 100;
     const rightVolume = (+stockVolume * ratio) / getRight;
 
     let lessThanRight = 0;
-    if (rightVolume < rightVolume) {
+    if (paidRightVolume < rightVolume) {
       lessThanRight = paidRightVolume;
     }
 
@@ -70,7 +98,8 @@ export async function userRight() {
     response.push({
       orderId: order._id,
       customerId: customerId._id,
-      name: `${name} ${lastname}`, // * รายชื่อผู้ถือหุ้น
+      firstname: name, // * รายชื่อผู้ถือหุ้น
+      lastname: lastname,
       nationalityCode, // * สัญชาติ
       stockVolume, // * จำนวน
       proportion, // * สัดส่วน
@@ -79,10 +108,16 @@ export async function userRight() {
         paidRightVolume, // * จำนวนที่จอง
         lessThanRight, // * น้อยกว่า
         equalRight, // * ตามสิทธิ์
-        moreThanRight, // * เกิดสิทธิ์
+        moreThanRight, // * เกินสิทธิ์
         sum: paidRightVolume ? paidRightVolume : equalRight + moreThanRight, // * รวม
+        allocateRight: lessThanRight || equalRight, // * จัดสรรตามสิทธิที่ได้
       },
-      allocateRight: lessThanRight || equalRight,
+      bankRefund: nameTH,
+      bankRefundNo,
+      offerPrice,
+      paidRightVolume,
+      registrationNo,
+      excessAmount,
     });
   }
 
@@ -90,7 +125,7 @@ export async function userRight() {
 }
 
 // * Step 2 find ratio
-export async function findRatio(userRights: any[]) {
+async function findRatio(userRights: any[]) {
   let response: any[] = [];
 
   for (const userRight of userRights) {
@@ -106,17 +141,89 @@ export async function findRatio(userRights: any[]) {
 
     response.push({ ...userRight, ratio });
   }
+
+  return response;
 }
 
 // * Step 3
-export async function calculate(userRights: any[]) {
-  const sumAllowcateRight = userRights.reduce(
-    (a, b) => a.allocateRight + b.allocateRight,
-    0
-  ); // * จำนวนหุ้นจัดสรรจองเกินสิทธิ์
+async function calculate(userRights: any[]) {
+  let sumAllowcateRight = 0;
+  let totalStockVolume = 0;
+  let countPersionOverVolume = 0;
 
-  for (const userRight of userRights) {
+  userRights.filter((item) => {
+    const { rightVolume, reserve } = item;
+    totalStockVolume += +rightVolume;
+    sumAllowcateRight += reserve.allocateRight;
+
+    if (reserve.moreThanRight) {
+      countPersionOverVolume += 1;
+    }
+  });
+
+  let volumeOver = totalStockVolume - sumAllowcateRight;
+
+  let response: any[] = [];
+
+  while (volumeOver > 0) {
+    // * เชคว่าคนที่จองสิทธิ์ได้หุ้นครบแล้ว
+    const countComplete = userRights.filter((o) => {
+      return o.status === true;
+    }).length;
+
+    if (countComplete == countPersionOverVolume) break;
+
+    for (const userRight of userRights) {
+      const { orderId, reserve, status } = userRight;
+      if (!status) {
+        const { moreThanRight } = reserve;
+
+        if (moreThanRight) {
+          let { ratio, volume, status } = userRight;
+
+          if (!volume) {
+            volume = 0;
+          }
+
+          volume = volume + (ratio / 100) * volumeOver;
+
+          // * เชคว่าได้หุ้นครบแล้วหรือยัง
+          if (volume >= moreThanRight) {
+            volume = moreThanRight;
+            status = true;
+          }
+
+          volumeOver = Math.floor(volumeOver - volume);
+
+          // * แก้ไขข้อมูล
+          const findindex = await userRights.findIndex(
+            (o) => o.orderId === orderId
+          );
+
+          userRights[findindex] = { ...userRight, volume, status };
+
+          response.push({ ...userRight, volume, status });
+        }
+      }
+    }
   }
+
+  response.map((o) => {
+    const { volume, reserve, offerPrice } = o;
+    const {
+      moreThanRight, // * เกินสิทธิ์,
+    } = reserve;
+
+    const notAllocate = moreThanRight - volume; // * จำนวนหุ้นที่ไม่ได้รับการจัดสรร
+
+    o.notAllocate = notAllocate;
+    o.refundAmount = notAllocate * offerPrice;
+    o.moreThanRight = moreThanRight;
+
+    return o;
+  });
+
+  return response;
 }
 
 async function getTotalStockVolume(): Promise<number> {
