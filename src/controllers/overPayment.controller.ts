@@ -218,9 +218,14 @@ async function calculate(userRights: any[]) {
       moreThanRight, // * เกินสิทธิ์,
     } = reserve;
 
-    const notAllocate = Math.floor(moreThanRight - volume); // * จำนวนหุ้นที่ไม่ได้รับการจัดสรร
+    let notAllocate = 0; // * จำนวนหุ้นที่ไม่ได้รับการจัดสรร
+    if (!volume) {
+      notAllocate = 0;
+    } else {
+      notAllocate = Math.floor(moreThanRight - volume);
+    }
 
-    o.volume = Math.floor(o.volume);
+    o.volume = o.volume ? Math.floor(o.volume) : 0;
     o.notAllocate = Math.floor(notAllocate);
     o.refundAmount = notAllocate * offerPrice;
     o.moreThanRight = moreThanRight;

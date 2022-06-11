@@ -297,7 +297,7 @@ export async function exportExcel(obj: any) {
         },
         {
           header: "จำนวนที่จองซื้อตามสิทธิ์",
-          key: "bookRight",
+          key: "rightVolume",
           width: 20,
         },
         {
