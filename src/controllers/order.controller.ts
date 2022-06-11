@@ -4,6 +4,7 @@ import { getDataWithPaging } from "./common.controller";
 import * as excelJS from "exceljs";
 import { forEach } from "lodash";
 import { format } from "date-fns";
+import { getOverPaymet } from "./overPayment.controller";
 
 export async function insert(order: Order) {
   if (!order) {
@@ -274,6 +275,66 @@ export async function exportExcel(obj: any) {
         },
         { header: "วันที่จองซื้อ", key: "createdOn", width: 20 },
         { header: "เวลาที่อนุมัติ", key: "approvedOn", width: 20 },
+      ],
+    },
+    refund: {
+      func: getOverPaymet,
+      columns: [
+        {
+          header: "Firstname",
+          key: "firstname",
+          width: 20,
+        },
+        {
+          header: "Lastname",
+          key: "lastname",
+          width: 20,
+        },
+        {
+          header: "accountId",
+          key: "registrationNo",
+          width: 20,
+        },
+        {
+          header: "จำนวนที่จองซื้อตามสิทธิ์",
+          key: "paidRightVolume",
+          width: 20,
+        },
+        {
+          header: "จำนวนที่จองเกินสิทธิ์",
+          key: "moreThanRight",
+          width: 20,
+        },
+        {
+          header: "จำนวนหุ้นที่ได้รับการจัดสรรตามสิทธิ์",
+          key: "volume",
+          width: 20,
+        },
+        {
+          header: "จำนวนหุ้นที่ไม่ได้รับการจัดสรร",
+          key: "notAllocate",
+          width: 20,
+        },
+        {
+          header: "จำนวน W1 ที่ได้รับสิทธิ์",
+          key: "",
+          width: 20,
+        },
+        {
+          header: "ธนาคารที่โอนเงินคืน",
+          key: "bankRefund",
+          width: 20,
+        },
+        {
+          header: "หมายเลขบัญชีเพื่อโอนเงินคืน",
+          key: "bankRefundNo",
+          width: 20,
+        },
+        {
+          header: "ยอดโอนเงินคืน",
+          key: "refundAmount",
+          width: 20,
+        },
       ],
     },
   };
