@@ -78,7 +78,7 @@ async function userRight() {
     const { stockVolume, ratio, getRight, offerPrice, registrationNo } =
       customerStockId as CustomerStock;
     const { name, lastname, nationalityCode } = customerId as MasterCustomer;
-    const { nameTH } = bankRefund as MasterBank;
+    const { nameTH } = (bankRefund as MasterBank) || {};
 
     const proportion = (+stockVolume / totalStockVolumes) * 100;
     const rightVolume = (+stockVolume * ratio) / getRight;
