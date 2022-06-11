@@ -335,21 +335,6 @@ export async function exportExcel(obj: any) {
           key: "refundAmount",
           width: 20,
         },
-        {
-          header: "น้อยกว่า (test)",
-          key: "lessThanRight",
-          width: 20,
-        },
-        {
-          header: "ตามสิทธิ์ (test)",
-          key: "equalRight",
-          width: 20,
-        },
-        {
-          header: "จัดสรรตามสิทธิ์ที่ได้ (test)",
-          key: "allocateRight",
-          width: 20,
-        },
       ],
     },
   };
