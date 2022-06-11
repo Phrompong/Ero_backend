@@ -88,8 +88,8 @@ async function connectToDatabase(): Promise<void> {
     await connect(constr, {
       dbName,
       autoIndex: true,
-      user: process.env.DATABASE_USERNAME,
-      pass: process.env.DATABASE_PASSWORD,
+      // user: process.env.DATABASE_USERNAME,
+      // pass: process.env.DATABASE_PASSWORD,
     });
 
     state.logger.info(`Database connected`);
@@ -125,9 +125,6 @@ async function init() {
       server = app.listen(process.env.PORT, async () => {
         serverStoppingHelper(server);
         state.logger.info(`Server running on ${process.env.PORT}`);
-
-        // * Initial status value
-        await insertStatus();
 
         app.emit("appStarted", app);
       });

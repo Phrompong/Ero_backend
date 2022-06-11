@@ -163,7 +163,7 @@ router.put("/:id", async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    const { customerId, rightStockName } = req.query;
+    const { customerId, rightStockName, registrationNo } = req.query;
 
     let obj: any = {};
     const limitInput = req.query.limit?.toString() || "10";
@@ -184,8 +184,6 @@ router.get("/", async (req, res) => {
         createdOn: -1,
       },
     };
-
-    const test = await OrderModel.find(obj).lean();
 
     const find = await getDataWithPaging(
       obj,
@@ -239,6 +237,28 @@ router.get("/:id", async (req, res) => {
     return res
       .status(200)
       .send({ code: "ERO-0001", message: "ok", data: result });
+  } catch (error) {
+    const err = error as Error;
+
+    return res.status(400).send({ code: "ERO-0010", message: err.message });
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res
+        .status(200)
+        .send({ code: "ERO-0011", message: "id is missing" });
+    }
+
+    await OrderModel.findByIdAndDelete(id);
+
+    return res
+      .status(200)
+      .send({ code: "ERO-0001", message: "Delete success" });
   } catch (error) {
     const err = error as Error;
 
