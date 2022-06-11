@@ -217,7 +217,7 @@ async function calculate(userRights: any[]) {
     const notAllocate = moreThanRight - volume; // * จำนวนหุ้นที่ไม่ได้รับการจัดสรร
 
     o.volume = Math.floor(o.volume);
-    o.notAllocate = notAllocate;
+    o.notAllocate = Math.floor(notAllocate);
     o.refundAmount = notAllocate * offerPrice;
     o.moreThanRight = moreThanRight;
 
