@@ -576,7 +576,7 @@ export async function getOrderExport() {
       approvedOn: approvedOn ? format(approvedOn, "dd/MM/yyyy HH:mm:ss") : "",
       brokerCode: code,
       brokerName: brokerId ? brokerId.name : "",
-      cert: isCert ? "yes" : "no",
+      cert: isCert === true || isCert === "true" ? "yes" : "",
     });
   }
 

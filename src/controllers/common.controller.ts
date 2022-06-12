@@ -352,6 +352,7 @@ export async function getDataWithPaging(
             paymentDate: 1,
             approvedOn: 1,
             brokerId: 1,
+            isCert: 1,
           },
         },
         {
@@ -386,6 +387,7 @@ export async function getDataWithPaging(
             paymentDate: 1,
             approvedOn: 1,
             brokerId: 1,
+            isCert: 1,
           },
         },
         {
@@ -449,6 +451,7 @@ export async function getDataWithPaging(
             paymentDate: 1,
             approvedOn: 1,
             brokerId: 1,
+            isCert: 1,
           },
         },
       ];
