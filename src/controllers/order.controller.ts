@@ -526,7 +526,7 @@ export async function getOrderExport() {
       ratio,
     } = customerStock;
 
-    const { code } = brokerId;
+    const { code } = brokerId || {};
 
     // * collection master bank
     const { nameTH } = bankRefund || {};
