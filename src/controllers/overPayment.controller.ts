@@ -122,6 +122,7 @@ async function userRight() {
       lessThanRight, // * น้อยกว่า
       equalRight, // * ตามสิทธิ์
       moreThanRight, // * เกินสิทธิ์
+      paidRightVolume, // * สิทธิที่จองได้
     });
   }
 

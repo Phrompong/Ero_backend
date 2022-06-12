@@ -306,6 +306,11 @@ export async function exportExcel(obj: any) {
           width: 20,
         },
         {
+          header: "จำนวนหุ้นจองทั้งหมด",
+          key: "paidRightVolume",
+          width: 20,
+        },
+        {
           header: "จำนวนที่จองซื้อตามสิทธิ์",
           key: "rightVolume",
           width: 20,
