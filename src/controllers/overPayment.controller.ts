@@ -101,7 +101,7 @@ async function userRight() {
       firstname: name, // * รายชื่อผู้ถือหุ้น
       lastname: lastname,
       nationalityCode, // * สัญชาติ
-      stockVolume, // * จำนวน
+      stockVolume, // * จำนวนหุ้นเดิม
       proportion, // * สัดส่วน
       rightVolume, // * สิทธิที่จองได้
       reserve: {

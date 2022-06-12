@@ -296,6 +296,16 @@ export async function exportExcel(obj: any) {
           width: 20,
         },
         {
+          header: "จำนวนหุ้นเดิม",
+          key: "stockVolume",
+          width: 20,
+        },
+        {
+          header: "สัดส่วน",
+          key: "proportion",
+          width: 20,
+        },
+        {
           header: "จำนวนที่จองซื้อตามสิทธิ์",
           key: "rightVolume",
           width: 20,
