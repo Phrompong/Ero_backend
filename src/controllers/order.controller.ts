@@ -408,6 +408,41 @@ export async function exportExcel(obj: any) {
         },
       ],
     },
+    dss3: {
+      func: getOrderExport,
+      columns: [
+        {
+          header: "Sequence No N(10.0)",
+          key: "sequenceNo",
+          width,
+        },
+        {
+          header: "Credit Participant ID C(3)",
+          key: "brokerCode",
+          width,
+        },
+        {
+          header: "Credit Brokerage Account ID C(15)",
+          key: "accountNo",
+          width,
+        },
+        {
+          header: "Credit Share Quantity N(18.0)",
+          key: "volume",
+          width,
+        },
+        {
+          header: "Credit Pledge Brokerage Account ID C(15)",
+          key: "creaditAccountId",
+          width,
+        },
+        {
+          header: "Pledge Share Quantity N(18.0)",
+          key: "pledgeQuantity",
+          width,
+        },
+      ],
+    },
     refund: {
       func: getOverPaymet,
       columns: [
@@ -563,6 +598,7 @@ export async function exportText(obj: any) {
     dss1: {
       func: getDss1Txt,
     },
+    dss3: { func: getDss3Txt },
   };
 
   const select = await excelHandler[key as string];
@@ -591,7 +627,7 @@ export async function exportText(obj: any) {
 // * Export data
 export async function getOrderExport(type?: string) {
   let orderCalculate: any;
-  if (type === "dss1") {
+  if (type === "dss1" || type === "dss3") {
     orderCalculate = await getOverPaymet();
   }
 
@@ -638,6 +674,7 @@ export async function getOrderExport(type?: string) {
       approvedOn,
       brokerId,
       isCert,
+      accountNo,
     } = obj;
 
     // * collection master customer
@@ -677,7 +714,7 @@ export async function getOrderExport(type?: string) {
     let tempAllow = paymentAmount - excessAmount;
 
     let resultVolume;
-    if (type === "dss1") {
+    if (type === "dss1" || type === "dss3") {
       const test = orderCalculate.filter(
         (o: any) => o.orderId === _id.toString()
       );
@@ -756,6 +793,9 @@ export async function getOrderExport(type?: string) {
       optionFirstName: "",
       optionalLastname: "",
       subScriptionNo: subScriptionNo || "000000000",
+      creaditAccountId: "",
+      pledgeQuantity: "",
+      accountNo,
     });
 
     sequenceNo++;
@@ -931,6 +971,33 @@ export async function getDss1Txt(type?: string) {
       optionalPrefixOther,
       optionFirstName,
       optionalLastname,
+    });
+  }
+
+  return response;
+}
+
+export async function getDss3Txt(type?: string) {
+  const data = await getOrderExport(type);
+
+  let response: any[] = [];
+
+  for (const obj of data) {
+    const {
+      sequenceNo,
+      brokerCode,
+      accountNo,
+      volume,
+      creaditAccountId,
+      pledgeQuantity,
+    } = obj;
+    response.push({
+      sequenceNo,
+      brokerCode,
+      accountNo,
+      volume,
+      creaditAccountId,
+      pledgeQuantity,
     });
   }
 

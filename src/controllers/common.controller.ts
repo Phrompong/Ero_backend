@@ -353,6 +353,7 @@ export async function getDataWithPaging(
             approvedOn: 1,
             brokerId: 1,
             isCert: 1,
+            accountNo: 1,
           },
         },
         {
@@ -388,6 +389,7 @@ export async function getDataWithPaging(
             approvedOn: 1,
             brokerId: 1,
             isCert: 1,
+            accountNo: 1,
           },
         },
         {
@@ -452,6 +454,7 @@ export async function getDataWithPaging(
             approvedOn: 1,
             brokerId: 1,
             isCert: 1,
+            accountNo: 1,
           },
         },
       ];
