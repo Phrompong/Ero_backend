@@ -99,8 +99,8 @@ async function userRight() {
     }
 
     response.push({
-      orderId: order._id,
-      customerId: customerId._id,
+      orderId: order._id.toString(),
+      customerId: customerId._id.toString(),
       firstname: name, // * รายชื่อผู้ถือหุ้น
       lastname: lastname,
       nationalityCode, // * สัญชาติ

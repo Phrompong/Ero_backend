@@ -186,7 +186,7 @@ export async function exportExcel(obj: any) {
         },
         {
           header: "Subscription No.",
-          key: "",
+          key: "subScriptionNo",
           width,
         },
         {
@@ -288,7 +288,7 @@ export async function exportExcel(obj: any) {
         },
         {
           header: "Market ID C(1)",
-          key: "",
+          key: "marketId",
           width,
         },
         {
@@ -313,7 +313,7 @@ export async function exportExcel(obj: any) {
         },
         {
           header: "Subscription Sequence No. N(10.0)",
-          key: "subscription",
+          key: "subScriptionNo",
           width,
         },
         {
@@ -491,7 +491,7 @@ export async function exportExcel(obj: any) {
 
   sheet.columns = columns;
 
-  const data = await func();
+  const data = await func(key);
 
   sheet.addRows(data);
 
@@ -560,13 +560,16 @@ export async function exportText(obj: any) {
     dss: {
       func: getDssTxt,
     },
+    dss1: {
+      func: getDss1Txt,
+    },
   };
 
   const select = await excelHandler[key as string];
 
   const { func } = select;
 
-  const data = await func();
+  const data = await func(key);
 
   let value = "";
   for (const obj of data) {
@@ -586,7 +589,12 @@ export async function exportText(obj: any) {
 }
 
 // * Export data
-export async function getOrderExport() {
+export async function getOrderExport(type?: string) {
+  let orderCalculate: any;
+  if (type === "dss1") {
+    orderCalculate = await getOverPaymet();
+  }
+
   const sort = {
     $sort: {
       createdOn: -1,
@@ -609,6 +617,7 @@ export async function getOrderExport() {
   let sequenceNo = 1;
   for (const obj of data) {
     const {
+      _id,
       customerId,
       rightStockName,
       stockVolume,
@@ -643,6 +652,7 @@ export async function getOrderExport() {
       refNo,
       zipcode,
       holderType,
+      subScriptionNo,
     } = customerId;
 
     // * collection customer stock
@@ -665,6 +675,17 @@ export async function getOrderExport() {
     // * collection status
 
     let tempAllow = paymentAmount - excessAmount;
+
+    let resultVolume;
+    if (type === "dss1") {
+      const test = orderCalculate.filter(
+        (o: any) => o.orderId === _id.toString()
+      );
+
+      const { volume } = test[0] || {};
+
+      resultVolume = volume;
+    }
 
     response.push({
       customerId: refNo,
@@ -722,7 +743,7 @@ export async function getOrderExport() {
       slipTransactionDate: "",
       slipTransactionNo: "",
       quantityIssuerAccount: "",
-      volume: "", // * ได้จากสูตร
+      volume: resultVolume, // * ได้จากสูตร
       chequePoolFlag: "N",
       bankCodeReturnCash: "",
       bankAccountReturnCash: "",
@@ -734,6 +755,7 @@ export async function getOrderExport() {
       optionalPrefixOther: "",
       optionFirstName: "",
       optionalLastname: "",
+      subScriptionNo: subScriptionNo || "000000000",
     });
 
     sequenceNo++;
@@ -844,6 +866,71 @@ export async function getDssTxt() {
       amount: amount || "",
       offerPrice: offerPrice || "",
       ratio: ratio || "",
+    });
+  }
+
+  return response;
+}
+
+export async function getDss1Txt(type?: string) {
+  const data = await getOrderExport(type);
+
+  let response: any[] = [];
+
+  for (const obj of data) {
+    const {
+      fixName,
+      marketId,
+      sequenceNo,
+      actionType,
+      transactionDate,
+      transactionNo,
+      subScriptionNo,
+      registrationNo,
+      certificateId,
+      slipTransactionDate,
+      slipTransactionNo,
+      cert,
+      quantityIssuerAccount,
+      volume,
+      chequePoolFlag,
+      bankCodeReturnCash,
+      bankAccountReturnCash,
+      usIndiciaFlag,
+      entityTypeCode,
+      fatcaStatus,
+      giinNo,
+      optionalPrefixCode,
+      optionalPrefixOther,
+      optionFirstName,
+      optionalLastname,
+    } = obj;
+    response.push({
+      fixName,
+      marketId,
+      sequenceNo,
+      actionType,
+      transactionDate,
+      transactionNo,
+      subScriptionNo,
+      registrationNo,
+      certificateId,
+      slipTransactionDate,
+      slipTransactionNo,
+      cert,
+      quantityIssuerAccount,
+      volume,
+      chequePoolFlag,
+      bankCodeReturnCash,
+      bankAccountReturnCash,
+      usIndiciaFlag,
+      entityTypeCode,
+      fatcaStatus,
+      giinNo,
+      optionalPrefixCode,
+      optionalPrefixOther,
+      optionFirstName,
+      optionalLastname,
     });
   }
 
