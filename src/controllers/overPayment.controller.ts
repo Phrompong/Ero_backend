@@ -1,5 +1,8 @@
 import { MasterBank } from "models/master.bank.model";
-import { CustomerStock } from "../models/customer.stock.model";
+import {
+  CustomerStock,
+  CustomerStockModel,
+} from "../models/customer.stock.model";
 import { MasterCustomer } from "../models/master.customer.model";
 import { OrderModel } from "../models/order.model";
 
@@ -238,18 +241,38 @@ async function calculate(userRights: any[]) {
 }
 
 async function getTotalStockVolume(): Promise<number> {
-  const response = await OrderModel.aggregate([
+  const results = await CustomerStockModel.aggregate([
     {
-      $group: {
-        _id: "$rightStockName",
-        totalStockVolume: {
-          $sum: "$stockVolume",
-        },
+      $project: {
+        _id: 0,
+        rightStockName: 1,
+        rightStockVolume: { $toDecimal: "$rightStockVolume" },
+      },
+    },
+    {
+      $facet: {
+        count: [
+          {
+            $count: "rightStockName",
+          },
+        ],
+        total: [
+          {
+            $group: {
+              _id: "$rightStockName",
+              sum: {
+                $sum: "$rightStockVolume",
+              },
+            },
+          },
+        ],
       },
     },
   ]);
 
-  if (response.length === 0) return 0;
+  if (results.length === 0) return 0;
 
-  return response[0].totalStockVolume;
+  const { count, total } = results[0];
+
+  return total.length > 0 ? +total[0].sum : 0;
 }
