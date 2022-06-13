@@ -356,6 +356,60 @@ router.post("/bookbank", uploadImage.any(), async (req: any, res: any) => {
   }
 });
 
+router.patch(
+  "/subscriptionNo",
+  uploadExcel.any(),
+  async (req: any, res: any) => {
+    try {
+      const { type } = req.query;
+      const files = req.files;
+
+      if (files.length === 0) {
+        return res
+          .status(400)
+          .send({ code: "ERO-0011", message: "Request file not found" });
+      }
+
+      const file = reader.readFile(
+        path.join(__dirname, `../../../excels/${files[0].filename}`)
+      );
+
+      const temps = reader.utils.sheet_to_json(
+        file.Sheets[file.SheetNames[0]],
+        {
+          defval: "",
+        }
+      );
+
+      let check = 0;
+      // * Insert value to mongo
+      for (const temp of temps) {
+        const keys = Object.keys(temp);
+
+        const subscriptionNo = temp["Subscription No."];
+        const refNo = temp["Reference No"];
+
+        const result = await MasterCustomerModel.updateOne(
+          {
+            refNo,
+          },
+          { $set: { subScriptionNo: subscriptionNo.toString().trim() } }
+        ).lean();
+
+        if (result.nModified === 1) {
+          check++;
+        }
+      }
+
+      return res.status(200).send({ code: "ERO-0001", message: "ok" });
+    } catch (error) {
+      const err = error as Error;
+
+      return res.status(400).send({ code: "ERO-0010", message: err });
+    }
+  }
+);
+
 router.get("/", async (req: any, res: any) => {
   try {
     const results = await TestModel.find().lean();
@@ -371,18 +425,6 @@ router.get("/", async (req: any, res: any) => {
 });
 
 router.delete("/delete", async (req: any, res: any) => {
-  // await ConsentHistoryModel.deleteMany({});
-
-  // await OrderModel.deleteMany({});
-
-  // await CustomerStockModel.deleteMany({});
-
-  // await MasterCustomerModel.deleteMany({});
-
-  // await MasterBankModel.deleteMany({});
-
-  // await OrderModel.deleteMany({});
-
   return res.status(200).send({ code: "ERO-0010", message: "delete ok" });
 });
 

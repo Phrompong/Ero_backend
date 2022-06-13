@@ -278,6 +278,136 @@ export async function exportExcel(obj: any) {
         { header: "เวลาที่อนุมัติ", key: "approvedOn", width: 20 },
       ],
     },
+    dss1: {
+      func: getOrderExport,
+      columns: [
+        {
+          header: "Security Symbol at Book Close C(20)",
+          key: "fixName",
+          width,
+        },
+        {
+          header: "Market ID C(1)",
+          key: "",
+          width,
+        },
+        {
+          header: "Sequence No N(10.0)",
+          key: "sequenceNo",
+          width,
+        },
+        {
+          header: "Action Type C(1)",
+          key: "actionType",
+          width,
+        },
+        {
+          header: "Transaction Date C(10)",
+          key: "transactionDate",
+          width,
+        },
+        {
+          header: "Transaction No C(8.0)",
+          key: "transactionNo",
+          width,
+        },
+        {
+          header: "Subscription Sequence No. N(10.0)",
+          key: "subscription",
+          width,
+        },
+        {
+          header: "Account ID C(10)",
+          key: "registrationNo",
+          width,
+        },
+        {
+          header: "Certificate ID",
+          key: "certificateId",
+          width,
+        },
+        {
+          header: "Slip Transaction Date C(10)",
+          key: "slipTransactionDate",
+          width,
+        },
+        {
+          header: "Slip Transaction No. N(8.0)",
+          key: "slipTransactionNo",
+          width,
+        },
+        {
+          header: "Quantity of Subscribed Scrip N(18.0)",
+          key: "cert",
+          width,
+        },
+        {
+          header: "Quantity of Subscribed Issuer Account N(18.0)",
+          key: "quantityIssuerAccount",
+          width,
+        },
+        {
+          header: "Quantity of Subscribed Participant's Account N(18.0)",
+          key: "volume",
+          width,
+        },
+        {
+          header: "Cheque Pool Flag C(1)",
+          key: "chequePoolFlag",
+          width,
+        },
+        {
+          header: "Bank Code for Return Cash C(3)",
+          key: "bankCodeReturnCash",
+          width,
+        },
+        {
+          header: "Bank Account for Return Cash C(15)",
+          key: "bankAccountReturnCash",
+          width,
+        },
+        {
+          header: "US Indicia Flag C(1)",
+          key: "usIndiciaFlag",
+          width,
+        },
+        {
+          header: "Entity Type Code C(2)",
+          key: "entityTypeCode",
+          width,
+        },
+        {
+          header: "FATCA Status C(50)",
+          key: "fatcaStatus",
+          width,
+        },
+        {
+          header: "GIIN No C(19)",
+          key: "giinNo",
+          width,
+        },
+        {
+          header: "Optional Prefix Code C(3)",
+          key: "optionalPrefixCode",
+          width,
+        },
+        {
+          header: "Optional Prefix Other C(30)",
+          key: "optionalPrefixOther",
+          width,
+        },
+        {
+          header: "Optional First Name C(40)",
+          key: "optionFirstName",
+          width,
+        },
+        {
+          header: "Optional Last Name/Company Name C(110)",
+          key: "optionalLastname",
+          width,
+        },
+      ],
+    },
     refund: {
       func: getOverPaymet,
       columns: [
@@ -476,6 +606,7 @@ export async function getOrderExport() {
 
   let response: any[] = [];
   const exportDate = new Date();
+  let sequenceNo = 1;
   for (const obj of data) {
     const {
       customerId,
@@ -576,8 +707,36 @@ export async function getOrderExport() {
       approvedOn: approvedOn ? format(approvedOn, "dd/MM/yyyy HH:mm:ss") : "",
       brokerCode: code,
       brokerName: brokerId ? brokerId.name : "",
-      cert: isCert === true || isCert === "true" ? "yes" : "",
+      cert:
+        isCert === true || isCert === "จำนวนหุ้นที่ ลค.รับเป็นใบกระดาษ"
+          ? "yes"
+          : "",
+      fixName: "NCAP",
+      marketId: "A",
+      sequenceNo,
+      actionType: "E",
+      transactionDate: "",
+      transactionNo: "",
+      subscription: "",
+      certificateId: "",
+      slipTransactionDate: "",
+      slipTransactionNo: "",
+      quantityIssuerAccount: "",
+      volume: "", // * ได้จากสูตร
+      chequePoolFlag: "N",
+      bankCodeReturnCash: "",
+      bankAccountReturnCash: "",
+      usIndiciaFlag: "N",
+      entityTypeCode: "",
+      fatcaStatus: "",
+      giinNo: "",
+      optionalPrefixCode: "",
+      optionalPrefixOther: "",
+      optionFirstName: "",
+      optionalLastname: "",
     });
+
+    sequenceNo++;
   }
 
   return response;
