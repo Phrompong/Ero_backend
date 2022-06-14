@@ -782,7 +782,7 @@ export async function getOrderExport(type?: string) {
       slipTransactionNo: "",
       quantityIssuerAccount: total,
       volume: total,
-      chequePoolFlag: total ? "N" : "M",
+      chequePoolFlag: +total > 0 ? "N" : "",
       bankCodeReturnCash: "",
       bankAccountReturnCash: "",
       usIndiciaFlag: "N",
