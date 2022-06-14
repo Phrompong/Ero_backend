@@ -70,7 +70,7 @@ export async function exportExcel(obj: any) {
         { header: "วันที่อนุมัติ", key: "approvedOn", width: 20 },
         { header: "หมายเลขโบรกเกอร์", key: "brokerCode", width: 20 },
         { header: "โบรกเกอร์", key: "brokerName", width: 20 },
-        { header: "เลขที่บัญชีซื้อขาย", key: "bankRefundNo", width: 20 },
+        { header: "เลขที่บัญชีซื้อขาย", key: "accountNo", width: 20 },
         { header: "ใบจองหุ้น", key: "cert", width: 20 },
       ],
     },
@@ -518,6 +518,7 @@ export async function exportExcel(obj: any) {
         },
       ],
     },
+    refundCheck: {},
   };
 
   const select = await excelHandler[key as string];
@@ -624,6 +625,7 @@ export async function exportText(obj: any) {
   res.send(value);
 }
 
+let tempOrders: any[] = [];
 // * Export data
 export async function getOrderExport(type?: string) {
   let orderCalculate: any;
@@ -714,14 +716,25 @@ export async function getOrderExport(type?: string) {
     let tempAllow = paymentAmount - excessAmount;
 
     let resultVolume;
+    let total = 0;
+
     if (type === "dss1" || type === "dss3") {
       const test = orderCalculate.filter(
         (o: any) => o.orderId === _id.toString()
       );
 
-      const { volume } = test[0] || {};
+      const { volume, equalRight } = test[0] || {};
 
+      total = equalRight + volume;
       resultVolume = volume;
+
+      if (tempOrders.length === 0 || tempOrders.length !== data.length) {
+        tempOrders.push({ _id, sequenceNo });
+      } else {
+        tempOrders.filter((o) => o._id === _id.toString());
+
+        sequenceNo = tempOrders[0].sequenceNo;
+      }
     }
 
     response.push({
@@ -765,10 +778,7 @@ export async function getOrderExport(type?: string) {
       approvedOn: approvedOn ? format(approvedOn, "dd/MM/yyyy HH:mm:ss") : "",
       brokerCode: code,
       brokerName: brokerId ? brokerId.name : "",
-      cert:
-        isCert === true || isCert === "จำนวนหุ้นที่ ลค.รับเป็นใบกระดาษ"
-          ? "yes"
-          : "",
+      cert: total,
       fixName: "NCAP",
       marketId: "A",
       sequenceNo,
@@ -779,9 +789,9 @@ export async function getOrderExport(type?: string) {
       certificateId: "",
       slipTransactionDate: "",
       slipTransactionNo: "",
-      quantityIssuerAccount: "",
-      volume: resultVolume, // * ได้จากสูตร
-      chequePoolFlag: "N",
+      quantityIssuerAccount: total,
+      volume: total,
+      chequePoolFlag: total ? "N" : "M",
       bankCodeReturnCash: "",
       bankAccountReturnCash: "",
       usIndiciaFlag: "N",
@@ -796,6 +806,7 @@ export async function getOrderExport(type?: string) {
       creaditAccountId: "",
       pledgeQuantity: "",
       accountNo,
+      isCert,
     });
 
     sequenceNo++;
