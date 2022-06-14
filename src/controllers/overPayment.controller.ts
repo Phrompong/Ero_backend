@@ -208,7 +208,11 @@ async function calculate(userRights: any[]) {
             (o) => o.orderId === orderId
           );
 
-          userRights[findindex] = { ...userRight, volume, status };
+          userRights[findindex] = {
+            ...userRight,
+            volume: volume < 0 ? -volume : volume,
+            status,
+          };
 
           //response.push({ ...userRight, volume, status });
         }

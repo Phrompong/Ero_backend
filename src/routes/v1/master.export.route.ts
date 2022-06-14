@@ -16,7 +16,7 @@ router.get("/:id", async (req, res) => {
         .send({ code: "ERO-0011", message: "id is missing" });
     }
 
-    const result = await MasterExportModel.find().lean();
+    const result = await MasterExportModel.findById(id).lean();
 
     return res
       .status(200)
