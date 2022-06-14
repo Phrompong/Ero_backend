@@ -804,7 +804,13 @@ export async function getOrderExport(type?: string) {
   }
 
   if (type === "dss3") {
-    return response.filter((o) => o.isCert !== true && o.brokerCode !== 600);
+    return response.filter(
+      (o) =>
+        o.isCert === false &&
+        o.isCert === undefined &&
+        o.isCert === null &&
+        o.brokerCode !== 600
+    );
   }
 
   return response;
