@@ -728,6 +728,8 @@ export async function getOrderExport(type?: string) {
       resultVolume = volume;
     }
 
+    const quantityIssuerAccount = code === 600 ? total : 0;
+
     response.push({
       customerId: refNo,
       customerName: name,
@@ -780,12 +782,12 @@ export async function getOrderExport(type?: string) {
       certificateId: "",
       slipTransactionDate: "",
       slipTransactionNo: "",
-      quantityIssuerAccount: code === 600 ? total : 0,
+      quantityIssuerAccount,
       volume: !isCert && code !== 600 ? total : 0,
       chequePoolFlag: "N", //+total > 0 ? "N" : "",
       bankCodeReturnCash: "",
       bankAccountReturnCash: "",
-      usIndiciaFlag: code === 600 ? (total > 0 ? "N" : "") : 0,
+      usIndiciaFlag: quantityIssuerAccount > 0 ? "N" : "",
       entityTypeCode: "",
       fatcaStatus: "",
       giinNo: "",
