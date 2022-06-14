@@ -475,4 +475,24 @@ router.patch("/:id", async (req, res) => {
   return res.status(200).send({ code: "ERO-0001", message: "ok" });
 });
 
+router.patch("/sequence/export/dss", async (req, res) => {
+  const results = await OrderModel.find().sort({ createdOn: -1 }).lean();
+
+  let sequence = 1;
+  for (const obj of results) {
+    const { _id } = obj;
+
+    if (!_id) return;
+
+    await OrderModel.updateOne(
+      { _id: mongoose.Types.ObjectId(_id.toString()) },
+      { $set: { sequence } }
+    );
+
+    sequence++;
+  }
+
+  return res.status(200).send({ code: "ERO-0001", message: "ok" });
+});
+
 export default router;

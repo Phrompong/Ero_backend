@@ -110,6 +110,9 @@ export class Order extends BaseModel {
 
   @prop({ type: Boolean })
   public isCert?: boolean;
+
+  @prop({ type: Number })
+  public sequence?: number;
 }
 
 export const OrderModel = getModelForClass(Order, {

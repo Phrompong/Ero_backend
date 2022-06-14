@@ -293,7 +293,7 @@ export async function exportExcel(obj: any) {
         },
         {
           header: "Sequence No N(10.0)",
-          key: "sequenceNo",
+          key: "sequence",
           width,
         },
         {
@@ -413,7 +413,7 @@ export async function exportExcel(obj: any) {
       columns: [
         {
           header: "Sequence No N(10.0)",
-          key: "sequenceNo",
+          key: "sequence",
           width,
         },
         {
@@ -625,7 +625,6 @@ export async function exportText(obj: any) {
   res.send(value);
 }
 
-let tempOrders: any[] = [];
 // * Export data
 export async function getOrderExport(type?: string) {
   let orderCalculate: any;
@@ -677,6 +676,7 @@ export async function getOrderExport(type?: string) {
       brokerId,
       isCert,
       accountNo,
+      sequence,
     } = obj;
 
     // * collection master customer
@@ -712,7 +712,6 @@ export async function getOrderExport(type?: string) {
     const { nameTH } = bankRefund || {};
 
     // * collection status
-
     let tempAllow = paymentAmount - excessAmount;
 
     let resultVolume;
@@ -727,14 +726,6 @@ export async function getOrderExport(type?: string) {
 
       total = equalRight + volume;
       resultVolume = volume;
-
-      if (tempOrders.length === 0 || tempOrders.length !== data.length) {
-        tempOrders.push({ _id, sequenceNo });
-      } else {
-        tempOrders.filter((o) => o._id === _id.toString());
-
-        sequenceNo = tempOrders[0].sequenceNo;
-      }
     }
 
     response.push({
@@ -781,7 +772,7 @@ export async function getOrderExport(type?: string) {
       cert: total,
       fixName: "NCAP",
       marketId: "A",
-      sequenceNo,
+      sequence,
       actionType: "E",
       transactionDate: "",
       transactionNo: "",
@@ -810,6 +801,10 @@ export async function getOrderExport(type?: string) {
     });
 
     sequenceNo++;
+  }
+
+  if (type === "dss3") {
+    return response.filter((o) => o.isCert !== true && o.brokerCode !== 600);
   }
 
   return response;
