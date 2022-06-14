@@ -75,6 +75,9 @@ export class CustomerStock extends BaseModel {
 
   @prop({ type: String })
   public rtn!: string;
+
+  @prop({ type: String, index: true })
+  public subScriptionNo?: string;
 }
 
 export const CustomerStockModel = getModelForClass(CustomerStock, {

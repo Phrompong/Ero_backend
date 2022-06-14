@@ -387,11 +387,11 @@ router.patch(
         const keys = Object.keys(temp);
 
         const subscriptionNo = temp["Subscription No."];
-        const refNo = temp["Reference No"];
+        const registrationNo = temp["Account ID"];
 
-        const result = await MasterCustomerModel.updateOne(
+        const result = await CustomerStockModel.updateOne(
           {
-            refNo,
+            registrationNo,
           },
           { $set: { subScriptionNo: subscriptionNo.toString().trim() } }
         ).lean();

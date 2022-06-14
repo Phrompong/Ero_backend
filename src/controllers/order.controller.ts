@@ -691,7 +691,6 @@ export async function getOrderExport(type?: string) {
       refNo,
       zipcode,
       holderType,
-      subScriptionNo,
     } = customerId;
 
     // * collection customer stock
@@ -704,6 +703,7 @@ export async function getOrderExport(type?: string) {
       offerPrice,
       getRight,
       ratio,
+      subScriptionNo,
     } = customerStock;
 
     const { code } = brokerId || {};
