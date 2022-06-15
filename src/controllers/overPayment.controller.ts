@@ -221,7 +221,7 @@ async function calculate(userRights: any[]) {
   }
 
   userRights.map((o) => {
-    const { volume, reserve, offerPrice } = o;
+    const { volume, reserve, offerPrice, equalRight, rightVolume } = o;
     const {
       moreThanRight, // * เกินสิทธิ์,
     } = reserve;
@@ -237,6 +237,8 @@ async function calculate(userRights: any[]) {
     o.notAllocate = Math.floor(notAllocate);
     o.refundAmount = notAllocate * offerPrice;
     o.moreThanRight = moreThanRight;
+    o.wollance = (equalRight + volume) / 2;
+    o.actual = rightVolume + volume;
 
     return o;
   });

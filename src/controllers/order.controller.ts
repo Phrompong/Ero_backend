@@ -492,6 +492,11 @@ export async function exportExcel(obj: any) {
           width: 20,
         },
         {
+          header: "จำนวนหุ้นที่ได้รับการจัดสรรจริง",
+          key: "actual",
+          width: 20,
+        },
+        {
           header: "จำนวนหุ้นที่ไม่ได้รับการจัดสรร",
           key: "notAllocate",
           width: 20,
