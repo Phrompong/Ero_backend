@@ -113,6 +113,9 @@ export class Order extends BaseModel {
 
   @prop({ type: Number })
   public sequence?: number;
+
+  @prop({ type: Number })
+  public totalAllot?: number;
 }
 
 export const OrderModel = getModelForClass(Order, {

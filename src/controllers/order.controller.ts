@@ -682,6 +682,7 @@ export async function getOrderExport(type?: string) {
       isCert,
       accountNo,
       sequence,
+      totalAllot,
     } = obj;
 
     // * collection master customer
@@ -729,7 +730,7 @@ export async function getOrderExport(type?: string) {
 
       const { volume, equalRight } = test[0] || {};
 
-      total = equalRight + volume;
+      total = totalAllot;
       resultVolume = volume;
     }
 
