@@ -238,7 +238,7 @@ async function calculate(userRights: any[]) {
     o.refundAmount = notAllocate * offerPrice;
     o.moreThanRight = moreThanRight;
     o.wollance = (equalRight + volume) / 2;
-    o.actual = rightVolume + volume;
+    o.actual = volume ? Math.floor(rightVolume + volume) : 0;
 
     return o;
   });

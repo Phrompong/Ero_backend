@@ -503,7 +503,7 @@ export async function exportExcel(obj: any) {
         },
         {
           header: "จำนวน W1 ที่ได้รับสิทธิ์",
-          key: "",
+          key: "wollance",
           width: 20,
         },
         {
