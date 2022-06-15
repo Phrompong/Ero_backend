@@ -355,6 +355,7 @@ export async function getDataWithPaging(
             isCert: 1,
             accountNo: 1,
             sequence: 1,
+            totalAllot: 1,
           },
         },
         {
@@ -392,6 +393,7 @@ export async function getDataWithPaging(
             isCert: 1,
             accountNo: 1,
             sequence: 1,
+            totalAllot: 1,
           },
         },
         {
@@ -458,6 +460,7 @@ export async function getDataWithPaging(
             isCert: 1,
             accountNo: 1,
             sequence: 1,
+            totalAllot: 1,
           },
         },
       ];
