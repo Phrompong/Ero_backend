@@ -734,7 +734,7 @@ export async function getOrderExport(type?: string) {
       resultVolume = volume;
     }
 
-    const quantityIssuerAccount = code === "600" || code === 600 ? total : 0;
+    const quantityIssuerAccount = code === "000" || code === 600 ? total : 0;
 
     response.push({
       customerId: refNo,
