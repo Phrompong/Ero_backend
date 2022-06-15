@@ -406,6 +406,9 @@ export async function getDataWithPaging(
                         name: new RegExp(key || ""),
                       },
                       {
+                        "customerId.refNo": new RegExp(key || ""),
+                      },
+                      {
                         tempRightStockName: new RegExp(key || ""),
                       },
                       {
@@ -416,6 +419,9 @@ export async function getDataWithPaging(
                       },
                       {
                         "customerId.refNo": new RegExp(key || ""),
+                      },
+                      {
+                        "customerStock.registrationNo": new RegExp(key || ""),
                       },
                     ],
                   }
