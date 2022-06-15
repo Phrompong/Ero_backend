@@ -734,7 +734,7 @@ export async function getOrderExport(type?: string) {
       resultVolume = volume;
     }
 
-    const quantityIssuerAccount = code === "000" || code === 600 ? total : 0;
+    const quantityIssuerAccount = code === "000" ? total : 0;
 
     response.push({
       customerId: refNo,
@@ -812,7 +812,7 @@ export async function getOrderExport(type?: string) {
   }
 
   if (type === "dss3") {
-    return response.filter((o) => o.isCert !== true && o.brokerCode !== 600);
+    return response.filter((o) => o.isCert !== true && o.brokerCode !== "000");
   }
 
   return response;
