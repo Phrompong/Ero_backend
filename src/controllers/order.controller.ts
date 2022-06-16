@@ -579,7 +579,7 @@ export async function exportExcel(obj: any) {
         },
         {
           header: "เลขที่เช็ค",
-          key: "",
+          key: "noChek",
           width: 20,
         },
       ],
