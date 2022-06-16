@@ -865,7 +865,7 @@ export async function getOrderExport(type?: string) {
 
     const quantityIssuerAccount = code === "000" ? total : 0;
 
-    const notAllocate = (allVolume || 0) - (rightVolume || 0);
+    const notAllocate = (paidRightVolume || 0) - (allVolume || 0);
 
     response.push({
       customerId: refNo,
