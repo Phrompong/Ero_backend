@@ -42,6 +42,9 @@ export class MasterBank extends BaseModel {
 
   @prop({ type: String })
   public type!: string;
+
+  @prop({ type: String })
+  public codeBank!: string;
 }
 
 export const MasterBankModel = getModelForClass(MasterBank, {

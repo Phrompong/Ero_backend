@@ -523,7 +523,132 @@ export async function exportExcel(obj: any) {
         },
       ],
     },
-    refundCheck: {},
+    letterCheck: {
+      func: getOrderExport,
+      columns: [
+        {
+          header: "คำนำหน้าชื่อ",
+          key: "title",
+          width: 20,
+        },
+        {
+          header: "ชื่อ",
+          key: "firstname",
+          width: 20,
+        },
+        {
+          header: "นามสกุล",
+          key: "lastname",
+          width: 20,
+        },
+        {
+          header: "ที่อยู่",
+          key: "address",
+          width: 20,
+        },
+        {
+          header: "จำนวนที่จองซื้อตามสิทธิ (หุ้น)",
+          key: "rightVolume",
+          width: 20,
+        },
+        {
+          header: "จำนวนที่จองเกินสิทธิ (หุ้น)",
+          key: "moreThanVolume",
+          width: 20,
+        },
+        {
+          header: "จำนวนหุ้นที่ได้รับการจัดสรร (หุ้น)",
+          key: "allVolume",
+          width: 20,
+        },
+        {
+          header: "จำนวนหุ้นที่ไม่ได้รับการจัดสรร (หุ้น)",
+          key: "notAllocate",
+          width: 20,
+        },
+        {
+          header: "จำนวนเงินคืน",
+          key: "refund",
+          width: 20,
+        },
+
+        {
+          header: "ชื่อธนาคารที่ออกเชค",
+          key: "",
+          width: 20,
+        },
+        {
+          header: "เลขที่เช็ค",
+          key: "",
+          width: 20,
+        },
+      ],
+    },
+    letterAts: {
+      func: getOrderExport,
+      columns: [
+        {
+          header: "คำนำหน้าชื่อ",
+          key: "title",
+          width: 20,
+        },
+        {
+          header: "ชื่อ",
+          key: "firstname",
+          width: 20,
+        },
+        {
+          header: "นามสกุล",
+          key: "lastname",
+          width: 20,
+        },
+        {
+          header: "ที่อยู่",
+          key: "address",
+          width: 20,
+        },
+        {
+          header: "จำนวนที่จองซื้อตามสิทธิ (หุ้น)",
+          key: "rightVolume",
+          width: 20,
+        },
+        {
+          header: "จำนวนที่จองเกินสิทธิ (หุ้น)",
+          key: "moreThanVolume",
+          width: 20,
+        },
+        {
+          header: "จำนวนหุ้นที่ได้รับการจัดสรร (หุ้น)",
+          key: "allVolume",
+          width: 20,
+        },
+        {
+          header: "จำนวนหุ้นที่ไม่ได้รับการจัดสรร (หุ้น)",
+          key: "notAllocate",
+          width: 20,
+        },
+        {
+          header: "จำนวนเงินคืน",
+          key: "refund",
+          width: 20,
+        },
+        {
+          header: "Code Bank",
+          key: "codeBank",
+          width: 20,
+        },
+        {
+          header: "ชื่อธนาคาร",
+          key: "nameTH",
+          width: 20,
+        },
+        {
+          header: "เลขที่บัญชีธนาคาร",
+          key: "bankRefundNo",
+          width: 20,
+        },
+      ],
+    },
   };
 
   const select = await excelHandler[key as string];
@@ -674,7 +799,6 @@ export async function getOrderExport(type?: string) {
       paymentDate,
       bankRefund,
       bankRefundNo,
-      address,
       status,
       createdOn,
       approvedOn,
@@ -683,6 +807,10 @@ export async function getOrderExport(type?: string) {
       accountNo,
       sequence,
       totalAllot,
+      rightVolume,
+      moreThanVolume,
+      allVolume,
+      warrantList,
     } = obj;
 
     // * collection master customer
@@ -697,6 +825,8 @@ export async function getOrderExport(type?: string) {
       refNo,
       zipcode,
       holderType,
+      address,
+      title,
     } = customerId;
 
     // * collection customer stock
@@ -705,7 +835,6 @@ export async function getOrderExport(type?: string) {
       rightStockVolume,
       refType,
       titleCode,
-      title,
       offerPrice,
       getRight,
       ratio,
@@ -715,7 +844,7 @@ export async function getOrderExport(type?: string) {
     const { code } = brokerId || {};
 
     // * collection master bank
-    const { nameTH } = bankRefund || {};
+    const { nameTH, codeBank } = bankRefund || {};
 
     // * collection status
     let tempAllow = paymentAmount - excessAmount;
@@ -736,12 +865,15 @@ export async function getOrderExport(type?: string) {
 
     const quantityIssuerAccount = code === "000" ? total : 0;
 
+    const notAllocate = (allVolume || 0) - (rightVolume || 0);
+
     response.push({
       customerId: refNo,
       customerName: name,
       customerLastname: lastname,
       customerNationalId: refNo,
       telephone,
+      address,
       atsBank,
       atsBankNo,
       rightStockName,
@@ -759,7 +891,6 @@ export async function getOrderExport(type?: string) {
       status: status.status,
       bankRefundName: nameTH,
       bankRefundNo,
-      address,
       exportDate: exportDate ? format(exportDate, "dd/MM/yyyy") : "",
       exportTime: exportDate ? format(exportDate, "HH:mm:ss") : "",
       registrationNo,
@@ -806,6 +937,13 @@ export async function getOrderExport(type?: string) {
       pledgeQuantity: "",
       accountNo,
       isCert,
+      rightVolume, // * จำนวนที่จองซื้อตามสิทธิ
+      moreThanVolume, // * จำนวนที่จองเกินสิทธิ
+      allVolume, // * จำนวนหุ้นที่ได้รับการจัดสรร
+      warrantList,
+      notAllocate, // * จำนวนหุ้นที่ไม่ได้รับการจัดสรร
+      refund: notAllocate * offerPrice,
+      codeBank,
     });
 
     sequenceNo++;
