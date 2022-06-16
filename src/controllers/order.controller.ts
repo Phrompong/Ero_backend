@@ -594,7 +594,7 @@ export async function exportExcel(obj: any) {
         },
         {
           header: "ชื่อ",
-          key: "firstname",
+          key: "name",
           width: 20,
         },
         {
@@ -639,7 +639,7 @@ export async function exportExcel(obj: any) {
         },
         {
           header: "ชื่อธนาคาร",
-          key: "nameTH",
+          key: "bankRefundName",
           width: 20,
         },
         {
