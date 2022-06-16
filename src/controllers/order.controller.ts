@@ -533,7 +533,7 @@ export async function exportExcel(obj: any) {
         },
         {
           header: "ชื่อ",
-          key: "firstname",
+          key: "name",
           width: 20,
         },
         {
@@ -574,7 +574,7 @@ export async function exportExcel(obj: any) {
 
         {
           header: "ชื่อธนาคารที่ออกเชค",
-          key: "",
+          key: "nameBankForCheck",
           width: 20,
         },
         {
@@ -944,6 +944,8 @@ export async function getOrderExport(type?: string) {
       notAllocate, // * จำนวนหุ้นที่ไม่ได้รับการจัดสรร
       refund: notAllocate * offerPrice,
       codeBank,
+      nameBankForCheck: "", // * ชื่อธนาคารที่ออกเชค
+      noChek: "", // * เลขที่เช็ค
     });
 
     sequenceNo++;
