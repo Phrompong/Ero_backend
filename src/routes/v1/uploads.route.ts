@@ -411,7 +411,7 @@ router.patch(
 );
 
 router.patch(
-  "/order/totalAllot",
+  "/order/announce",
   uploadExcel.any(),
   async (req: any, res: any) => {
     try {
@@ -440,23 +440,25 @@ router.patch(
       for (const temp of temps) {
         const keys = Object.keys(temp);
 
-        const totalAllot = temp[" Total allot "];
-        const registrationNo = temp["Customer ID (เลขทะเบียนผู้ถือหุ้น)"];
+        const registrationNo = temp["เลขทะเบียนผู้ถือหุ้น"];
+        const rightVolume = temp["จำนวนหุ้นตามสิทธิ"];
+        const moreThanVolume = temp["จำนวนหุ้นเกินสิทธิ"];
+        const allVolume = temp["จำนวนหุ้นรวม"];
+        const warrantList = temp["จำนวนใบสำคัญแสดงสิทธิ"];
 
-        const result = await OrderModel.updateOne(
+        await OrderModel.updateOne(
           {
             registrationNo: registrationNo.toString(),
           },
           {
             $set: {
-              totalAllot: Number.isInteger(+totalAllot) ? +totalAllot : 0,
+              rightVolume,
+              moreThanVolume,
+              allVolume,
+              warrantList,
             },
           }
-        ).lean();
-
-        if (result.nModified === 1) {
-          check++;
-        }
+        );
       }
 
       return res.status(200).send({ code: "ERO-0001", message: "ok" });

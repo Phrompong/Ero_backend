@@ -116,6 +116,18 @@ export class Order extends BaseModel {
 
   @prop({ type: Number })
   public totalAllot?: number;
+
+  @prop({ type: Number })
+  public rightVolume!: number; // * จำนวนหุ้นตามสิทธิ์
+
+  @prop({ type: Number })
+  public moreThanVolume!: number; // * จำนวนหุ้นเกินสิทธิ์
+
+  @prop({ type: Number })
+  public allVolume!: number; // * จำนวนหุ้นรวม
+
+  @prop({ type: Number })
+  public warrantList!: number; // * จำนวนใบสำคัญแสดงสิทธิ์
 }
 
 export const OrderModel = getModelForClass(Order, {

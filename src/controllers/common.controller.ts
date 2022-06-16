@@ -356,6 +356,10 @@ export async function getDataWithPaging(
             accountNo: 1,
             sequence: 1,
             totalAllot: 1,
+            rightVolume: 1,
+            moreThanVolume: 1,
+            allVolume: 1,
+            warrantList: 1,
           },
         },
         {
@@ -394,6 +398,10 @@ export async function getDataWithPaging(
             accountNo: 1,
             sequence: 1,
             totalAllot: 1,
+            rightVolume: 1,
+            moreThanVolume: 1,
+            allVolume: 1,
+            warrantList: 1,
           },
         },
         {
@@ -467,6 +475,10 @@ export async function getDataWithPaging(
             accountNo: 1,
             sequence: 1,
             totalAllot: 1,
+            rightVolume: 1,
+            moreThanVolume: 1,
+            allVolume: 1,
+            warrantList: 1,
           },
         },
       ];
