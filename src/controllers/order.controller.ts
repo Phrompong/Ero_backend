@@ -59,6 +59,7 @@ export async function exportExcel(obj: any) {
         { header: "วันที่โอนเงิน", key: "paymentDate", width: 20 },
         { header: "เวลาโอนเงิน", key: "paymentTime", width: 20 },
         { header: "สถานะรายการ", key: "status", width: 20 },
+        { header: "Code Bank", key: "codeBank", width: 20 },
         { header: "ธนาคารสำหรับคืนเงิน", key: "bankRefundName", width: 20 },
         {
           header: "เลขบัญชีธนาคารสำหรับคืนเงิน",
@@ -547,6 +548,16 @@ export async function exportExcel(obj: any) {
           width: 20,
         },
         {
+          header: "รหัสไปรษณีย์",
+          key: "zipcode",
+          width: 20,
+        },
+        {
+          header: "เบอร์โทรศัพท์",
+          key: "telephone",
+          width: 20,
+        },
+        {
           header: "จำนวนที่จองซื้อตามสิทธิ (หุ้น)",
           key: "rightVolume",
           width: 20,
@@ -605,6 +616,16 @@ export async function exportExcel(obj: any) {
         {
           header: "ที่อยู่",
           key: "address",
+          width: 20,
+        },
+        {
+          header: "รหัสไปรษณีย์",
+          key: "zipcode",
+          width: 20,
+        },
+        {
+          header: "เบอร์โทรศัพท์",
+          key: "telephone",
           width: 20,
         },
         {
@@ -909,6 +930,7 @@ export async function getOrderExport(type?: string) {
       brokerCode: code,
       brokerName: brokerId ? brokerId.name : "",
       cert: isCert ? total : 0,
+      atsCert: isCert ? "มีใบหุ้น" : 0,
       fixName: "NCAP",
       marketId: "A",
       sequence,
