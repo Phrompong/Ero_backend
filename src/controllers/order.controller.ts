@@ -72,7 +72,7 @@ export async function exportExcel(obj: any) {
         { header: "หมายเลขโบรกเกอร์", key: "brokerCode", width: 20 },
         { header: "โบรกเกอร์", key: "brokerName", width: 20 },
         { header: "เลขที่บัญชีซื้อขาย", key: "accountNo", width: 20 },
-        { header: "ใบจองหุ้น", key: "cert", width: 20 },
+        { header: "ใบจองหุ้น", key: "atsCert", width: 20 },
       ],
     },
     atsSba: {
