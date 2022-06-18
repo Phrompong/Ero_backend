@@ -930,7 +930,7 @@ export async function getOrderExport(type?: string) {
       brokerCode: code,
       brokerName: brokerId ? brokerId.name : "",
       cert: isCert ? total : 0,
-      atsCert: isCert ? "มีใบหุ้น" : 0,
+      atsCert: isCert ? "yes" : "no",
       fixName: "NCAP",
       marketId: "A",
       sequence,
