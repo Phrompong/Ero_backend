@@ -360,6 +360,7 @@ export async function getDataWithPaging(
             moreThanVolume: 1,
             allVolume: 1,
             warrantList: 1,
+            attachedFileBookBank: 1,
           },
         },
         {
@@ -402,6 +403,7 @@ export async function getDataWithPaging(
             moreThanVolume: 1,
             allVolume: 1,
             warrantList: 1,
+            attachedFileBookBank: 1,
           },
         },
         {
@@ -479,6 +481,7 @@ export async function getDataWithPaging(
             moreThanVolume: 1,
             allVolume: 1,
             warrantList: 1,
+            attachedFileBookBank: 1,
           },
         },
       ];
