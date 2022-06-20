@@ -73,6 +73,8 @@ export async function exportExcel(obj: any) {
         { header: "โบรกเกอร์", key: "brokerName", width: 20 },
         { header: "เลขที่บัญชีซื้อขาย", key: "accountNo", width: 20 },
         { header: "ใบจองหุ้น", key: "atsCert", width: 20 },
+        { header: "BookBank image", key: "attachedFileBookBank", width: 20 },
+        { header: "Slip image", key: "attachedFile", width: 20 },
       ],
     },
     atsSba: {
@@ -528,6 +530,11 @@ export async function exportExcel(obj: any) {
       func: getOrderExport,
       columns: [
         {
+          header: "Customer ID (เลขทะเบียนผู้ถือหุ้น)",
+          key: "registrationNo",
+          width: 20,
+        },
+        {
           header: "คำนำหน้าชื่อ",
           key: "title",
           width: 20,
@@ -593,11 +600,18 @@ export async function exportExcel(obj: any) {
           key: "noChek",
           width: 20,
         },
+        { header: "BookBank image", key: "attachedFileBookBank", width: 20 },
+        { header: "Slip image", key: "attachedFile", width: 20 },
       ],
     },
     letterAts: {
       func: getOrderExport,
       columns: [
+        {
+          header: "Customer ID (เลขทะเบียนผู้ถือหุ้น)",
+          key: "registrationNo",
+          width: 20,
+        },
         {
           header: "คำนำหน้าชื่อ",
           key: "title",
@@ -668,6 +682,8 @@ export async function exportExcel(obj: any) {
           key: "bankRefundNo",
           width: 20,
         },
+        { header: "BookBank image", key: "attachedFileBookBank", width: 20 },
+        { header: "Slip image", key: "attachedFile", width: 20 },
       ],
     },
   };
@@ -832,6 +848,8 @@ export async function getOrderExport(type?: string) {
       moreThanVolume,
       allVolume,
       warrantList,
+      attachedFileBookBank,
+      attachedFile,
     } = obj;
 
     // * collection master customer
@@ -968,6 +986,8 @@ export async function getOrderExport(type?: string) {
       codeBank,
       nameBankForCheck: "", // * ชื่อธนาคารที่ออกเชค
       noChek: "", // * เลขที่เช็ค
+      attachedFileBookBank,
+      attachedFile,
     });
 
     sequenceNo++;
