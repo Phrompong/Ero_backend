@@ -792,6 +792,11 @@ export async function exportText(obj: any) {
   res.send(value);
 }
 
+// * Export function bank
+export async function getFromBank() {
+  const data = await getOrderExport();
+}
+
 // * Export data
 export async function getOrderExport(type?: string) {
   let orderCalculate: any;

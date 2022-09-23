@@ -128,6 +128,9 @@ export class Order extends BaseModel {
 
   @prop({ type: Number })
   public warrantList!: number; // * จำนวนใบสำคัญแสดงสิทธิ์
+
+  @prop({ type: Number })
+  public netCustomerReceipt!: number; // * จำนวนใบสำคัญแสดงสิทธิ์
 }
 
 export const OrderModel = getModelForClass(Order, {
