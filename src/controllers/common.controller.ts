@@ -362,6 +362,7 @@ export async function getDataWithPaging(
             warrantList: 1,
             attachedFileBookBank: 1,
             netCustomerReceipt: 1,
+            attachedFiles: 1,
           },
         },
         {
@@ -406,6 +407,7 @@ export async function getDataWithPaging(
             warrantList: 1,
             attachedFileBookBank: 1,
             netCustomerReceipt: 1,
+            attachedFiles: 1,
           },
         },
         {
@@ -485,6 +487,7 @@ export async function getDataWithPaging(
             warrantList: 1,
             attachedFileBookBank: 1,
             netCustomerReceipt: 1,
+            attachedFiles: 1,
           },
         },
       ];

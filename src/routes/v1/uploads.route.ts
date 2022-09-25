@@ -46,9 +46,13 @@ const storageImage = multer.diskStorage({
   },
 
   filename: function (req: any, file: any, cb: any) {
+    let a = 0;
     cb(
       null,
-      file.fieldname + "" + Date.now() + path.extname(file.originalname)
+      `${Date.now()}_${file.originalname.substring(
+        0,
+        file.originalname.indexOf(".")
+      )}` + path.extname(file.originalname)
     );
   },
 });
@@ -271,12 +275,17 @@ router.post("/", uploadExcel.any(), async (req: any, res: any) => {
 // * Upload for images
 router.post("/image", uploadImage.any(), async (req: any, res: any) => {
   try {
+    const oldFiles = req.body;
     const files = req.files;
     const userAgent = req.headers["user-agent"];
     const platform = req.headers["sec-ch-ua-platform"];
     const { orderId } = req.query;
 
-    if (files.length === 0) {
+    let _files = files;
+
+    if (Object.keys(oldFiles).length > 0) _files = files.concat(oldFiles.File);
+
+    if (_files.length === 0) {
       return res
         .status(400)
         .send({ code: "ERO-0011", message: "Request file not found" });
@@ -288,25 +297,48 @@ router.post("/image", uploadImage.any(), async (req: any, res: any) => {
         .send({ code: "ERO-0011", message: "orderId is missing" });
     }
 
-    const attachedFile = `${process.env.IPADDRESS_URI}/api/v1/renders?filename=${files[0].filename}`;
+    let attachedFiles = [];
 
-    // * Upsert to orders
-    await OrderModel.findByIdAndUpdate(
-      orderId,
+    // * Delete attachedFiles
+    await OrderModel.updateOne(
       {
-        attachedFile,
-        attachedOn: new Date(),
-        status: statusData.filter((o) => o.status === "รอยืนยันการชำระเงิน")[0]
-          ._id,
+        _id: mongoose.Types.ObjectId(orderId.toString()),
       },
-      {
-        upsert: true,
-      }
+      { $set: { attachedFiles: [] } }
     );
+
+    for (const file of _files) {
+      const type = typeof file;
+
+      let attachedFile = file;
+      if (type !== "string")
+        attachedFile = `${process.env.IPADDRESS_URI}/api/v1/renders?filename=${file.filename}`;
+
+      // * Upsert to orders
+      const update = await OrderModel.updateOne(
+        {
+          _id: mongoose.Types.ObjectId(orderId.toString()),
+        },
+        {
+          $addToSet: { attachedFiles: attachedFile },
+          $set: {
+            attachedOn: new Date(),
+            status: statusData.filter(
+              (o) => o.status === "รอยืนยันการชำระเงิน"
+            )[0]._id,
+          },
+        },
+        {
+          upsert: true,
+        }
+      );
+
+      attachedFiles.push(attachedFile);
+    }
 
     return res
       .status(200)
-      .send({ code: "ERO-0001", message: "ok", data: attachedFile });
+      .send({ code: "ERO-0001", message: "ok", data: attachedFiles });
   } catch (error) {
     const err = error as Error;
 

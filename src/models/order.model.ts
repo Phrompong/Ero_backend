@@ -57,8 +57,8 @@ export class Order extends BaseModel {
   @prop({ type: Date })
   public attachedOn?: Date;
 
-  @prop({ type: String })
-  public attachedFile?: String;
+  @prop({ type: [String] })
+  public attachedFiles?: String[];
 
   @prop({ type: Date })
   public attachedBookBankOn?: Date;
