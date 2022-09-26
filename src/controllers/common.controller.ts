@@ -607,7 +607,9 @@ export async function getDataWithPaging(
 
   const dataPipeline = request;
 
-  const _metadataPipeline = [...request, { $count: "total" }];
+  let _metadataPipeline = [{ $match: {} }];
+
+  if (key) _metadataPipeline = [...request];
 
   dataPipeline.push(skip);
   dataPipeline.push(pageSize);
@@ -636,7 +638,9 @@ export async function getDataWithPaging(
     };
   }
 
-  const total = find[0]._metadata[0].total;
+  const total = key
+    ? find[0]._metadata[0].total
+    : await Model.find().estimatedDocumentCount();
   const totalPages = Math.ceil(total / limitInput);
 
   return {
