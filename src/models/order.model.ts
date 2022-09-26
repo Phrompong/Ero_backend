@@ -26,6 +26,14 @@ export class Address {
   public tel!: string;
 }
 
+export class AllocateDetail {
+  @prop({ type: Number })
+  public type!: number;
+
+  @prop({ type: String })
+  public name!: string;
+}
+
 export class Order extends BaseModel {
   @prop({ ref: () => MasterCustomer })
   public customerId!: Ref<MasterCustomer>;
@@ -131,6 +139,12 @@ export class Order extends BaseModel {
 
   @prop({ type: Number })
   public netCustomerReceipt!: number; // * จำนวนใบสำคัญแสดงสิทธิ์
+
+  @prop({ _id: false, type: AllocateDetail })
+  public allocateDetail!: AllocateDetail; // * รายละเอียดการจัดสรรหุ้น
+
+  @prop({ type: Number })
+  public depositAmount!: Number; // * จำนวนเงินฝาก
 }
 
 export const OrderModel = getModelForClass(Order, {

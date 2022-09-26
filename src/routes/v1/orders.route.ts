@@ -55,6 +55,8 @@ router.post("/", async (req, res) => {
       registrationNo,
       paymentDate,
       isCert,
+      allocateDetail,
+      depositAmount,
     } = body as any;
 
     if (!paymentDate) {
@@ -105,6 +107,8 @@ router.post("/", async (req, res) => {
       bankRefundNo,
       paymentDate,
       isCert,
+      allocateDetail,
+      depositAmount,
     };
 
     const result = await OrderModel.updateOne(
