@@ -855,6 +855,7 @@ export async function getOrderExport(type?: string) {
       warrantList,
       attachedFileBookBank,
       attachedFile,
+      allocateDetail,
     } = obj;
 
     // * collection master customer
@@ -907,9 +908,33 @@ export async function getOrderExport(type?: string) {
       resultVolume = volume;
     }
 
-    const quantityIssuerAccount = code === "000" ? total : 0;
-
     const notAllocate = (paidRightVolume || 0) - (allVolume || 0);
+
+    // * 1 = ฝากหุ้นที่ได้รับการจัดสรรไว้ที่หมายเลขสมาชิก // * 2 = รับใบหุ้น // * 3 = บัญชีสมาชิกเลขที่ 600 เพิ่มข้าพเจ้า
+    // * Condition Quamtily of subscribed scrip n
+
+    let cert = undefined;
+
+    if (allocateDetail.type === 2 && type !== "dss3") {
+      // * (ยอด sum ตามสิทธิ+เกินสิทธิ)
+      cert = paidRightVolume + excessAmount;
+    }
+
+    // * Quantity of Subscribed Issuer Account
+
+    let quantityIssuerAccount = undefined;
+
+    if (allocateDetail.type === 3 && type !== "dss3") {
+      quantityIssuerAccount = paidRightVolume + excessAmount;
+    }
+
+    // * Quantity of Subscribed Participant's Account
+
+    let volume = undefined;
+
+    if (allocateDetail.type === 1 && type === "dss3") {
+      volume = paidRightVolume + excessAmount;
+    }
 
     response.push({
       customerId: refNo,
@@ -952,7 +977,7 @@ export async function getOrderExport(type?: string) {
       approvedOn: approvedOn ? format(approvedOn, "dd/MM/yyyy HH:mm:ss") : "",
       brokerCode: code,
       brokerName: brokerId ? brokerId.name : "",
-      cert: isCert ? total : 0,
+      cert,
       atsCert: isCert ? "yes" : "no",
       fixName: "NCAP",
       marketId: "A",
@@ -965,7 +990,7 @@ export async function getOrderExport(type?: string) {
       slipTransactionDate: "",
       slipTransactionNo: "",
       quantityIssuerAccount,
-      volume: !isCert && code !== 600 ? total : 0,
+      volume,
       chequePoolFlag: "N", //+total > 0 ? "N" : "",
       bankCodeReturnCash: "",
       bankAccountReturnCash: "",
