@@ -686,6 +686,170 @@ export async function exportExcel(obj: any) {
         { header: "Slip image", key: "attachedFile", width: 20 },
       ],
     },
+    pti: {
+      func: getOrderExport,
+      columns: [
+        {
+          header: "เลขที่ใบจอง / ลำดับที่",
+          key: "",
+          width: 20,
+        },
+        {
+          header: "ประเภทเลขอ้างอิง F",
+          key: "",
+          width: 20,
+        },
+        {
+          header: "เลขที่บัตรประชาชน",
+          key: "",
+          width: 20,
+        },
+        {
+          header: "ประเภทบุคคล F",
+          key: "",
+          width: 20,
+        },
+        {
+          header: "รหัสคำนำหน้า",
+          key: "",
+          width: 20,
+        },
+        {
+          header: "คำนำหน้านาม กรณีระบุรหัสเป็น '099' อื่นๆ",
+          key: "",
+          width: 20,
+        },
+        {
+          header: "ชื้อผู้ถือหุ้น",
+          key: "",
+          width: 20,
+        },
+        {
+          header: "นามสกุลผู้ถือหุ้น/ชื่อบริษัท",
+          key: "",
+          width: 20,
+        },
+        {
+          header: "เพศผู้ถือหุ้น",
+          key: "",
+          width: 20,
+        },
+        {
+          header: "ที่อยู่ผู้ถือหุ้น",
+          key: "",
+          width: 20,
+        },
+        {
+          header: "รหัสไปรษณีย์",
+          key: "",
+          width: 20,
+        },
+        {
+          header: "โทรศัพท์บ้าน",
+          key: "",
+          width: 20,
+        },
+        {
+          header: "โทรศัพท์ที่ทำงาน",
+          key: "",
+          width: 20,
+        },
+        {
+          header: "โทรศัพท์มือถือ",
+          key: "",
+          width: 20,
+        },
+        {
+          header: "โทรสาร",
+          key: "",
+          width: 20,
+        },
+        { header: "Email", key: "", width: 20 },
+        { header: "รหัสประเทศ F", key: "", width: 20 },
+        { header: "สัญชาติผู้ถือหุ้น F", key: "", width: 20 },
+        { header: "รหัสอาชีพผู้ถือหุ้น", key: "", width: 20 },
+        { header: "วันเกิดผู้ถือหุ้น", key: "", width: 20 },
+        { header: "เลขประจำตัวผู้เสียภาษี", key: "", width: 20 },
+        { header: "การหักภาษี ณ ที่จ่าย", key: "", width: 20 },
+        { header: "วิธีการรับเอกสาร", key: "", width: 20 },
+        { header: "สถานะการอายัดการกระจายหุ้น", key: "", width: 20 },
+        { header: "ประเภทการถือครองหุ้น", key: "", width: 20 },
+        {
+          header: "จำนวนหลักทรัพย์ที่จองซื้อ (IPO Allotment)",
+          key: "",
+          width: 20,
+        },
+        {
+          header:
+            "เลขที่สมาชิกศูนย์รับฝากสำหรับการฝากเข้าบัญชีสมาชิกศูนย์รับฝาก",
+          key: "",
+          width: 20,
+        },
+        {
+          header:
+            "เลขที่อ้างอิงระหว่างผู้ถือหุ้นกับสมาชิกศูนย์รับฝาก สำหรับการฝากเข้าบัญชีสมาชิกศูนย์รับฝาก",
+          key: "",
+          width: 20,
+        },
+        {
+          header:
+            "ระบุเลขที่อ้างอิงระหว่างผู้ถือหุ้นกับสมาชิกศูนย์รับฝากฯสำหรับกรณีจำนำ",
+          key: "",
+          width: 20,
+        },
+        {
+          header: "รหัสพนักงาน",
+          key: "",
+          width: 20,
+        },
+        {
+          header: "รหัสฝ่ายงาน",
+          key: "",
+          width: 20,
+        },
+        {
+          header: "เลขที่ใบหุ้นเดิมสำหรับกรณี NR เท่านั้น",
+          key: "",
+          width: 20,
+        },
+        {
+          header: "US Indicia",
+          key: "",
+          width: 20,
+        },
+        {
+          header: "Entity Type",
+          key: "",
+          width: 20,
+        },
+        {
+          header: "GIIN No",
+          key: "",
+          width: 20,
+        },
+
+        {
+          header: "รหัสคำนำหน้า",
+          key: "",
+          width: 20,
+        },
+        {
+          header: "คำนำหน้านาม",
+          key: "",
+          width: 20,
+        },
+        {
+          header: "ชื่อผู้ถือหุ้น",
+          key: "",
+          width: 20,
+        },
+        {
+          header: "นามสกุล/ชื่อบริษัทต้องเป็นภาษาอังกฤษเท่านั้น",
+          key: "",
+          width: 20,
+        },
+      ],
+    },
   };
 
   const select = await excelHandler[key as string];
