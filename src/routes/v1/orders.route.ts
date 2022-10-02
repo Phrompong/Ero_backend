@@ -116,7 +116,7 @@ router.post("/", async (req, res) => {
         registrationNo,
         rightStockName,
       },
-      order,
+      { $set: order },
       { upsert: true }
     );
 
@@ -126,7 +126,7 @@ router.post("/", async (req, res) => {
     const data = await OrderModel.findOne({
       registrationNo,
       rightStockName,
-    });
+    }).lean();
 
     return res.status(200).send({ code: "ERO-0001", message: "ok", data });
   } catch (error) {

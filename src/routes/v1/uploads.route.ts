@@ -32,10 +32,7 @@ const storageExcel = multer.diskStorage({
   },
 
   filename: function (req: any, file: any, cb: any) {
-    cb(
-      null,
-      file.fieldname + "" + Date.now() + path.extname(file.originalname)
-    );
+    cb(null, path.extname(file.originalname));
   },
 });
 
@@ -312,7 +309,7 @@ router.post("/image", uploadImage.any(), async (req: any, res: any) => {
 
       let attachedFile = file;
       if (type !== "string")
-        attachedFile = `${process.env.IPADDRESS_URI}/api/v1/renders?filename=${file.filename}`;
+        attachedFile = `${process.env.IPADDRESS_URI}/api/v1/renders?filename=${file.originalname}`;
 
       // * Upsert to orders
       const update = await OrderModel.updateOne(
