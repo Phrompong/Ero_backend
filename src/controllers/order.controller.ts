@@ -696,22 +696,22 @@ export async function exportExcel(obj: any) {
         },
         {
           header: "ประเภทเลขอ้างอิง F",
-          key: "",
+          key: "refType",
           width: 20,
         },
         {
           header: "เลขที่บัตรประชาชน",
-          key: "",
+          key: "refNo",
           width: 20,
         },
         {
           header: "ประเภทบุคคล F",
-          key: "",
+          key: "holderType",
           width: 20,
         },
         {
           header: "รหัสคำนำหน้า",
-          key: "",
+          key: "titleCode",
           width: 20,
         },
         {
@@ -721,12 +721,12 @@ export async function exportExcel(obj: any) {
         },
         {
           header: "ชื้อผู้ถือหุ้น",
-          key: "",
+          key: "name",
           width: 20,
         },
         {
           header: "นามสกุลผู้ถือหุ้น/ชื่อบริษัท",
-          key: "",
+          key: "lastname",
           width: 20,
         },
         {
@@ -736,59 +736,63 @@ export async function exportExcel(obj: any) {
         },
         {
           header: "ที่อยู่ผู้ถือหุ้น",
-          key: "",
+          key: "address",
           width: 20,
         },
         {
           header: "รหัสไปรษณีย์",
-          key: "",
+          key: "zipcode",
           width: 20,
         },
         {
           header: "โทรศัพท์บ้าน",
-          key: "",
+          key: "home",
           width: 20,
         },
         {
           header: "โทรศัพท์ที่ทำงาน",
-          key: "",
+          key: "office",
           width: 20,
         },
         {
           header: "โทรศัพท์มือถือ",
-          key: "",
+          key: "customerTel",
           width: 20,
         },
         {
           header: "โทรสาร",
-          key: "",
+          key: "fax",
           width: 20,
         },
-        { header: "Email", key: "", width: 20 },
+        { header: "Email", key: "email", width: 20 },
         { header: "รหัสประเทศ F", key: "", width: 20 },
-        { header: "สัญชาติผู้ถือหุ้น F", key: "", width: 20 },
-        { header: "รหัสอาชีพผู้ถือหุ้น", key: "", width: 20 },
+        { header: "สัญชาติผู้ถือหุ้น F", key: "nationalityCode", width: 20 },
+        { header: "รหัสอาชีพผู้ถือหุ้น", key: "occupationCode", width: 20 },
         { header: "วันเกิดผู้ถือหุ้น", key: "", width: 20 },
-        { header: "เลขประจำตัวผู้เสียภาษี", key: "", width: 20 },
-        { header: "การหักภาษี ณ ที่จ่าย", key: "", width: 20 },
+        { header: "เลขประจำตัวผู้เสียภาษี", key: "taxId", width: 20 },
+        {
+          header: "การหักภาษี ณ ที่จ่าย",
+          key: "withHoldingTaxType",
+          width: 20,
+        },
         { header: "วิธีการรับเอกสาร", key: "", width: 20 },
         { header: "สถานะการอายัดการกระจายหุ้น", key: "", width: 20 },
         { header: "ประเภทการถือครองหุ้น", key: "", width: 20 },
         {
           header: "จำนวนหลักทรัพย์ที่จองซื้อ (IPO Allotment)",
-          key: "",
+          key: "paidRightVolume",
           width: 20,
         },
         {
           header:
             "เลขที่สมาชิกศูนย์รับฝากสำหรับการฝากเข้าบัญชีสมาชิกศูนย์รับฝาก",
-          key: "",
+          key: "partiNo",
           width: 20,
         },
         {
           header:
             "เลขที่อ้างอิงระหว่างผู้ถือหุ้นกับสมาชิกศูนย์รับฝาก สำหรับการฝากเข้าบัญชีสมาชิกศูนย์รับฝาก",
-          key: "",
+          key: "brokerateAccount",
           width: 20,
         },
         {
@@ -824,7 +828,7 @@ export async function exportExcel(obj: any) {
         },
         {
           header: "GIIN No",
-          key: "",
+          key: "giinNo",
           width: 20,
         },
 
@@ -1020,6 +1024,7 @@ export async function getOrderExport(type?: string) {
       attachedFileBookBank,
       attachedFile,
       allocateDetail,
+      customerTel,
     } = obj;
 
     // * collection master customer
@@ -1036,6 +1041,13 @@ export async function getOrderExport(type?: string) {
       holderType,
       address,
       title,
+      home,
+      office,
+      fax,
+      email,
+      nationalityCode,
+      occupationCode,
+      taxId,
     } = customerId;
 
     // * collection customer stock
@@ -1048,6 +1060,9 @@ export async function getOrderExport(type?: string) {
       getRight,
       ratio,
       subScriptionNo,
+      withHoldingTaxType,
+      partiNo,
+      brokerateAccount,
     } = customerStock;
 
     const { code } = brokerId || {};
@@ -1182,6 +1197,16 @@ export async function getOrderExport(type?: string) {
       noChek: "", // * เลขที่เช็ค
       attachedFileBookBank,
       attachedFile,
+      home,
+      office,
+      customerTel,
+      fax,
+      nationalityCode,
+      occupationCode,
+      taxId,
+      withHoldingTaxType,
+      partiNo,
+      brokerateAccount,
     });
 
     sequenceNo++;
