@@ -645,7 +645,7 @@ export async function getDataWithPaging(
   }
 
   const total = key ? find[0]._metadata[0].total : await Model.find().count();
-  const totalPages = Math.ceil(total / limitInput);
+  const totalPages = Math.floor(total / limitInput);
 
   return {
     _metadata: {
