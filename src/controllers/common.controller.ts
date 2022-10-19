@@ -644,7 +644,7 @@ export async function getDataWithPaging(
     };
   }
 
-  const total = find[0]._metadata[0].total;
+  const total = key ? find[0]._metadata[0].total : await Model.find().count();
   const totalPages = Math.ceil(total / limitInput);
 
   return {
