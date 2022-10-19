@@ -283,7 +283,7 @@ router.post("/image", uploadImage.any(), async (req: any, res: any) => {
 
     let _files = files;
 
-    if (Object.keys(oldFiles).length > 0) _files = files.concat(oldFiles.File);
+    //if (Object.keys(oldFiles).length > 0) _files = files.concat(oldFiles.File);
 
     if (_files.length === 0) {
       return res
