@@ -1098,7 +1098,7 @@ export async function getOrderExport(type?: string) {
 
     let cert = undefined;
 
-    if (allocateDetail.type === 2 && type !== "dss3") {
+    if (allocateDetail && allocateDetail.type === 2 && type !== "dss3") {
       // * (ยอด sum ตามสิทธิ+เกินสิทธิ)
       cert = paidRightVolume + excessAmount;
     }
@@ -1107,7 +1107,7 @@ export async function getOrderExport(type?: string) {
 
     let quantityIssuerAccount = undefined;
 
-    if (allocateDetail.type === 3 && type !== "dss3") {
+    if (allocateDetail && allocateDetail.type === 3 && type !== "dss3") {
       quantityIssuerAccount = paidRightVolume + excessAmount;
     }
 
@@ -1115,7 +1115,7 @@ export async function getOrderExport(type?: string) {
 
     let volume = undefined;
 
-    if (allocateDetail.type === 1 && type === "dss3") {
+    if (allocateDetail && allocateDetail.type === 1 && type === "dss3") {
       volume = paidRightVolume + excessAmount;
     }
 
