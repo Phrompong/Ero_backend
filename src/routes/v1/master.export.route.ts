@@ -98,7 +98,7 @@ router.patch("/:id", async (req, res) => {
   }
 });
 
-router.delete("", async (req, res) => {
+router.delete("/", async (req, res) => {
   await MasterExportModel.deleteMany({});
 });
 
