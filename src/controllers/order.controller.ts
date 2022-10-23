@@ -1424,7 +1424,7 @@ export async function getDss3Txt(type?: string) {
 }
 
 export async function getPtiText() {
-  const data = await getOrderExport();
+  const data = await getOrderExport("");
 
   let response: any[] = [];
 
