@@ -5,6 +5,7 @@ import * as excelJS from "exceljs";
 import { forEach } from "lodash";
 import { format } from "date-fns";
 import { getOverPaymet } from "./overPayment.controller";
+import { response } from "express";
 
 export async function insert(order: Order) {
   if (!order) {
@@ -935,6 +936,9 @@ export async function exportText(obj: any) {
       func: getDss1Txt,
     },
     dss3: { func: getDss3Txt },
+    pti: {
+      func: getPtiText,
+    },
   };
 
   const select = await excelHandler[key as string];
@@ -1413,6 +1417,58 @@ export async function getDss3Txt(type?: string) {
       volume,
       creaditAccountId,
       pledgeQuantity,
+    });
+  }
+
+  return response;
+}
+
+export async function getPtiText() {
+  const data = await getOrderExport();
+
+  let response: any[] = [];
+
+  for (const obj of data) {
+    response.push({
+      not1: "", // * เลขที่ใบจอง / ลำดับที่
+      refType: obj.refType,
+      refNo: obj.refNo,
+      holderType: obj.holderType,
+      titleCode: obj.titleCode,
+      not2: "", // * คำนำหน้านาม กรณีระบุรหัสเป็น '099' อื่นๆ
+      name: obj.name,
+      lastname: obj.lastname,
+      not3: "", // * เพศผู้ถือหุ้น
+      address: obj.address,
+      zipcode: obj.zipcode,
+      home: obj.home,
+      office: obj.office,
+      customerTel: obj.customerTel,
+      fax: obj.fax,
+      email: obj.email,
+      not4: "", // * รหัสประเทศ F
+      nationalityCode: obj.nationalityCode,
+      occupationCode: obj.occupationCode,
+      not5: "", // * วันเกิดผู้ถือหุ้น
+      taxId: obj.taxId,
+      withHoldingTaxType: obj.withHoldingTaxType,
+      not6: "", // * วิธีการรับเอกสาร
+      not7: "", // * สถานะการอายัดการกระจายหุ้น
+      not77: "", // * สถานะการอายัดการกระจายหุ้น
+      paidRightVolume: obj.paidRightVolume,
+      partiNo: obj.partiNo,
+      brokerateAccount: obj.brokerateAccount,
+      not8: "", // * ระบุเลขที่อ้างอิงระหว่างผู้ถือหุ้นกับสมาชิกศูนย์รับฝากฯสำหรับกรณีจำนำ
+      not9: "", // * รหัสพนักงาน
+      not10: "", // * รหัสฝ่ายงาน
+      not11: "", // * เลขที่ใบหุ้นเดิมสำหรับกรณี NR เท่านั้น
+      not12: "", // * US Indicia
+      not13: "", // * Entity Type
+      giinNo: obj.giinNo,
+      not14: "", // * รหัสคำนำหน้า
+      not15: "", // * คำนำหน้านาม
+      not16: "", // * ชื่อผู้ถือหุ้น
+      not17: "", // * นามสกุล/ชื่อบริษัทต้องเป็นภาษาอังกฤษเท่านั้น
     });
   }
 

@@ -82,4 +82,15 @@ router.patch("/:id", async (req, res) => {
   }
 });
 
+// // * For update status broker ex false all and some value is true follow request
+// router.put("", async (req, res) => {
+//   try {
+//     const { isAll } = req.query;
+//     const body = req.body as string[];
+//   } catch (error) {
+//     const err = error as Error;
+
+//     return res.status(400).send({ code: "ERO-0010", message: err.message });
+//   }
+// });
 export default router;
