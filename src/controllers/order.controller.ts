@@ -1052,6 +1052,7 @@ export async function getOrderExport(type?: string) {
       nationalityCode,
       occupationCode,
       taxId,
+      titleCode,
     } = customerId;
 
     // * collection customer stock
@@ -1059,7 +1060,6 @@ export async function getOrderExport(type?: string) {
       registrationNo,
       rightStockVolume,
       refType,
-      titleCode,
       offerPrice,
       getRight,
       ratio,
