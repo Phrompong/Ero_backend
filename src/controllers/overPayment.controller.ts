@@ -79,7 +79,7 @@ async function userRight() {
       excessAmount,
     } = order;
     const { stockVolume, ratio, getRight, offerPrice, registrationNo } =
-      customerStockId as CustomerStock;
+      (customerStockId as CustomerStock) || {};
     const { name, lastname, nationalityCode } = customerId as MasterCustomer;
     const { nameTH } = (bankRefund as MasterBank) || {};
 

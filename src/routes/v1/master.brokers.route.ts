@@ -38,6 +38,7 @@ router.get("/", async (req, res) => {
       {
         $match: {
           status: true,
+          isShow: true,
         },
       },
       {

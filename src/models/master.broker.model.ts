@@ -13,6 +13,9 @@ export class MasterBroker extends BaseModel {
 
   @prop({ type: Boolean })
   public status!: boolean;
+
+  @prop({ type: Boolean })
+  public isShow!: boolean;
 }
 
 export const MasterBrokerModel = getModelForClass(MasterBroker, {
