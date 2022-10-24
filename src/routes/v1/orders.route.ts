@@ -180,6 +180,12 @@ router.get("/", async (req, res) => {
       obj.customerId = { $eq: mongoose.Types.ObjectId(customerId.toString()) };
     }
 
+    if (registrationNo) {
+      obj.registrationNo = {
+        $eq: registrationNo,
+      };
+    }
+
     if (rightStockName) {
       obj.rightStockName = {
         $eq: rightStockName,
