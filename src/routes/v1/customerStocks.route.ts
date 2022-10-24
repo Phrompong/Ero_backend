@@ -64,7 +64,7 @@ router.get("/", async (req, res) => {
     if (customerId && registrationNo) {
       obj.customerId = mongoose.Types.ObjectId(customerId.toString());
 
-      result = await CustomerStockModel.findOne({
+      result = await CustomerStockModel.find({
         customerId: mongoose.Types.ObjectId(customerId.toString()),
         registrationNo: registrationNo.toString(),
         isActive: true,
