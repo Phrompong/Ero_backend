@@ -993,7 +993,7 @@ export async function getOrderExport(type?: string) {
 
   const { data } = find;
 
-  let runningNumber = 213000000;
+  let runningNumber = 213000001;
 
   let response: any[] = [];
   const exportDate = new Date();
