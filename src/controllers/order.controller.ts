@@ -993,6 +993,8 @@ export async function getOrderExport(type?: string) {
 
   const { data } = find;
 
+  let runningNumber = 213000000;
+
   let response: any[] = [];
   const exportDate = new Date();
   let sequenceNo = 1;
@@ -1120,6 +1122,7 @@ export async function getOrderExport(type?: string) {
     }
 
     response.push({
+      subScriptionSequenceNo: runningNumber++,
       customerId: refNo,
       customerName: name,
       customerLastname: lastname,
@@ -1430,7 +1433,7 @@ export async function getPtiText() {
 
   for (const obj of data) {
     response.push({
-      not1: "", // * เลขที่ใบจอง / ลำดับที่
+      subScriptionSequenceNo: obj.subScriptionSequenceNo,
       refType: obj.refType,
       refNo: obj.refNo,
       holderType: obj.holderType,
