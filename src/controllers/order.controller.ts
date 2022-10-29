@@ -692,7 +692,7 @@ export async function exportExcel(obj: any) {
       columns: [
         {
           header: "เลขที่ใบจอง / ลำดับที่",
-          key: "",
+          key: "subScriptionSequenceNo",
           width: 20,
         },
         {
